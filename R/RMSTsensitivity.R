@@ -1,36 +1,98 @@
-#' @title Sensitivity ananlysis for RMST
-#' @description Function for sensitivity analysis of unmeasured confounding for restricted mean survival time
+#' @title Sensitivity analysis for RMST
+#'
+#' @description Function for sensitivity analysis of unmeasured confounding for restricted mean survival time using propensity score
+#'
 #' @param time The name of the variable for time to event
 #' @param status The name of the variable for status (0 if censored, 1 if event)
 #' @param exposure The name of the variable for exposure (0 if unexposed, 1 if exposed)
 #' @param exposed.ref.level Reference level in exposure variable, Default: 1
 #' @param ps The name of the variable for propensity score variable i.e., P(A=1|L)>0
 #' @param data A data frame in which contains the follow-up time (time), the event (status), the exposure (exposure), and the propensity score (ps)
-#' @param methods A character with the methods how to calculate the shifted RMST ("Optim", "Approx", "LP1", "LP2"), Default: 'Approx'
-#' @param use.multicore PARAM_DESCRIPTION, Default: TRUE
-#' @param n.core PARAM_DESCRIPTION, Default: parallel::detectCores()/2
-#' @param lambda PARAM_DESCRIPTION, Default: 1.5
-#' @param tau PARAM_DESCRIPTION, Default: NULL
-#' @param ini.par PARAM_DESCRIPTION, Default: 1
-#' @param verbose PARAM_DESCRIPTION, Default: FALSE
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
+#' @param methods A character with the methods how to calculate the adjusted RMST ("Optim", "Approx", "LP1", "LP2"), Default: 'Approx'
+#' @param use.multicore Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE
+#' @param n.core The number of usable cores, Default: parallel::detectCores()/2
+#' @param lambda The sensitivity parameter, Default: 1.5
+#' @param tau User-specific time point, If tau not specified (NULL), use the minimum of the largest observed event time in both groups.
+#' @param ini.par Initial parameter for direct optimization method, Default: 1
+#' @param verbose Conditional on the verbose level, print the message that each optimization (minimization or maximization) for each group was ended, Default: FALSE
+#'
+#' @return An object of class \code{senRMST}. The object is a data.frame with the following components:
+#' \item{N}{Total number of subjects}
+#' \item{N.exposed}{The number of subjects in exposed group}
+#' \item{N.unexposed}{The number of subjects in unexposed group}
+#' \item{N.event.exposed}{The number of events in exposed group}
+#' \item{N.event.unexposed}{The number of events in unexposed group}
+#' \item{cen.rate}{Total censoring rate}
+#' \item{cen.rate.exposed}{Censoring rate in exposed group}
+#' \item{cen.rate.unexposed}{Censoring rate in unexposed group}
+#' \item{Lambda}{A used sensitivity parameter }
+#' \item{Tau}{User-specific time point, If tau not specified (NULL), use the minimum of the largest observed event time in both groups}
+#' \item{Method}{A used method}
+#' \item{min.exposed}{The minimum of adjusted RMST based on the shifted propensity score for exposed group}
+#' \item{max.exposed}{The maximum of adjusted RMST based on the shifted propensity score for exposed group}
+#' \item{min.unexposed}{The minimum of adjusted RMST based on the shifted propensity score for unexposed group}
+#' \item{max.unexposed}{The maximum of adjusted RMST based on the shifted propensity score for unexposed group}
+#' \item{RMST.diff.min}{The minimum of between-group difference in adjusted RMST based on shifted propensity score}
+#' \item{RMST.diff.max}{The maximum of between-group difference in adjusted RMST based on shifted propensity score}
+#' The results for the RMST_sensitivity are printed with the \code{\link{print.RMSTsensitivity}} functions.
+#' To generate graphs comparing Lambda with interval of adjusted RMST based on shifted propensity score use the aaa functions.
+#'
+#' @details To assess details of method of sensitivity analysis, see Lee et al. (2022) for details.
+#'
 #' @examples
-#' \dontrun{
 #' if(interactive()){
-#'  #EXAMPLE1
+#'  ## EXAMPLE
+#'  library(survival)
+#'
+#'  dat <- gbsg
+#'  dat$size2 <- ifelse(dat$size <= 20, 0,
+#'                      ifelse(dat$size > 20 & dat$size <= 50, 1, 2))
+#'  dat$age2 <- dat$age/100
+#'  dat$er2 <- dat$er/1000
+#'
+#'  ## Estimation of propensity score
+#'  denom.fit <- glm(hormon ~ (age2)^3 + (age2)^3*log(age2) + meno + factor(size2) + sqrt(nodes) + er2,
+#'                   data=dat, family=binomial(link='logit'))
+#'  dat$Ps <- predict(denom.fit, type='response')
+#'
+#'  ## Between-group difference in adjusted RMST based on shifted propensity score
+#'  # Using approximate optimization method
+#'  results.approx <- RMST_sensitivity(time='rfstime', status='status', exposure='hormon',
+#'                                     exposed.ref.level=1, ps='Ps' ,data=dat, methods="Approx",
+#'                                     use.multicore=TRUE, n.core=parallel::detectCores()/2,
+#'                                     lambda=1.5, tau=365.25*5)
+#'  results.approx
+#'  ## Adjusted RMST with tau equal to 5-year
+#'  # Using direct optimization method
+#'  results.optim <- RMST_sensitivity(time='rfstime', status='status', exposure='hormon',
+#'                                    exposed.ref.level=1, data=dat, ps='Ps', methods="Optim",
+#'                                    use.multicore=TRUE, n.core=parallel::detectCores()/2,
+#'                                    lambda=1.5, tau=365.25*5)
+#'  results.optim
 #'  }
-#' }
+#'
+#' @author Seungjae Lee \email{seungjae2525@@gmail.com}
+#'
 #' @seealso
 #'  \code{\link[parallel]{detectCores}}, \code{\link[parallel]{makeCluster}}
-#' @rdname RMST_sensitivity
-#' @export
+#'
+#' @rdname RMSTsensitivity
+#'
+#' @references
+#' Bakbergenuly I, Hoaglin DC, Kulinskaya E (2020):
+#' Methods for estimating between-study variance and overall
+#' effect in meta-analysis of odds-ratios.
+#' \emph{Research Synthesis Methods},
+#' DOI: 10.1002/jrsm.1404
+#'
 #' @import parallel
 #' @import optimParallel
-RMST_sensitivity <- function(time, status,
-                             exposure, exposed.ref.level=1, ps, data,
-                             methods="Approx", use.multicore=TRUE, n.core=parallel::detectCores()/2,
-                             lambda=2, tau=NULL, ini.par=1, verbose=FALSE) {
+#'
+#' @export
+RMSTsensitivity <- function(time, status,
+                            exposure, exposed.ref.level=1, ps, data,
+                            methods="Approx", use.multicore=TRUE, n.core=parallel::detectCores()/2,
+                            lambda=2, tau=NULL, ini.par=1, verbose=FALSE) {
   if (!(methods %in% c("Optim", "Approx", "LP1", "LP2"))) {
     stop("\n Error: Method must be \"Optim\", \"Approx\", \"LP1\", or \"LP2\".")
   }
@@ -82,9 +144,9 @@ RMST_sensitivity <- function(time, status,
   ## Set tau
   group <- unique(data[, exposure])
   .tau <- min(c(max(f.dat[, time][f.dat[, status] == 1 &
-                                      f.dat[, exposure] == group[group != exposed.ref.level]]),
+                                    f.dat[, exposure] == group[group != exposed.ref.level]]),
                 max(f.dat[, time][f.dat[, status] == 1 &
-                                      f.dat[, exposure] == exposed.ref.level])))
+                                    f.dat[, exposure] == exposed.ref.level])))
   if (is.null(tau)) {
     tau <- .tau
   } else if (tau > .tau) {

@@ -16,7 +16,7 @@
 #' @examples
 #' \dontrun{
 #' if(interactive()){
-#'  # EXAMPLE1
+#'  # EXAMPLE
 #'  library(survival)
 #'
 #'  dat <- gbsg
@@ -31,8 +31,8 @@
 #'  dat$Ps <- predict(denom.fit, type='response')
 #'
 #'  ## Adjusted RMST with tau qual to 5-year
-#'  rr <- adj_rmst(data=dat, time.v='rfstime', status.v='status', exposure.v='hormon',
-#'                 ps.v='Ps', stabilize=FALSE, tau=365.25*5, alpha=.05, var.est = TRUE)
+#'  rr <- adj_rmst(data=dat, time='rfstime', status='status', exposure='hormon',
+#'                 ps='Ps', stabilize=FALSE, tau=365.25*5, alpha=.05, var.est = TRUE)
 #'  round(c(rr$rmst_diff, rr$rmst_diff_low, rr$rmst_diff_upp, rr$rmst_diff_pval), 3)
 #'  }
 #' }

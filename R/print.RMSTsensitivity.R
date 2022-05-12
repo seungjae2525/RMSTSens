@@ -11,10 +11,10 @@
 #'  #EXAMPLE1
 #'  }
 #' }
-#' @rdname print.RMST_sensitivity
+#' @rdname print.RMSTsensitivity
 #' @export
 
-print.RMST_sensitivity <- function (x, digits = max(1L, getOption("digits") - 3L), ...){
+print.RMSTsensitivity <- function (x, digits = max(1L, getOption("digits") - 3L), ...){
 
   if (!inherits(x, "senRMST")){
     stop("Argument 'x' must be an object of class \"senRMST\".")

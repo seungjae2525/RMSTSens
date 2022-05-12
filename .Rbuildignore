@@ -1,3 +1,5 @@
 ^sensRMST\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^\.gitignore$
+^\.Rhistory$
