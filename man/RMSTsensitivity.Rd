@@ -78,8 +78,6 @@ To assess details of method of sensitivity analysis, see Lee et al. (2022) for d
 \examples{
 if(interactive()){
  ## EXAMPLE
- library(survival)
-
  dat <- gbsg
  dat$size2 <- ifelse(dat$size <= 20, 0,
                      ifelse(dat$size > 20 & dat$size <= 50, 1, 2))

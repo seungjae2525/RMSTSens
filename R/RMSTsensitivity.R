@@ -42,8 +42,6 @@
 #' @examples
 #' if(interactive()){
 #'  ## EXAMPLE
-#'  library(survival)
-#'
 #'  dat <- gbsg
 #'  dat$size2 <- ifelse(dat$size <= 20, 0,
 #'                      ifelse(dat$size > 20 & dat$size <= 50, 1, 2))

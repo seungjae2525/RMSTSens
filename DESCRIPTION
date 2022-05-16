@@ -1,20 +1,29 @@
 Package: sensRMST
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Version: 1.0.0
+Title: Sensitivity Analysis for Restricted Mean Survival Time
+Description: Sensitivity analysis of unmeasured confounding for restricted mean survival time based on propensity score.
 License: MIT + file LICENSE
+URL: https://github.com/seungjae2525/sensRMST
+BugReports: https://github.com/seungjae2525/sensRMST/issues
+Depends: R (>= 2.10)
+Imports: optimParallel, parallel, stats
+Suggests: doParallel
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-URL: https://github.com/seungjae2525/sensRMST
-BugReports: https://github.com/seungjae2525/sensRMST/issues
-Imports: 
-    optimParallel,
-    parallel,
-    stats,
-    survival
-Suggests: 
-    doParallel
+LazyData: true
+NeedsCompilation: no
+Authors@R: 
+  c(person(given = "Seungjae",
+           family = "Lee",
+           role = c("aut", "cre"),
+           email = "seungjae2525@gmail.com",
+           comment = c(ORCID = "0000-0001-5508-8634")),
+    person(given = "Woojoo",
+           family = "Lee",
+           role = "aut",
+           comment = c(ORCID = "0000-0001-7447-7045")))
+Packaged: 2022-05-13 05:36:34 UTC; seung
+Author: Seungjae Lee [aut, cre] (<https://orcid.org/0000-0001-5508-8634>),
+  Woojoo Lee [aut] (<https://orcid.org/0000-0001-7447-7045>)
+Maintainer: Seungjae Lee <seungjae2525@gmail.com>

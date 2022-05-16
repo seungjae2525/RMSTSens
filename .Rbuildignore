@@ -3,3 +3,4 @@
 ^LICENSE\.md$
 ^\.gitignore$
 ^\.Rhistory$
+^data-raw$
