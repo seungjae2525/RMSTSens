@@ -152,7 +152,7 @@ RMSTsensitivity <- function(time, status,
 
   ## Shut down an R parallel cluster
   if(!is.null(getDefaultCluster())) try(parallel::setDefaultCluster(NULL), silent = TRUE)
-  if(!requireNamespace("doParallel", quietly=TRUE)) doParallel::stopImplicitCluster()
+  if(requireNamespace("doParallel", quietly=TRUE)) doParallel::stopImplicitCluster()
 
   ## Sorting Lambda
   lambda <- sort(lambda)
