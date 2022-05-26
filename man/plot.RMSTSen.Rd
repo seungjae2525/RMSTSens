@@ -85,21 +85,22 @@ if(interactive()){
                                     exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
                                     use.multicore=TRUE, n.core=2,
                                     lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
- autoplot(x=results.approx2, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
-                      yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
-                      axis.title.size=15, axis.text.size=12,
-                      save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
-                      save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
+ plot(x=results.approx2, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
+      yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+      axis.title.size=15, axis.text.size=12,
+      save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
+      save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 
  re.ap.boot <- boot.ci.RMST(x=results.approx2, B=20, level=0.95, seed=220524,
                formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
                model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
- autoplot(x=re.ap.boot, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
-                      yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
-                      axis.title.size=15, axis.text.size=12,
-                      save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
-                      save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
+ plot(x=re.ap.boot, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
+      yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+      axis.title.size=15, axis.text.size=12,
+      save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
+      save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 }
+
 }
 \seealso{
 \code{\link[splines]{ns}} \code{\link[ggplot2]{theme}}

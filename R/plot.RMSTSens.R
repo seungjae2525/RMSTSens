@@ -1,5 +1,7 @@
 #' @title Plot for sensitivity analysis
+#'
 #' @description Plot for sensitivity analysis either or both of range and confidence interval for bias-adjusted RMST
+#'
 #' @param x an object of class "RMSTSens"
 #' @param smooth.degree Degree of smooth for geom_ribbon, Default: 11
 #' @param alpha.ci It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9
@@ -16,8 +18,11 @@
 #' @param save.plot.width Plot width size in units
 #' @param save.plot.height Plot height size in units
 #' @param save.plot.dpi Resolution of plot. By default, set to 300. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72). Applies only to raster output types.
+#'
 #' @return Results for sensitivity analysis plot.
+#'
 #' @details If the object contains results of bootstrap confidence interval, then it will plot of range and confidence interval for bias-adjusted RMST, otherwise it will only plot of range for bias-adjusted RMST.
+#'
 #' @examples
 #' if(interactive()){
 #'  dat <- gbsg
@@ -38,31 +43,36 @@
 #'                                     exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
 #'                                     use.multicore=TRUE, n.core=2,
 #'                                     lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
-#'  autoplot(x=results.approx2, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
-#'                       yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
-#'                       axis.title.size=15, axis.text.size=12,
-#'                       save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
-#'                       save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
+#'  plot(x=results.approx2, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
+#'       yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+#'       axis.title.size=15, axis.text.size=12,
+#'       save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
+#'       save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 #'
 #'  re.ap.boot <- boot.ci.RMST(x=results.approx2, B=20, level=0.95, seed=220524,
 #'                formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
 #'                model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
-#'  autoplot(x=re.ap.boot, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
-#'                       yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
-#'                       axis.title.size=15, axis.text.size=12,
-#'                       save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
-#'                       save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
+#'  plot(x=re.ap.boot, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
+#'       yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+#'       axis.title.size=15, axis.text.size=12,
+#'       save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
+#'       save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 #' }
+#'
 #' @seealso
 #'  \code{\link[splines]{ns}} \code{\link[ggplot2]{theme}}
-#' @rdname autoplot.RMSTSens
+#'
+#' @rdname plot.RMSTSen
+#'
 #' @export
+#'
 #' @importFrom splines ns
+#' @importFrom ggplot2 autoplot
 autoplot.RMSTSens <- function(x, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
-                             yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
-                             axis.title.size=15, axis.text.size=12,
-                             save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
-                             save.plot.width=10, save.plot.height=6, save.plot.dpi=300){
+                              yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+                              axis.title.size=15, axis.text.size=12,
+                              save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
+                              save.plot.width=10, save.plot.height=6, save.plot.dpi=300){
   if (!inherits(x, "RMSTSens")){
     stop("Argument 'x' must be an object of class \"RMSTSens\".")
   }
@@ -166,3 +176,12 @@ autoplot.RMSTSens <- function(x, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4
 
   return(g)
 }
+
+#' @importFrom graphics plot
+plot.RMSTSen <- function(x, ...) {
+  print(ggplot2::autoplot(x, ...))
+}
+
+
+
+
