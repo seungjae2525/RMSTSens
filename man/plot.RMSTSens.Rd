@@ -9,7 +9,6 @@
 
 \method{autoplot}{RMSTSens}(
   x,
-  smooth.degree = 11,
   alpha.ci = 0.9,
   alpha.range = 0.4,
   yscale = 100,
@@ -30,8 +29,6 @@
 \item{x}{an object of class "RMSTSens"}
 
 \item{...}{further arguments passed to or from other methods.}
-
-\item{smooth.degree}{Degree of smooth for geom_ribbon, Default: 11}
 
 \item{alpha.ci}{It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9}
 
@@ -90,7 +87,7 @@ if(interactive()){
                                     exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
                                     use.multicore=TRUE, n.core=2,
                                     lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
- plot(x=results.approx2, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
+ plot(x=results.approx2, alpha.ci=0.9, alpha.range=0.4,
       yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
       axis.title.size=15, axis.text.size=12,
       save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -99,7 +96,7 @@ if(interactive()){
  re.ap.boot <- boot.ci.RMST(x=results.approx2, B=20, level=0.95, seed=220524,
                formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
                model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
- plot(x=re.ap.boot, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
+ plot(x=re.ap.boot, alpha.ci=0.9, alpha.range=0.4,
       yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
       axis.title.size=15, axis.text.size=12,
       save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",

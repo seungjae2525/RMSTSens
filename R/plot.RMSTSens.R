@@ -19,7 +19,6 @@ plot.RMSTSens <- function(x, ...) {
 #' @title Plot for sensitivity analysis
 #'
 #' @param x an object of class "RMSTSens"
-#' @param smooth.degree Degree of smooth for geom_ribbon, Default: 11
 #' @param alpha.ci It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9
 #' @param alpha.range It refers to the opacity of range.Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.4
 #' @param yscale 1, 10, 100, 1000, Default: 100
@@ -59,7 +58,7 @@ plot.RMSTSens <- function(x, ...) {
 #'                                     exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
 #'                                     use.multicore=TRUE, n.core=2,
 #'                                     lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
-#'  plot(x=results.approx2, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
+#'  plot(x=results.approx2, alpha.ci=0.9, alpha.range=0.4,
 #'       yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
 #'       axis.title.size=15, axis.text.size=12,
 #'       save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -68,7 +67,7 @@ plot.RMSTSens <- function(x, ...) {
 #'  re.ap.boot <- boot.ci.RMST(x=results.approx2, B=20, level=0.95, seed=220524,
 #'                formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
 #'                model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
-#'  plot(x=re.ap.boot, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
+#'  plot(x=re.ap.boot, alpha.ci=0.9, alpha.range=0.4,
 #'       yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
 #'       axis.title.size=15, axis.text.size=12,
 #'       save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -83,11 +82,12 @@ plot.RMSTSens <- function(x, ...) {
 #' @rdname plot.RMSTSens
 #'
 #' @export
-autoplot.RMSTSens <- function(x, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
-                         yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
-                         axis.title.size=15, axis.text.size=12,
-                         save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
-                         save.plot.width=10, save.plot.height=6, save.plot.dpi=300) {
+autoplot.RMSTSens <- function(x,
+                              alpha.ci=0.9, alpha.range=0.4,
+                              yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+                              axis.title.size=15, axis.text.size=12,
+                              save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
+                              save.plot.width=10, save.plot.height=6, save.plot.dpi=300) {
   if (!inherits(x, "RMSTSens")){
     stop("Argument 'x' must be an object of class \"RMSTSens\".")
   }
@@ -149,16 +149,16 @@ autoplot.RMSTSens <- function(x, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4
     } else {
       g1 <- ggplot(xx) +
         stat_smooth(aes(x=Lambda, y=RMST.diff.min.lower, colour = "min"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.degree) +
+                    method = "glm", formula = y ~ splines::ns(x,2), n=length(xx$Lambda)) +
         stat_smooth(aes(x=Lambda, y=RMST.diff.max.upper, colour = "max"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.degree)
+                    method = "glm", formula = y ~ splines::ns(x,2), n=length(xx$Lambda))
       gg1 <- ggplot_build(g1)
 
       g2 <- ggplot(xx) +
         stat_smooth(aes(x=Lambda, y=RMST.diff.min, colour = "min"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.degree) +
+                    method = "glm", formula = y ~ splines::ns(x,2), n=length(xx$Lambda)) +
         stat_smooth(aes(x=Lambda, y=RMST.diff.max, colour = "max"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.degree)
+                    method = "glm", formula = y ~ splines::ns(x,2), n=length(xx$Lambda))
       gg2 <- ggplot_build(g2)
 
       df <- data.frame(Lambda = gg1$data[[1]]$x,
@@ -231,9 +231,9 @@ autoplot.RMSTSens <- function(x, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4
 
       g2 <- ggplot(xx) +
         stat_smooth(aes(x=Lambda, y=RMST.diff.min, colour = "min"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.degree) +
+                    method = "glm", formula = y ~ splines::ns(x,2), n=length(xx$Lambda)) +
         stat_smooth(aes(x=Lambda, y=RMST.diff.max, colour = "max"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.degree)
+                    method = "glm", formula = y ~ splines::ns(x,2), n=length(xx$Lambda))
       gg2 <- ggplot_build(g2)
 
       df <- data.frame(Lambda = gg2$data[[1]]$x,
