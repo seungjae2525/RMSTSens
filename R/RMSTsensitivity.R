@@ -83,8 +83,6 @@
 #' @seealso
 #'  \code{\link[parallel]{detectCores}}, \code{\link[parallel]{makeCluster}}
 #'
-#' @rdname RMSTsensitivity
-#'
 #' @references
 #' Bakbergenuly I, Hoaglin DC, Kulinskaya E (2020):
 #' Methods for estimating between-study variance and overall
