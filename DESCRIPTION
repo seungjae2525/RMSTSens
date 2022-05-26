@@ -1,4 +1,4 @@
-Package: sensRMST
+Package: RMSTSens
 Version: 1.0.0
 Title: Sensitivity Analysis for Restricted Mean Survival Time
 Description: Sensitivity analysis of unmeasured confounding for restricted mean survival time based on propensity score.
@@ -6,7 +6,12 @@ License: MIT + file LICENSE
 URL: https://github.com/seungjae2525/sensRMST
 BugReports: https://github.com/seungjae2525/sensRMST/issues
 Depends: R (>= 2.10)
-Imports: optimParallel, parallel, stats
+Imports: 
+    caret,
+    ggplot2,
+    optimParallel,
+    parallel,
+    stats
 Suggests: doParallel
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -23,7 +28,7 @@ Authors@R:
            family = "Lee",
            role = "aut",
            comment = c(ORCID = "0000-0001-7447-7045")))
-Packaged: 2022-05-13 05:36:34 UTC; seung
+Packaged: 2022-05-16 09:44:07 UTC; seung
 Author: Seungjae Lee [aut, cre] (<https://orcid.org/0000-0001-5508-8634>),
   Woojoo Lee [aut] (<https://orcid.org/0000-0001-7447-7045>)
 Maintainer: Seungjae Lee <seungjae2525@gmail.com>

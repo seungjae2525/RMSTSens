@@ -1,5 +1,8 @@
 ## Optimization function
 optim_f <- function(par, data, minmax="min", lambda=2, tau=NULL) {
+  if (!(minmax %in% c("min", "max"))) {
+    stop("\n Error: minmax must be \"min\" or \"max\".")
+  }
   time <- data$time
   status <- data$status
   exp_logit_Pr <- data$exp_logit_Pr
