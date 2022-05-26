@@ -2,21 +2,22 @@
 #'
 #' @description Plot for sensitivity analysis either or both of range and confidence interval for bias-adjusted RMST
 #'
-#' @param x an object of "autoplot.RMSTSen"
+#' @param x an object of "autoplot.RMSTSens"
 #' @param ... further arguments passed to or from other methods.
 #'
 #' @importFrom graphics plot
 #'
-#' @rdname plot.RMSTSen
+#' @rdname plot.RMSTSens
 #'
 #' @export
-plot.RMSTSen <- function(x, ...) {
+plot.RMSTSens <- function(x, ...) {
   print(autoplot(x, ...))
 }
 
 
 
-
+#' @title Plot for sensitivity analysis
+#'
 #' @param x an object of class "RMSTSens"
 #' @param smooth.degree Degree of smooth for geom_ribbon, Default: 11
 #' @param alpha.ci It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9
@@ -77,10 +78,12 @@ plot.RMSTSen <- function(x, ...) {
 #' @seealso
 #'  \code{\link[splines]{ns}} \code{\link[ggplot2]{theme}}
 #'
-#' @rdname plot.RMSTSen
+#' @importFrom ggplot2 autoplot
+#'
+#' @rdname plot.RMSTSens
 #'
 #' @export
-autoplot.RMSTSen <- function(x, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
+autoplot.RMSTSens <- function(x, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,
                          yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
                          axis.title.size=15, axis.text.size=12,
                          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
