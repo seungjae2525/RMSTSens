@@ -146,6 +146,8 @@ RMSTsensitivity <- function(time, status,
 
   if (any(lambda < 1)) {
     stop("\n Error: \"lambda\" must be larger than or equal to 1.")
+  } else if (length(lambda) > 1 & any(lambda != 1)) {
+    stop("\n Error: If \"lambda\" is a vector, then it must include 1.")
   }
 
   ## Shut down an R parallel cluster
@@ -495,7 +497,7 @@ RMSTsensitivity <- function(time, status,
     }
 
   } else {
-    ## Lmabda is vector
+    ## If Lmabda is a vector
     result.df <- data.frame(matrix(NA, ncol = 17))
     colnames(result.df) <- c('N','N.exposed','N.unexposed','N.event.exposed','N.event.unexposed',
                              'cen.rate','cen.rate.exposed','cen.rate.unexposed',

@@ -94,6 +94,10 @@ autoplot.RMSTSens <- function(x, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4
 
   xx <- x$result.df
 
+  if (length(xx$Lambda) == 1) {
+    stop("\n Error: To plot the results, \"lambda\" must be a vector.")
+  }
+
   Lambda <- RMST.diff.min.lower <- RMST.diff.max.upper <- RMST.diff.min <- RMST.diff.max <- NULL
   if("RMST.diff.max.upper" %in% colnames(xx)){
     ylabel <- seq(floor(min(xx$RMST.diff.min.lower)/yscale)*yscale,
