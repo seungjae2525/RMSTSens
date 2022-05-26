@@ -62,8 +62,6 @@
 #' @seealso
 #'  \code{\link[splines]{ns}} \code{\link[ggplot2]{theme}}
 #'
-#' @export
-#'
 #' @importFrom splines ns
 #' @importFrom ggplot2 autoplot
 autoplot.RMSTSens <- function(x, smooth.degree=11, alpha.ci=0.9, alpha.range=0.4,

@@ -58,6 +58,8 @@
 \item{save.plot.height}{Plot height size in units}
 
 \item{save.plot.dpi}{Resolution of plot. By default, set to 300. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72). Applies only to raster output types.}
+
+\item{...}{further arguments passed to or from other methods.}
 }
 \value{
 Results for sensitivity analysis plot.

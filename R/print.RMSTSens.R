@@ -46,7 +46,6 @@
 #'                model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
 #'  print(re.ap.boot)
 #' }
-#' @rdname print.RMSTSens
 #'
 #' @export
 
