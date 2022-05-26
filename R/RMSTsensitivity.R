@@ -146,7 +146,7 @@ RMSTsensitivity <- function(time, status,
 
   if (any(lambda < 1)) {
     stop("\n Error: \"lambda\" must be larger than or equal to 1.")
-  } else if (length(lambda) > 1 & any(lambda != 1)) {
+  } else if (length(lambda) > 1 & sum(lambda == 1) == 0) {
     stop("\n Error: If \"lambda\" is a vector, then it must include 1.")
   }
 
