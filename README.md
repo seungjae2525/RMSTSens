@@ -2,7 +2,7 @@
 
 ## Description
 
-Sensitivity analysis of unmeasured confounding for restricted mean survival time based on propensity score.
+Sensitivity analysis of unmeasured confounding for restricted mean survival time based on the shifted propensity score.
  
 ### References
 Not yet...
@@ -13,7 +13,7 @@ Not yet...
 
 ```r
 install.packages("remotes")
-remotes::install_github("seungjae2525/RMSTSens", ref = "develop")
+remotes::install_github("seungjae2525/RMSTSens")
 ```
 
 

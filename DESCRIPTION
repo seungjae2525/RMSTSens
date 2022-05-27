@@ -5,7 +5,7 @@ Description: Sensitivity analysis of unmeasured confounding for restricted mean 
 License: MIT + file LICENSE
 URL: https://github.com/seungjae2525/sensRMST
 BugReports: https://github.com/seungjae2525/sensRMST/issues
-Depends: R (>= 2.10)
+Depends: R (>= 4.0.0)
 Imports: caret, ggplot2, optimParallel, parallel, stats
 Suggests: doParallel
 Encoding: UTF-8
