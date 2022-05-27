@@ -2,7 +2,7 @@
 #'
 #' @description Plot for sensitivity analysis either or both of range and confidence interval for bias-adjusted RMST
 #'
-#' @param x an object of "autoplot.RMSTSens"
+#' @param x an object of \code{autoplot.RMSTSens}
 #' @param ... further arguments passed to or from other methods.
 #'
 #' @importFrom graphics plot
@@ -18,7 +18,7 @@ plot.RMSTSens <- function(x, ...) {
 
 #' @title Plot for sensitivity analysis
 #'
-#' @param x an object of class "RMSTSens"
+#' @param x an object of class \code{RMSTSens}
 #' @param alpha.ci It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9
 #' @param alpha.range It refers to the opacity of range.Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.4
 #' @param yscale 1, 10, 100, 1000, Default: 100
@@ -75,7 +75,7 @@ plot.RMSTSens <- function(x, ...) {
 #' }
 #'
 #' @seealso
-#'  \code{\link[splines]{ns}} \code{\link[ggplot2]{theme}}
+#'  \code{\link[RMSTSens]{RMSTsensitivity}} \code{\link[RMSTSens]{boot.ci.RMST}}
 #'
 #' @importFrom ggplot2 autoplot
 #'

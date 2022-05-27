@@ -1,9 +1,13 @@
-#' @title Print for "RMSTSens" objects
-#' @description Print for objects of class "RMSTSens".
-#' @param x an object of class "RMSTSens"
+#' @title Print for \code{RMSTSens} objects
+#'
+#' @description Print for objects of class \code{RMSTSens}.
+#'
+#' @param x an object of class \code{RMSTSens}
 #' @param digits print digits, Default: max(1L, getOption("digits") - 3L)
 #' @param ... further arguments passed to or from other methods.
-#' @details print.RMSTSens tries to be smart about results for sensitivity analysis
+#'
+#' @details \code{print.RMSTSens} tries to be smart about results for sensitivity analysis.
+#'
 #' @examples
 #' if(interactive()){
 #'  dat <- gbsg
@@ -46,6 +50,9 @@
 #'                model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
 #'  print(re.ap.boot)
 #' }
+#'
+#' @seealso
+#'  \code{\link[RMSTSens]{RMSTsensitivity}} \code{\link[RMSTSens]{boot.ci.RMST}}
 #'
 #' @export
 

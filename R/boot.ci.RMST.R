@@ -2,18 +2,18 @@
 #'
 #' @description Function for constructing the confidence interval for restricted mean survival time using propensity score
 #'
-#' @param x An object of class "RMSTSens".
-#' @param B The number of bootstrap replicates.
-#' @param level the confidence level required, Default: 0.95
-#' @param seed The seed number. If the propensity score was estimated using methods in the "caret" package, then the seed number used at that time should be used.
+#' @param x An object of class \code{RMSTSens}.
+#' @param B The number of bootstrap replicates, Default: 1000.
+#' @param level The confidence level required (i.e., \eqn{1-\alpha}), Default: 0.95.
+#' @param seed The seed number. If the propensity score was estimated using methods in the \code{caret} package, then should enter the seed number used at that time.
 #' @param formula The formula for estimating propensity score
 #' @param model The method for estimating propensity score, Default: "logistic"
 #' @param use.multicore Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE
-#' @param n.core The number of usable cores, Default: parallel::detectCores()/2
-#' @param verbose Conditional on the verbose level, print the end message for each 100th bootstrap, Default: TRUE
-#' @param \dots Additional arguments passed on to \code{\link[caret]{train}}.
+#' @param n.core The number of cores to use, Default: parallel::detectCores()/2
+#' @param verbose According to the verbose level, whether or not print the completion message for each 100th bootstrap, Default: TRUE
+#' @param \dots Additional arguments passed on to \code{\link[caret]{train}} function in \code{caret} package.
 #'
-#' @return An object of class \code{RMSTSens}. The object is a data.frame with the following components:
+#' @return The object is a data.frame with class \code{RMSTSens}. The function returns following components:
 #' \item{N}{Total number of subjects}
 #' \item{N.exposed}{The number of subjects in exposed group}
 #' \item{N.unexposed}{The number of subjects in unexposed group}
@@ -22,25 +22,25 @@
 #' \item{cen.rate}{Total censoring rate}
 #' \item{cen.rate.exposed}{Censoring rate in exposed group}
 #' \item{cen.rate.unexposed}{Censoring rate in unexposed group}
-#' \item{Lambda}{A used sensitivity parameter }
-#' \item{Tau}{User-specific time point, If tau not specified (NULL), use the minimum of the largest observed event time in both groups}
-#' \item{Method}{A used method}
+#' \item{Lambda}{A scalar or vector of sensitivity parameter \eqn{Lambda} used}
+#' \item{Tau}{User-specific time point \eqn{tau}, If tau not specified (NULL), use the minimum between the largest observed event time in each groups}
+#' \item{Method}{A optimization method used}
 #' \item{min.exposed}{The minimum of adjusted RMST based on the shifted propensity score for exposed group}
 #' \item{max.exposed}{The maximum of adjusted RMST based on the shifted propensity score for exposed group}
 #' \item{min.unexposed}{The minimum of adjusted RMST based on the shifted propensity score for unexposed group}
 #' \item{max.unexposed}{The maximum of adjusted RMST based on the shifted propensity score for unexposed group}
-#' \item{RMST.diff.min}{The minimum of between-group difference in adjusted RMST based on shifted propensity score}
-#' \item{RMST.diff.max}{The maximum of between-group difference in adjusted RMST based on shifted propensity score}
-#' \item{RMST.diff.min.lower}{Lower bound of between-group difference in adjusted RMST based on shifted propensity score}
-#' \item{RMST.diff.max.upper}{Upper bound of between-group difference in adjusted RMST based on shifted propensity score}
-#' \item{min.exposed.lower}{Lower bound of adjusted RMST based on the shifted propensity score for exposed group}
-#' \item{max.exposed.upper}{Upper bound of adjusted RMST based on the shifted propensity score for exposed group}
-#' \item{min.unexposd.lower}{Lower bound of adjusted RMST based on the shifted propensity score for unexposed group}
-#' \item{max.unexposed.upper}{Upper bound of adjusted RMST based on the shifted propensity score for unexposed group}
-#' The results for the RMST_sensitivity are printed with the \code{\link{print.RMSTSens}} functions.
-#' To generate graphs comparing Lambda with interval of adjusted RMST based on shifted propensity score use the aaa functions.
+#' \item{RMST.diff.min}{Lower bound of point estimate for between-group difference in adjusted RMST based on shifted propensity score}
+#' \item{RMST.diff.max}{Upper bound of point estimate for between-group difference in adjusted RMST based on shifted propensity score}
+#' \item{RMST.diff.min.lower}{Lower bound of (\eqn{1-\alpha})% confidence interval for between-group difference in adjusted RMST based on shifted propensity score}
+#' \item{RMST.diff.max.upper}{Upper bound of (\eqn{1-\alpha})% confidence interval for between-group difference in adjusted RMST based on shifted propensity score}
+#' \item{min.exposed.lower}{Lower (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for exposed group}
+#' \item{max.exposed.upper}{Upper (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for exposed group}
+#' \item{min.unexposd.lower}{Lower (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for unexposed group}
+#' \item{max.unexposed.upper}{Upper (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for unexposed group}
+#' The results for the \code{\link{boot.ci.RMST}} are printed with the \code{\link{print.RMSTSens}} functions.
+#' To generate results plot comparing Lambda with confidence interval and range of adjusted RMST based on shifted propensity score, use the \code{\link{plot}} function.
 #'
-#' @details To assess details of method of sensitivity analysis, see Lee et al. (2022) for details.
+#' @details To assess details of method for sensitivity analysis, see Lee et al. (2022) for details.
 #'
 #' @examples
 #' if(interactive()){
@@ -71,7 +71,7 @@
 #' @author Seungjae Lee \email{seungjae2525@@gmail.com}
 #'
 #' @seealso
-#'  \code{\link[parallel]{detectCores}}, \code{\link[parallel]{makeCluster}}
+#'  \code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{plot.RMSTSens}}
 #'
 #' @references
 #' Bakbergenuly I, Hoaglin DC, Kulinskaya E (2020):
@@ -85,7 +85,7 @@
 #' @import caret
 #'
 #' @export
-boot.ci.RMST <- function(x, B=1000, level=0.95, seed=220524, formula, model="logistic",
+boot.ci.RMST <- function(x, B=1000, level=0.95, seed=920818, formula, model="logistic",
                          use.multicore=TRUE, n.core=2, verbose=TRUE, ...){
 
   if (!inherits(x, "RMSTSens")){

@@ -37,7 +37,7 @@ RMSTsensitivity(
 
 \item{use.multicore}{Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE}
 
-\item{n.core}{The number of usable cores, Default: parallel::detectCores()/2}
+\item{n.core}{The number of cores to use, Default: parallel::detectCores()/2}
 
 \item{lambda}{A scalar or vector for sensitivity parameter, Default: 2}
 
@@ -57,17 +57,17 @@ An object of class \code{RMSTSens}. The object is a data.frame with the followin
 \item{cen.rate}{Total censoring rate}
 \item{cen.rate.exposed}{Censoring rate in exposed group}
 \item{cen.rate.unexposed}{Censoring rate in unexposed group}
-\item{Lambda}{A used sensitivity parameter }
-\item{Tau}{User-specific time point, If tau not specified (NULL), use the minimum of the largest observed event time in both groups}
-\item{Method}{A used method}
+\item{Lambda}{A scalar or vector of sensitivity parameter \eqn{Lambda} used}
+\item{Tau}{User-specific time point \eqn{tau}, If tau not specified (NULL), use the minimum between the largest observed event time in each groups}
+\item{Method}{A optimization method used}
 \item{min.exposed}{The minimum of adjusted RMST based on the shifted propensity score for exposed group}
 \item{max.exposed}{The maximum of adjusted RMST based on the shifted propensity score for exposed group}
 \item{min.unexposed}{The minimum of adjusted RMST based on the shifted propensity score for unexposed group}
 \item{max.unexposed}{The maximum of adjusted RMST based on the shifted propensity score for unexposed group}
-\item{RMST.diff.min}{The minimum of between-group difference in adjusted RMST based on shifted propensity score}
-\item{RMST.diff.max}{The maximum of between-group difference in adjusted RMST based on shifted propensity score}
-The results for the RMST_sensitivity are printed with the \code{\link{print.RMSTSens}} functions.
-To generate graphs comparing Lambda with interval of adjusted RMST based on shifted propensity score use the aaa functions.
+\item{RMST.diff.min}{Lower bound of point estimate for between-group difference in adjusted RMST based on shifted propensity score}
+\item{RMST.diff.max}{Upper bound of point estimate for between-group difference in adjusted RMST based on shifted propensity score}
+The results for the \code{RMSTsensitivity} are printed with the \code{\link{print}} functions.
+To generate results plot comparing Lambda with range of adjusted RMST based on shifted propensity score, use the \code{\link{plot}} functions.
 }
 \description{
 Function for sensitivity analysis of unmeasured confounding for restricted mean survival time using propensity score
@@ -123,7 +123,7 @@ effect in meta-analysis of odds-ratios.
 DOI: 10.1002/jrsm.1404
 }
 \seealso{
-\code{\link[parallel]{detectCores}}, \code{\link[parallel]{makeCluster}}
+\code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{plot.RMSTSens}}
 }
 \author{
 Seungjae Lee \email{seungjae2525@gmail.com}

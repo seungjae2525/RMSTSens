@@ -26,7 +26,7 @@
 )
 }
 \arguments{
-\item{x}{an object of class "RMSTSens"}
+\item{x}{an object of class \code{RMSTSens}}
 
 \item{...}{further arguments passed to or from other methods.}
 
@@ -105,5 +105,5 @@ if(interactive()){
 
 }
 \seealso{
-\code{\link[splines]{ns}} \code{\link[ggplot2]{theme}}
+\code{\link[RMSTSens]{RMSTsensitivity}} \code{\link[RMSTSens]{boot.ci.RMST}}
 }

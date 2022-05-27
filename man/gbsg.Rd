@@ -7,21 +7,21 @@
 \format{
 A data frame with 686 rows and 11 variables:
 \describe{
-\item{\code{pid}}{integer COLUMN_DESCRIPTION}
-\item{\code{age}}{integer COLUMN_DESCRIPTION}
-\item{\code{meno}}{integer COLUMN_DESCRIPTION}
-\item{\code{size}}{integer COLUMN_DESCRIPTION}
-\item{\code{grade}}{integer COLUMN_DESCRIPTION}
-\item{\code{nodes}}{integer COLUMN_DESCRIPTION}
-\item{\code{pgr}}{integer COLUMN_DESCRIPTION}
-\item{\code{er}}{integer COLUMN_DESCRIPTION}
-\item{\code{hormon}}{integer COLUMN_DESCRIPTION}
-\item{\code{rfstime}}{integer COLUMN_DESCRIPTION}
-\item{\code{status}}{integer COLUMN_DESCRIPTION}
+\item{\code{pid}}{patient identifier}
+\item{\code{age}}{age, years}
+\item{\code{meno}}{menopausal status (0= premenopausal, 1= postmenopausal)}
+\item{\code{size}}{tumor size, mm}
+\item{\code{grade}}{tumor grade}
+\item{\code{nodes}}{number of positive lymph nodes}
+\item{\code{pgr}}{progesterone receptors (fmol/l)}
+\item{\code{er}}{estrogen receptors (fmol/l)}
+\item{\code{hormon}}{hormonal therapy, 0= no, 1= yes}
+\item{\code{rfstime}}{recurrence free survival time; days to first of reccurence, death or last follow-up}
+\item{\code{status}}{0= alive without recurrence, 1= recurrence or death}
 }
 }
 \source{
-\code{\link[survival]{gbsg}}
+\code{\link[survival]{gbsg}} in \code{survival} package
 }
 \usage{
 gbsg

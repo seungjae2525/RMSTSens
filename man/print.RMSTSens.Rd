@@ -2,22 +2,22 @@
 % Please edit documentation in R/print.RMSTSens.R
 \name{print.RMSTSens}
 \alias{print.RMSTSens}
-\title{Print for "RMSTSens" objects}
+\title{Print for \code{RMSTSens} objects}
 \usage{
 \method{print}{RMSTSens}(x, digits = max(1L, getOption("digits") - 3L), ...)
 }
 \arguments{
-\item{x}{an object of class "RMSTSens"}
+\item{x}{an object of class \code{RMSTSens}}
 
 \item{digits}{print digits, Default: max(1L, getOption("digits") - 3L)}
 
 \item{...}{further arguments passed to or from other methods.}
 }
 \description{
-Print for objects of class "RMSTSens".
+Print for objects of class \code{RMSTSens}.
 }
 \details{
-print.RMSTSens tries to be smart about results for sensitivity analysis
+\code{print.RMSTSens} tries to be smart about results for sensitivity analysis.
 }
 \examples{
 if(interactive()){
@@ -62,4 +62,7 @@ if(interactive()){
  print(re.ap.boot)
 }
 
+}
+\seealso{
+\code{\link[RMSTSens]{RMSTsensitivity}} \code{\link[RMSTSens]{boot.ci.RMST}}
 }
