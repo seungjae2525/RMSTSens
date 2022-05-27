@@ -7,9 +7,9 @@
 \method{print}{RMSTSens}(x, digits = max(1L, getOption("digits") - 3L), ...)
 }
 \arguments{
-\item{x}{an object of class \code{RMSTSens}}
+\item{x}{an object of class \code{RMSTSens}.}
 
-\item{digits}{print digits, Default: max(1L, getOption("digits") - 3L)}
+\item{digits}{print digits, Default: max(1L, getOption("digits") - 3L).}
 
 \item{...}{further arguments passed to or from other methods.}
 }
@@ -35,28 +35,28 @@ if(interactive()){
  ## Between-group difference in adjusted RMST based on shifted propensity score
  ## Adjusted RMST with tau equal to 5-year
  # Using direct optimization method
- results.optim <- RMSTsensitivity(time='rfstime', status='status', exposure='hormon',
-                                  exposed.ref.level=1, ps='Ps', data=dat, methods='Optim',
-                                  use.multicore=TRUE, n.core=parallel::detectCores()/2,
-                                  lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
+ results.optim <- RMSTSens(time='rfstime', status='status', exposure='hormon',
+                           exposed.ref.level=1, ps='Ps', data=dat, methods='Optim',
+                           use.multicore=TRUE, n.core=parallel::detectCores()/2,
+                           lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
  print(results.optim)
 
  # Using approximate optimization method
- results.approx <- RMSTsensitivity(time='rfstime', status='status', exposure='hormon',
-                                   exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
-                                   use.multicore=TRUE, n.core=2,
-                                   lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
+ results.approx <- RMSTSens(time='rfstime', status='status', exposure='hormon',
+                            exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
+                            use.multicore=TRUE, n.core=2,
+                            lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
  print(results.approx)
 
  ## Adjusted RMST with not specified tau and with multiple lambda
  # Using approximate optimization method
- results.approx2 <- RMSTsensitivity(time='rfstime', status='status', exposure='hormon',
-                                    exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
-                                    use.multicore=TRUE, n.core=2,
-                                    lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
+ results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
+                             exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
+                             use.multicore=TRUE, n.core=2,
+                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
  print(results.approx2)
 
- re.ap.boot <- boot.ci.RMST(x=results.approx2, B=20, level=0.95, seed=220524,
+ re.ap.boot <- RMSTSens.ci(x=results.approx2, B=20, level=0.95, seed=220524,
                formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
                model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
  print(re.ap.boot)
@@ -64,5 +64,6 @@ if(interactive()){
 
 }
 \seealso{
-\code{\link[RMSTSens]{RMSTsensitivity}} \code{\link[RMSTSens]{boot.ci.RMST}}
+\code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}
 }
+\keyword{print}

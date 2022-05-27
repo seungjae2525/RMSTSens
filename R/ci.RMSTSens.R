@@ -6,12 +6,12 @@
 #' @param B The number of bootstrap replicates, Default: 1000.
 #' @param level The confidence level required (i.e., \eqn{1-\alpha}), Default: 0.95.
 #' @param seed The seed number. If the propensity score was estimated using methods in the \code{caret} package, then should enter the seed number used at that time.
-#' @param formula The formula for estimating propensity score
-#' @param model The method for estimating propensity score, Default: "logistic"
-#' @param use.multicore Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE
-#' @param n.core The number of cores to use, Default: parallel::detectCores()/2
-#' @param verbose According to the verbose level, whether or not print the completion message for each 100th bootstrap, Default: TRUE
-#' @param \dots Additional arguments passed on to \code{\link[caret]{train}} function in \code{caret} package.
+#' @param formula The formula for estimating propensity score.
+#' @param model The method for estimating propensity score, Default: "logistic".
+#' @param use.multicore Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE.
+#' @param n.core The number of cores to use, Default: parallel::detectCores()/2.
+#' @param verbose According to the verbose level, whether or not print the completion message for each 100th bootstrap, Default: TRUE.
+#' @param \dots Additional arguments passed on to \code{train} function in \code{caret} package.
 #'
 #' @return The object is a data.frame with class \code{RMSTSens}. The function returns following components:
 #' \item{N}{Total number of subjects}
@@ -37,8 +37,8 @@
 #' \item{max.exposed.upper}{Upper (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for exposed group}
 #' \item{min.unexposd.lower}{Lower (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for unexposed group}
 #' \item{max.unexposed.upper}{Upper (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for unexposed group}
-#' The results for the \code{\link{boot.ci.RMST}} are printed with the \code{\link{print.RMSTSens}} functions.
-#' To generate results plot comparing Lambda with confidence interval and range of adjusted RMST based on shifted propensity score, use the \code{\link{plot}} function.
+#' The results for the \code{\link{RMSTSens.ci}} are printed with the \code{\link{print.RMSTSens}} functions.
+#' To generate results plot comparing Lambda with confidence interval and range of adjusted RMST based on shifted propensity score, use the \code{\link{plot.RMSTSens}} function.
 #'
 #' @details To assess details of method for sensitivity analysis, see Lee et al. (2022) for details.
 #'
@@ -58,11 +58,11 @@
 #'  ## Between-group difference in adjusted RMST based on shifted propensity score
 #'  ## Adjusted RMST with not specified tau and with multiple lambda
 #'  # Using approximate optimization method
-#'  results.approx2 <- RMSTsensitivity(time='rfstime', status='status', exposure='hormon',
-#'                                     exposed.ref.level=1, ps='Ps' ,data=dat, methods="Approx",
-#'                                     use.multicore=TRUE, n.core=2,
-#'                                     lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
-#'  re.ap.boot <- boot.ci.RMST(x=results.approx2, B=20, level=0.95, seed=220524,
+#'  results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
+#'                              exposed.ref.level=1, ps='Ps' ,data=dat, methods="Approx",
+#'                              use.multicore=TRUE, n.core=2,
+#'                              lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
+#'  re.ap.boot <- RMSTSens.ci(x=results.approx2, B=20, level=0.95, seed=220524,
 #'                formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
 #'                model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
 #'  re.ap.boot
@@ -80,13 +80,14 @@
 #' \emph{Research Synthesis Methods},
 #' DOI: 10.1002/jrsm.1404
 #'
+#' @keywords methods
+#'
 #' @import parallel
 #' @import optimParallel
-#' @import caret
 #'
 #' @export
-boot.ci.RMST <- function(x, B=1000, level=0.95, seed=920818, formula, model="logistic",
-                         use.multicore=TRUE, n.core=2, verbose=TRUE, ...){
+RMSTSens.ci <- function(x, B=1000, level=0.95, seed=920818, formula, model="logistic",
+                        use.multicore=TRUE, n.core=parallel::detectCores()/2, verbose=TRUE, ...){
 
   if (!inherits(x, "RMSTSens")){
     stop("Argument 'x' must be an object of class \"RMSTSens\".")
@@ -119,6 +120,9 @@ boot.ci.RMST <- function(x, B=1000, level=0.95, seed=920818, formula, model="log
   if(model=="logistic"){
     ps.present <- as.numeric(glm(formula, data=data, family=binomial(link='logit'))$fitted.values)
   } else {
+    if(!requireNamespace("caret", quietly=TRUE)) {
+      stop("\n Error: If model is not equal to \"logistic\", then \"caret\" package needed for this function to work. Please install it.")
+    }
     set.seed(seed)
     ps.present <- as.numeric(predict(caret::train(form=formula, data=data, method=model, verbose=FALSE, ...),
                                      newdata=data, type="prob")[,2])
@@ -143,6 +147,9 @@ boot.ci.RMST <- function(x, B=1000, level=0.95, seed=920818, formula, model="log
     if(model == "logistic"){
       dat.temp$Ps <- glm(formula, data=dat.temp, family=binomial(link='logit'))$fitted.values
     } else {
+      if(!requireNamespace("caret", quietly=TRUE)) {
+        stop("\n Error: If model is not equal to \"logistic\", then \"caret\" package needed for this function to work. Please install it.")
+      }
       dat.temp$Ps <- as.numeric(predict(caret::train(form=formula, data=dat.temp, method=model, verbose=FALSE, ...),
                                         newdata=data, type="prob")[,2])
     }
@@ -154,10 +161,10 @@ boot.ci.RMST <- function(x, B=1000, level=0.95, seed=920818, formula, model="log
       avaiable.mintau[(i-1)*length(lambda)+j] <- min(c(max.exposed.event.time, max.unexposed.event.time))
 
       ## Optimization
-      temp.re <- RMSTsensitivity(time=time, status=status, exposure=exposure, exposed.ref.level=exposed.ref.level,
-                                 ps='Ps', data=dat.temp,
-                                 methods=methods, use.multicore=use.multicore, n.core=n.core,
-                                 lambda=lambda[j], tau=tau, ini.par=ini.par)
+      temp.re <- RMSTSens(time=time, status=status, exposure=exposure, exposed.ref.level=exposed.ref.level,
+                                ps='Ps', data=dat.temp,
+                                methods=methods, use.multicore=use.multicore, n.core=n.core,
+                                lambda=lambda[j], tau=tau, ini.par=ini.par)
 
       min.exposd[(i-1)*length(lambda)+j] <- temp.re$result.df$min.exposed
       max.exposed[(i-1)*length(lambda)+j] <- temp.re$result.df$max.exposed

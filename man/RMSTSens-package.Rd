@@ -3,7 +3,6 @@
 \docType{package}
 \name{RMSTSens-package}
 \alias{RMSTSens-package}
-\alias{RMSTSens}
 \title{RMSTSens: Sensitivity analysis for RMST}
 \description{
 R package \bold{RMSTSens} is sensitivity analysis package for RMST

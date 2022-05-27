@@ -5,9 +5,9 @@ Description: Sensitivity analysis of unmeasured confounding for restricted mean 
 License: MIT + file LICENSE
 URL: https://github.com/seungjae2525/sensRMST
 BugReports: https://github.com/seungjae2525/sensRMST/issues
-Depends: R (>= 4.0.0)
-Imports: caret, ggplot2, optimParallel, parallel, stats
-Suggests: doParallel
+Depends: R (>= 4.0.0), stats, graphics
+Imports: ggplot2, optimParallel, parallel
+Suggests: caret, doParallel
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2

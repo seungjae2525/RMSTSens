@@ -5,8 +5,6 @@
 #'
 #' @name RMSTSens-package
 #'
-#' @aliases RMSTSens-package RMSTSens
-#'
 #' @docType package
 #'
 #' @author Seungjae Lee \email{seungjae2525@@gmail.com}
@@ -22,7 +20,6 @@
 #'
 #' @import parallel
 #' @import optimParallel
-#' @import caret
 #' @import ggplot2
 #'
 #' @importFrom stats binomial glm optim predict qlogis quantile
