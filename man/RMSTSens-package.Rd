@@ -3,9 +3,9 @@
 \docType{package}
 \name{RMSTSens-package}
 \alias{RMSTSens-package}
-\title{RMSTSens: Sensitivity analysis for RMST}
+\title{RMSTSens: Sensitivity analysis for restricted mean survival time}
 \description{
-R package \bold{RMSTSens} is sensitivity analysis package for RMST
+R package \bold{RMSTSens} is sensitivity analysis package for restricted mean survival time (RMST)
 }
 \references{
 Bakbergenuly I, Hoaglin DC, Kulinskaya E (2020):

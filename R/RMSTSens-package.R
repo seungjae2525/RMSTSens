@@ -1,7 +1,7 @@
-#' RMSTSens: Sensitivity analysis for RMST
+#' RMSTSens: Sensitivity analysis for restricted mean survival time
 #'
 #' @description
-#' R package \bold{RMSTSens} is sensitivity analysis package for RMST
+#' R package \bold{RMSTSens} is sensitivity analysis package for restricted mean survival time (RMST)
 #'
 #' @name RMSTSens-package
 #'

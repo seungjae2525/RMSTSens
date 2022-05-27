@@ -28,7 +28,7 @@
 \arguments{
 \item{x}{an object of class \code{RMSTSens}}
 
-\item{...}{further arguments passed to or from other methods.}
+\item{...}{Further arguments passed to or from other methods.}
 
 \item{alpha.ci}{It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9.}
 
@@ -59,48 +59,49 @@
 \item{save.plot.dpi}{Resolution of plot. By default, set to 300. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72). Applies only to raster output types.}
 }
 \value{
-Results for sensitivity analysis plot.
+Result plot for sensitivity analysis.
 }
 \description{
-Plot for sensitivity analysis either or both of range and confidence interval for bias-adjusted RMST
+Plot for sensitivity analysis either or both of range and confidence interval for bias-adjusted restricted mean survival time
 }
 \details{
-If the object contains results of bootstrap confidence interval, then it will plot of range and confidence interval for bias-adjusted RMST, otherwise it will only plot of range for bias-adjusted RMST.
+If the object contains results of bootstrap confidence interval, then it will return plot of range and confidence interval for bias-adjusted restricted mean survival time, otherwise it will only plot of range for bias-adjusted restricted mean survival time
 }
 \examples{
-if(interactive()){
- dat <- gbsg
- dat$size2 <- ifelse(dat$size <= 20, 0,
-                     ifelse(dat$size > 20 & dat$size <= 50, 1, 2))
- dat$age2 <- dat$age/100
- dat$er2 <- dat$er/1000
+dat <- gbsg
+dat$size2 <- ifelse(dat$size <= 20, 0,
+                    ifelse(dat$size > 20 & dat$size <= 50, 1, 2))
+dat$age2 <- dat$age/100
+dat$er2 <- dat$er/1000
 
- ## Estimation of propensity score
- denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-                  data=dat, family=binomial(link='logit'))
- dat$Ps <- predict(denom.fit, type='response')
+## Estimation of propensity score
+denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
+                 data=dat, family=binomial(link='logit'))
+dat$Ps <- predict(denom.fit, type='response')
 
- ## Between-group difference in adjusted RMST based on shifted propensity score
- ## Adjusted RMST with not specified tau and with multiple lambda
- # Using approximate optimization method
- results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-                             exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
-                             use.multicore=TRUE, n.core=2,
-                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
- plot(x=results.approx2, alpha.ci=0.9, alpha.range=0.4,
-      yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
-      axis.title.size=15, axis.text.size=12,
-      save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
-      save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
+## Between-group difference in adjusted RMST based on shifted propensity score
+## Adjusted RMST with not specified tau and with multiple lambda
+# Using approximate optimization method
+results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
+                            exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
+                            use.multicore=TRUE, n.core=2,
+                            lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
+plot(x=results.approx2, alpha.ci=0.9, alpha.range=0.4,
+     yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+     axis.title.size=15, axis.text.size=12,
+     save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
+     save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 
- re.ap.boot <- RMSTSens.ci(x=results.approx2, B=20, level=0.95, seed=220524,
-               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-               model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
- plot(x=re.ap.boot, alpha.ci=0.9, alpha.range=0.4,
-      yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
-      axis.title.size=15, axis.text.size=12,
-      save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
-      save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
+\dontrun{
+# Bootstrap confidence interval
+re.ap.boot <- RMSTSens.ci(x=results.approx2, B=20, level=0.95, seed=220524,
+              formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
+          model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
+plot(x=re.ap.boot, alpha.ci=0.9, alpha.range=0.4,
+     yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+     axis.title.size=15, axis.text.size=12,
+     save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
+     save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 }
 
 }

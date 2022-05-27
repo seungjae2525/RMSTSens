@@ -27,7 +27,7 @@ optim_f <- function(par, data, minmax="min", lambda=2, tau=NULL) {
   yj <- djyj[2, ]
   st <- cumprod(1 - (dj/yj))
 
-  ## RMST
+  ## Calculate adjusted RMST
   rtime <- tj <= tau
   tj_r <- sort(c(tj[rtime], tau))
   st_r <- st[rtime]
@@ -39,7 +39,7 @@ optim_f <- function(par, data, minmax="min", lambda=2, tau=NULL) {
 }
 
 
-## Optimization function via liear programming
+## Optimization function via linear programming
 optim_LP <- function(data, minmax="min", lambda=3, tau=NULL) {
   time <- data$time
   status <- data$status

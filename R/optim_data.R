@@ -1,4 +1,4 @@
-## Make dataset for optimization
+## Make dataset for solving optimization problem
 optim_data <- function(time, status, exposure, ps, data, group=1) {
   time <- data[, time]                    # survival time
   status <- data[, status]                # status

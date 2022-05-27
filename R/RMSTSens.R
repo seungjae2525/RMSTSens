@@ -2,7 +2,7 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 
 #' @title Sensitivity analysis for RMST
 #'
-#' @description Function for sensitivity analysis of unmeasured confounding for restricted mean survival time using propensity score
+#' @description Function for sensitivity analysis of unmeasured confounding for restricted mean survival time using propensity score.
 #'
 #' @param time The name of variable for time to event.
 #' @param status The name of variable for status (0 if censored, 1 if event).
@@ -13,8 +13,8 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #' @param methods A character with the methods how to calculate the adjusted RMST ("Optim", "Approx", "LP1", "LP2"), Default: 'Approx'.
 #' @param use.multicore Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE.
 #' @param n.core The number of cores to use, Default: parallel::detectCores()/2.
-#' @param lambda A scalar or vector for sensitivity parameter, Default: 2.
-#' @param tau User-specific time point, If tau not specified (NULL), use the minimum of the largest observed event time in both groups.
+#' @param lambda A scalar or vector for sensitivity parameter \eqn{\Lambda}, Default: 2.
+#' @param tau User-specific time point, If tau not specified (NULL), use the minimum of the largest observed event time in both groups, Default: NULL.
 #' @param ini.par Initial parameter for direct optimization method, Default: 1.
 #' @param verbose Conditional on the verbose level, print the message that each optimization (minimization or maximization) for each group was ended, Default: FALSE.
 #'
@@ -27,8 +27,8 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #' \item{cen.rate}{Total censoring rate}
 #' \item{cen.rate.exposed}{Censoring rate in exposed group}
 #' \item{cen.rate.unexposed}{Censoring rate in unexposed group}
-#' \item{Lambda}{A scalar or vector of sensitivity parameter \eqn{Lambda} used}
-#' \item{Tau}{User-specific time point \eqn{tau}, If tau not specified (NULL), use the minimum between the largest observed event time in each groups}
+#' \item{Lambda}{A scalar or vector of sensitivity parameter \eqn{\Lambda} used}
+#' \item{Tau}{User-specific time point \eqn{\tau}, If tau not specified (NULL), use the minimum between the largest observed event time in each groups}
 #' \item{Method}{A optimization method used}
 #' \item{min.exposed}{The minimum of adjusted RMST based on the shifted propensity score for exposed group}
 #' \item{max.exposed}{The maximum of adjusted RMST based on the shifted propensity score for exposed group}
@@ -37,48 +37,47 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #' \item{RMST.diff.min}{Lower bound of point estimate for between-group difference in adjusted RMST based on shifted propensity score}
 #' \item{RMST.diff.max}{Upper bound of point estimate for between-group difference in adjusted RMST based on shifted propensity score}
 #' The results for the \code{RMSTSens} are printed with the \code{\link{print.RMSTSens}} functions.
-#' To generate results plot comparing Lambda with range of adjusted RMST based on shifted propensity score, use the \code{\link{plot.RMSTSens}} functions.
+#' To generate result plot comparing sensitivity parameters \eqn{\Lambda} with range of adjusted RMST based on shifted propensity score, use the \code{\link{plot.RMSTSens}} functions.
 #'
-#' @details To assess details of method of sensitivity analysis, see Lee et al. (2022) for details.
+#' @details To assess details of method for sensitivity analysis, see Lee et al. (2022).
 #'
 #' @examples
-#' if(interactive()){
-#'  dat <- gbsg
-#'  dat$size2 <- ifelse(dat$size <= 20, 0,
-#'                      ifelse(dat$size > 20 & dat$size <= 50, 1, 2))
-#'  dat$age2 <- dat$age/100
-#'  dat$er2 <- dat$er/1000
+#' dat <- gbsg
+#' dat$size2 <- ifelse(dat$size <= 20, 0,
+#'                     ifelse(dat$size > 20 & dat$size <= 50, 1, 2))
+#' dat$age2 <- dat$age/100
+#' dat$er2 <- dat$er/1000
 #'
-#'  ## Estimation of propensity score
-#'  denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-#'                   data=dat, family=binomial(link='logit'))
-#'  dat$Ps <- predict(denom.fit, type='response')
+#' ## Estimation of propensity score
+#' denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
+#'                  data=dat, family=binomial(link='logit'))
+#' dat$Ps <- predict(denom.fit, type='response')
 #'
-#'  ## Between-group difference in adjusted RMST based on shifted propensity score
-#'  ## Adjusted RMST with tau equal to 5-year
-#'  # Using direct optimization method
-#'  results.optim <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-#'                            exposed.ref.level=1, ps='Ps', data=dat, methods='Optim',
-#'                            use.multicore=TRUE, n.core=parallel::detectCores()/2,
+#' ## Between-group difference in adjusted RMST based on shifted propensity score
+#' ## Adjusted RMST with tau equal to 5-year
+#' \dontrun{
+#'   # Using direct optimization method
+#'   results.optim <- RMSTSens(time='rfstime', status='status', exposure='hormon',
+#'                             exposed.ref.level=1, ps='Ps', data=dat, methods='Optim',
+#'                             use.multicore=TRUE, n.core=parallel::detectCores()/2,
+#'                             lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
+#'   results.optim
+#' }
+#'
+#' # Using approximate optimization method
+#' results.approx <- RMSTSens(time='rfstime', status='status', exposure='hormon',
+#'                            exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
+#'                            use.multicore=TRUE, n.core=2,
 #'                            lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
-#'  results.optim
+#' results.approx
 #'
-#'  # Using approximate optimization method
-#'  results.approx <- RMSTSens(time='rfstime', status='status', exposure='hormon',
+#' ## Adjusted RMST with not specified tau and with multiple lambda
+#' # Using approximate optimization method
+#' results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
 #'                             exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
 #'                             use.multicore=TRUE, n.core=2,
-#'                             lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
-#'  results.approx
-#'
-#'  ## Adjusted RMST with not specified tau and with multiple lambda
-#'  # Using approximate optimization method
-#'  results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-#'                              exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
-#'                              use.multicore=TRUE, n.core=2,
-#'                              lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
-#'  results.approx2
-#'
-#' }
+#'                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
+#' results.approx2
 #'
 #' @author Seungjae Lee \email{seungjae2525@@gmail.com}
 #'

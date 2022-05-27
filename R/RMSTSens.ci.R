@@ -1,12 +1,12 @@
-#' @title Confidence interval for bias-adjusted RMST
+#' @title Confidence interval for bias-adjusted restricted mean survival time
 #'
-#' @description Function for constructing the confidence interval for restricted mean survival time using propensity score
+#' @description Function for constructing the confidence interval(s) for restricted mean survival time using propensity score.
 #'
 #' @param x An object of class \code{RMSTSens}.
 #' @param B The number of bootstrap replicates, Default: 1000.
 #' @param level The confidence level required (i.e., \eqn{1-\alpha}), Default: 0.95.
 #' @param seed The seed number. If the propensity score was estimated using methods in the \code{caret} package, then should enter the seed number used at that time.
-#' @param formula The formula for estimating propensity score.
+#' @param formula The formula for estimating propensity score. See Examples.
 #' @param model The method for estimating propensity score, Default: "logistic".
 #' @param use.multicore Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE.
 #' @param n.core The number of cores to use, Default: parallel::detectCores()/2.
@@ -22,8 +22,8 @@
 #' \item{cen.rate}{Total censoring rate}
 #' \item{cen.rate.exposed}{Censoring rate in exposed group}
 #' \item{cen.rate.unexposed}{Censoring rate in unexposed group}
-#' \item{Lambda}{A scalar or vector of sensitivity parameter \eqn{Lambda} used}
-#' \item{Tau}{User-specific time point \eqn{tau}, If tau not specified (NULL), use the minimum between the largest observed event time in each groups}
+#' \item{Lambda}{A scalar or vector of sensitivity parameter \eqn{\Lambda} used}
+#' \item{Tau}{User-specific time point \eqn{\tau}, If tau not specified (NULL), use the minimum between the largest observed event time in each groups}
 #' \item{Method}{A optimization method used}
 #' \item{min.exposed}{The minimum of adjusted RMST based on the shifted propensity score for exposed group}
 #' \item{max.exposed}{The maximum of adjusted RMST based on the shifted propensity score for exposed group}
@@ -38,34 +38,34 @@
 #' \item{min.unexposd.lower}{Lower (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for unexposed group}
 #' \item{max.unexposed.upper}{Upper (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for unexposed group}
 #' The results for the \code{\link{RMSTSens.ci}} are printed with the \code{\link{print.RMSTSens}} functions.
-#' To generate results plot comparing Lambda with confidence interval and range of adjusted RMST based on shifted propensity score, use the \code{\link{plot.RMSTSens}} function.
+#' To generate result plot comparing sensitivity parameters \eqn{\Lambda} with confidence interval and range of adjusted RMST based on shifted propensity score, use the \code{\link{plot.RMSTSens}} function.
 #'
-#' @details To assess details of method for sensitivity analysis, see Lee et al. (2022) for details.
+#' @details To assess details of method for sensitivity analysis, see Lee et al. (2022).
 #'
 #' @examples
-#' if(interactive()){
-#'  dat <- gbsg
-#'  dat$size2 <- ifelse(dat$size <= 20, 0,
-#'                      ifelse(dat$size > 20 & dat$size <= 50, 1, 2))
-#'  dat$age2 <- dat$age/100
-#'  dat$er2 <- dat$er/1000
+#' \dontrun{
+#' dat <- gbsg
+#' dat$size2 <- ifelse(dat$size <= 20, 0,
+#'                     ifelse(dat$size > 20 & dat$size <= 50, 1, 2))
+#' dat$age2 <- dat$age/100
+#' dat$er2 <- dat$er/1000
 #'
-#'  ## Estimation of propensity score
-#'  denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-#'                   data=dat, family=binomial(link='logit'))
-#'  dat$Ps <- predict(denom.fit, type='response')
+#' ## Estimation of propensity score
+#' denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
+#'                  data=dat, family=binomial(link='logit'))
+#' dat$Ps <- predict(denom.fit, type='response')
 #'
-#'  ## Between-group difference in adjusted RMST based on shifted propensity score
-#'  ## Adjusted RMST with not specified tau and with multiple lambda
-#'  # Using approximate optimization method
-#'  results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-#'                              exposed.ref.level=1, ps='Ps' ,data=dat, methods="Approx",
-#'                              use.multicore=TRUE, n.core=2,
-#'                              lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
-#'  re.ap.boot <- RMSTSens.ci(x=results.approx2, B=20, level=0.95, seed=220524,
-#'                formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-#'                model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
-#'  re.ap.boot
+#' ## Between-group difference in adjusted RMST based on shifted propensity score
+#' ## Adjusted RMST with not specified tau and with multiple lambda
+#' # Using approximate optimization method
+#' results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
+#'                             exposed.ref.level=1, ps='Ps' ,data=dat, methods="Approx",
+#'                             use.multicore=TRUE, n.core=2,
+#'                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
+#' re.ap.boot <- RMSTSens.ci(x=results.approx2, B=20, level=0.95, seed=220524,
+#'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
+#'           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
+#' re.ap.boot
 #' }
 #'
 #' @author Seungjae Lee \email{seungjae2525@@gmail.com}
