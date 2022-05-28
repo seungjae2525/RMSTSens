@@ -171,7 +171,7 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=920818, formula, model="logi
       RMST.diff.max[(i-1)*length(lambda)+j] <- temp.re$result.df$RMST.diff.max
 
       if(verbose & ((i-1)*length(lambda)+j) %% 100 == 0){
-        cat((i-1)*length(lambda)+j,"th end! \n")
+        cat(paste0("[", Sys.time(), "]"), (i-1)*length(lambda)+j,"th end! \n")
       }
     }
   }

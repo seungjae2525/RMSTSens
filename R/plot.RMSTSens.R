@@ -1,31 +1,6 @@
 #' @title Plot for sensitivity analysis
 #'
-#' @description Plot for sensitivity analysis either or both of range and confidence interval for bias-adjusted restricted mean survival time
-#' This object is imported from other package. Follow the links below to see its documentation.
-#'
-#' \describe{
-#'   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}}
-#' }
-#'
-#' @param x An object of \code{autoplot.RMSTSens}
-#' @param ... Further arguments in \code{autoplot.RMSTSens}.
-#'
-#' @keywords plot
-#'
-#' @importFrom graphics plot
-#'
-#' @rdname autoplot.RMSTSens
-#'
-#' @export
-plot.RMSTSens <- function(x, ...) {
-  print(autoplot(x, ...))
-}
-
-
-
-#' @title Plot for sensitivity analysis
-#'
-#' @param x an object of class \code{RMSTSens}
+#' @param object An object of class \code{RMSTSens}
 #' @param alpha.ci It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9.
 #' @param alpha.range It refers to the opacity of range.Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.4.
 #' @param yscale 1, 10, 100, 1000, Default: 100.
@@ -41,6 +16,7 @@ plot.RMSTSens <- function(x, ...) {
 #' @param save.plot.height Plot height size in units.
 #' @param save.plot.dpi Resolution of plot. By default, set to 300. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72). Applies only to raster output types.
 #' @param save.plot.height Plot height size in units.
+#' @param ... Further arguments (currently not used).
 #'
 #' @return Result plot for sensitivity analysis.
 #'
@@ -65,43 +41,96 @@ plot.RMSTSens <- function(x, ...) {
 #'                             exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
-#' plot(x=results.approx2, alpha.ci=0.9, alpha.range=0.4,
-#'      yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
-#'      axis.title.size=15, axis.text.size=12,
-#'      save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
-#'      save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
+#' autoplot(object=results.approx2, alpha.ci=0.9, alpha.range=0.4,
+#'          yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+#'          axis.title.size=15, axis.text.size=12,
+#'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
+#'          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 #'
 #' \dontrun{
 #' # Bootstrap confidence interval
 #' re.ap.boot <- RMSTSens.ci(x=results.approx2, B=20, level=0.95, seed=220524,
 #'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
 #'           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
-#' plot(x=re.ap.boot, alpha.ci=0.9, alpha.range=0.4,
+#' autoplot(object=re.ap.boot, alpha.ci=0.9, alpha.range=0.4,
+#'          yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+#'          axis.title.size=15, axis.text.size=12,
+#'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
+#'          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
+#' }
+#'
+#' @seealso
+#'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}
+#'
+#' @import ggplot2
+#'
+#' @rdname autoplot.RMSTSens
+#'
+#' @export
+autoplot.RMSTSens <- function(object,
+                              alpha.ci=0.9, alpha.range=0.4,
+                              yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+                              axis.title.size=15, axis.text.size=12,
+                              save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
+                              save.plot.width=10, save.plot.height=6, save.plot.dpi=300, ...){
+  autoplot_RMSTSens(xxx=object,
+                    alpha.ci=alpha.ci, alpha.range=alpha.range,
+                    yscale=yscale, ytickdiff=ytickdiff, point.size=point.size, h.width=h.width,
+                    axis.title.size=axis.title.size, axis.text.size=axis.text.size,
+                    save.plot=save.plot, save.plot.name=save.plot.name,
+                    save.plot.device=save.plot.device, save.plot.width=save.plot.width,
+                    save.plot.height=save.plot.height, save.plot.dpi=save.plot.dpi, ...=...)
+}
+
+
+
+
+#' @title Plot for sensitivity analysis
+#'
+#' @description Plot for sensitivity analysis either or both of range and confidence interval for bias-adjusted restricted mean survival time
+#' This object is imported from other package. Follow the links below to see its documentation.
+#'
+#' \describe{
+#'   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}}
+#' }
+#'
+#' @param x An object of class \code{RMSTSens}
+#' @examples
+#'
+#' \dontrun{
+#' plot(results.approx2, alpha.ci=0.9, alpha.range=0.4,
 #'      yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
 #'      axis.title.size=15, axis.text.size=12,
 #'      save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
 #'      save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 #' }
 #'
-#' @seealso
-#'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}
+#' @keywords plot
+#'
+#' @importFrom graphics plot
 #'
 #' @rdname autoplot.RMSTSens
 #'
 #' @export
-#'
-#' @import ggplot2
-autoplot.RMSTSens <- function(x,
-                              alpha.ci=0.9, alpha.range=0.4,
-                              yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
-                              axis.title.size=15, axis.text.size=12,
-                              save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
-                              save.plot.width=10, save.plot.height=6, save.plot.dpi=300, ...) {
-  if (!inherits(x, "RMSTSens")){
-    stop("Argument 'x' must be an object of class \"RMSTSens\".")
+plot.RMSTSens <- function(x, ...) {
+  print(autoplot(x, ...))
+}
+
+
+
+#########---------------------------------------------------------------------------------------------
+autoplot_RMSTSens <- function(xxx=NULL,
+                              alpha.ci=NULL, alpha.range=NULL,
+                              yscale=NULL, ytickdiff=NULL, point.size=NULL, h.width=NULL,
+                              axis.title.size=NULL, axis.text.size=NULL,
+                              save.plot=FALSE, save.plot.name=NULL, save.plot.device=NULL,
+                              save.plot.width=NULL, save.plot.height=NULL, save.plot.dpi=NULL, ...) {
+  if (!inherits(xxx, "RMSTSens")){
+    stop("Argument 'object' must be an object of class \"RMSTSens\".")
   }
 
-  xx <- x$result.df
+  xx <- xxx$result.df
+  xx <- ggplot2::fortify(xx)
 
   if (length(xx$Lambda) == 1) {
     stop("\n Error: To plot the sensitivity analysis results, \"lambda\" must be a vector.")
@@ -281,5 +310,5 @@ autoplot.RMSTSens <- function(x,
     # dev.off()
   }
 
-  g
+  return(g)
 }
