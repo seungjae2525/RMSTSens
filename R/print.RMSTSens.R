@@ -33,7 +33,7 @@
 #'
 #' # Using approximate optimization method
 #' results.approx <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-#'                            exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
+#'                            exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
 #'                            use.multicore=TRUE, n.core=2,
 #'                            lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
 #' print(results.approx)
@@ -41,7 +41,7 @@
 #' ## Adjusted RMST with not specified tau and with multiple lambda
 #' # Using approximate optimization method
 #' results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-#'                             exposed.ref.level=1, ps='Ps' ,data=dat, methods='Approx',
+#'                             exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' print(results.approx2)
