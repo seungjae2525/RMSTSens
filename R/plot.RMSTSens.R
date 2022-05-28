@@ -1,6 +1,11 @@
 #' @title Plot for sensitivity analysis
 #'
 #' @description Plot for sensitivity analysis either or both of range and confidence interval for bias-adjusted restricted mean survival time
+#' This object is imported from other package. Follow the links below to see its documentation.
+#'
+#' \describe{
+#'   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}}.
+#' }
 #'
 #' @param x An object of \code{autoplot.RMSTSens}
 #' @param ... Further arguments passed to or from other methods.
@@ -9,7 +14,7 @@
 #'
 #' @importFrom graphics plot
 #'
-#' @rdname plot.RMSTSens
+#' @rdname autoplot.RMSTSens
 #'
 #' @export
 plot.RMSTSens <- function(x, ...) {
@@ -82,7 +87,7 @@ plot.RMSTSens <- function(x, ...) {
 #'
 #' @importFrom ggplot2 autoplot
 #'
-#' @rdname plot.RMSTSens
+#' @rdname autoplot.RMSTSens
 #'
 #' @export
 autoplot.RMSTSens <- function(x,
@@ -277,4 +282,3 @@ autoplot.RMSTSens <- function(x,
 
   g
 }
-

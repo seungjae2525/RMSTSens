@@ -67,7 +67,7 @@ An object of class \code{RMSTSens}. The object is a data.frame with the followin
 \item{RMST.diff.min}{Lower bound of point estimate for between-group difference in adjusted RMST based on shifted propensity score}
 \item{RMST.diff.max}{Upper bound of point estimate for between-group difference in adjusted RMST based on shifted propensity score}
 The results for the \code{RMSTSens} are printed with the \code{\link{print.RMSTSens}} functions.
-To generate result plot comparing sensitivity parameters \eqn{\Lambda} with range of adjusted RMST based on shifted propensity score, use the \code{\link{plot.RMSTSens}} functions.
+To generate result plot comparing sensitivity parameters \eqn{\Lambda} with range of adjusted RMST based on shifted propensity score, use the \code{\link{autoplot.RMSTSens}} functions.
 }
 \description{
 Function for sensitivity analysis of unmeasured confounding for restricted mean survival time using propensity score.
@@ -122,7 +122,7 @@ effect in meta-analysis of odds-ratios.
 DOI: 10.1002/jrsm.1404
 }
 \seealso{
-\code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{plot.RMSTSens}}
+\code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{autoplot.RMSTSens}}
 }
 \author{
 Seungjae Lee \email{seungjae2525@gmail.com}

@@ -63,6 +63,11 @@ Result plot for sensitivity analysis.
 }
 \description{
 Plot for sensitivity analysis either or both of range and confidence interval for bias-adjusted restricted mean survival time
+This object is imported from other package. Follow the links below to see its documentation.
+
+\describe{
+\item{ggplot2}{\code{\link[ggplot2]{autoplot}}}.
+}
 }
 \details{
 If the object contains results of bootstrap confidence interval, then it will return plot of range and confidence interval for bias-adjusted restricted mean survival time, otherwise it will only plot of range for bias-adjusted restricted mean survival time

@@ -38,7 +38,7 @@
 #' \item{min.unexposd.lower}{Lower (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for unexposed group}
 #' \item{max.unexposed.upper}{Upper (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for unexposed group}
 #' The results for the \code{\link{RMSTSens.ci}} are printed with the \code{\link{print.RMSTSens}} functions.
-#' To generate result plot comparing sensitivity parameters \eqn{\Lambda} with confidence interval and range of adjusted RMST based on shifted propensity score, use the \code{\link{plot.RMSTSens}} function.
+#' To generate result plot comparing sensitivity parameters \eqn{\Lambda} with confidence interval and range of adjusted RMST based on shifted propensity score, use the \code{\link{autoplot.RMSTSens}} function.
 #'
 #' @details To assess details of method for sensitivity analysis, see Lee et al. (2022).
 #'
@@ -71,7 +71,7 @@
 #' @author Seungjae Lee \email{seungjae2525@@gmail.com}
 #'
 #' @seealso
-#'  \code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{plot.RMSTSens}}
+#'  \code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{autoplot.RMSTSens}}
 #'
 #' @references
 #' Bakbergenuly I, Hoaglin DC, Kulinskaya E (2020):
@@ -81,9 +81,6 @@
 #' DOI: 10.1002/jrsm.1404
 #'
 #' @keywords methods
-#'
-#' @import parallel
-#' @import optimParallel
 #'
 #' @export
 RMSTSens.ci <- function(x, B=1000, level=0.95, seed=920818, formula, model="logistic",

@@ -64,7 +64,7 @@ The object is a data.frame with class \code{RMSTSens}. The function returns foll
 \item{min.unexposd.lower}{Lower (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for unexposed group}
 \item{max.unexposed.upper}{Upper (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for unexposed group}
 The results for the \code{\link{RMSTSens.ci}} are printed with the \code{\link{print.RMSTSens}} functions.
-To generate result plot comparing sensitivity parameters \eqn{\Lambda} with confidence interval and range of adjusted RMST based on shifted propensity score, use the \code{\link{plot.RMSTSens}} function.
+To generate result plot comparing sensitivity parameters \eqn{\Lambda} with confidence interval and range of adjusted RMST based on shifted propensity score, use the \code{\link{autoplot.RMSTSens}} function.
 }
 \description{
 Function for constructing the confidence interval(s) for restricted mean survival time using propensity score.
@@ -107,7 +107,7 @@ effect in meta-analysis of odds-ratios.
 DOI: 10.1002/jrsm.1404
 }
 \seealso{
-\code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{plot.RMSTSens}}
+\code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{autoplot.RMSTSens}}
 }
 \author{
 Seungjae Lee \email{seungjae2525@gmail.com}
