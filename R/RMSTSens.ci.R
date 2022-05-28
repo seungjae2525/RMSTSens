@@ -63,10 +63,10 @@
 #' ## Adjusted RMST with not specified tau and with multiple lambda
 #' # Using approximate optimization method
 #' results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-#'                             exposed.ref.level=1, ps='Ps', data=dat, methods="Approx",
+#'                             exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
-#' re.ap.boot <- RMSTSens.ci(x=results.approx2, B=20, level=0.95, seed=220524,
+#' re.ap.boot <- RMSTSens.ci(x=results.approx2, B=40, level=0.95, seed=220524,
 #'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
 #'           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
 #' re.ap.boot
@@ -80,10 +80,10 @@
 #'                  data=dat, method="rf", verbose=FALSE, trContol=ctrl)
 #' dat$Ps.rf <- as.numeric(predict(model.rf, newdata=dat, type="prob")[, 2])
 #' results.approx.rf <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-#'                                 exposed.ref.level=1, ps='Ps.rf', data=dat, methods="Approx",
+#'                                 exposed.ref.level=1, ps='Ps.rf', data=dat, methods='Approx',
 #'                               use.multicore=TRUE, n.core=2,
 #'                               lambda=c(1,1.5,2), tau=365.25*5, ini.par=1, verbose=FALSE)
-#' re.rf <- RMSTSens.ci(x=results.approx.rf, B=10, level=0.95, seed=220528,
+#' re.rf <- RMSTSens.ci(x=results.approx.rf, B=40, level=0.95, seed=220528,
 #'          formula=factor(hormon)~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
 #'       model="rf", use.multicore=TRUE, n.core=2, verbose=TRUE,
 #'       trContol=ctrl)
@@ -165,13 +165,13 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=920818, formula, model="logi
   for(i in 1:B){
     dat.temp <- data[sample.int(nrow(data), nrow(data), replace=TRUE), ]
     if(model == "logistic"){
-      dat.temp$Ps <- glm(formula, data=dat.temp, family=binomial(link='logit'))$fitted.values
+      dat.temp$PS <- glm(formula, data=dat.temp, family=binomial(link='logit'))$fitted.values
     } else {
       if(!requireNamespace("caret", quietly=TRUE)) {
         stop("\n Error: If model is not equal to \"logistic\", then \"caret\" package needed for this function to work. Please install it.")
       }
       model.ps.temp <- caret::train(form=formula, data=dat.temp, method=model, verbose=FALSE, ...)
-      dat.temp$Ps <- as.numeric(predict(model.ps.temp,newdata=data, type="prob")[,2])
+      dat.temp$PS <- as.numeric(predict(model.ps.temp,newdata=data, type="prob")[,2])
     }
 
     for(j in 1:length(lambda)){
@@ -182,9 +182,9 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=920818, formula, model="logi
 
       ## Optimization
       temp.re <- RMSTSens(time=time, status=status, exposure=exposure, exposed.ref.level=exposed.ref.level,
-                                ps='Ps', data=dat.temp,
-                                methods=methods, use.multicore=use.multicore, n.core=n.core,
-                                lambda=lambda[j], tau=tau, ini.par=ini.par)
+                          ps='PS', data=dat.temp,
+                          methods=methods, use.multicore=use.multicore, n.core=n.core,
+                          lambda=lambda[j], tau=tau, ini.par=ini.par)
 
       min.exposd[(i-1)*length(lambda)+j] <- temp.re$result.df$min.exposed
       max.exposed[(i-1)*length(lambda)+j] <- temp.re$result.df$max.exposed
@@ -193,7 +193,7 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=920818, formula, model="logi
       RMST.diff.min[(i-1)*length(lambda)+j] <- temp.re$result.df$RMST.diff.min
       RMST.diff.max[(i-1)*length(lambda)+j] <- temp.re$result.df$RMST.diff.max
 
-      if(verbose & ((i-1)*length(lambda)+j) %% (100*length(lambda)) == 0){
+      if (verbose & ((i-1)*length(lambda)+j) %% (100*length(lambda)) == 0) {
         cat(paste0("[", Sys.time(), "]"), (i-1)*length(lambda)+j,"th end! \n")
       }
     }
@@ -208,14 +208,14 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=920818, formula, model="logi
                                     max.unexposed = max.unexposed,
                                     RMST.diff.min = RMST.diff.min,
                                     RMST.diff.max = RMST.diff.max,
-                                    lambda = rep(lambda, B))
+                                    lambda = rep(lambda, times=B))
 
   ## Confidence interval
-  aa <- (1 - level)/2
+  aa <- (1 - level)/2 # alpha/2
   # (alpha/2) quantile of infimum
   x$result.df$RMST.diff.min.lower <- sapply(x$result.df$Lambda,
                                             function(x) quantile(results.summary.dat$RMST.diff.min[results.summary.dat$lambda == x], aa))
-  # (1-alpha/2) quantile of superimum
+  # (1-alpha/2) quantile of supremum
   x$result.df$RMST.diff.max.upper <- sapply(x$result.df$Lambda,
                                             function(x) quantile(results.summary.dat$RMST.diff.max[results.summary.dat$lambda == x], 1-aa))
 

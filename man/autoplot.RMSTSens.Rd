@@ -97,7 +97,7 @@ autoplot(object=results.approx2, alpha.ci=0.9, alpha.range=0.4,
 
 \dontrun{
 # Bootstrap confidence interval
-re.ap.boot <- RMSTSens.ci(x=results.approx2, B=20, level=0.95, seed=220524,
+re.ap.boot <- RMSTSens.ci(x=results.approx2, B=40, level=0.95, seed=220524,
               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
 autoplot(object=re.ap.boot, alpha.ci=0.9, alpha.range=0.4,

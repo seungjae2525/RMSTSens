@@ -58,7 +58,7 @@ results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
 print(results.approx2)
 
 \dontrun{
-re.ap.boot <- RMSTSens.ci(x=results.approx2, B=20, level=0.95, seed=220524,
+re.ap.boot <- RMSTSens.ci(x=results.approx2, B=40, level=0.95, seed=220524,
               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
 print(re.ap.boot)

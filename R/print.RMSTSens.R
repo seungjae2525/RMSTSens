@@ -47,7 +47,7 @@
 #' print(results.approx2)
 #'
 #' \dontrun{
-#' re.ap.boot <- RMSTSens.ci(x=results.approx2, B=20, level=0.95, seed=220524,
+#' re.ap.boot <- RMSTSens.ci(x=results.approx2, B=40, level=0.95, seed=220524,
 #'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
 #'           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
 #' print(re.ap.boot)
@@ -103,27 +103,27 @@ print.RMSTSens <- function (x, digits = max(1L, getOption("digits") - 3L), ...){
   cat("Results: \n")
   cat("RMST for exposed group: \n")
   tmp1 <- round(cbind(xx$min.exposed, xx$max.exposed), digits)
-  rownames(tmp1) <- paste0(rep(expression(Lambda),nrow(xx)), '=', spr)
+  rownames(tmp1) <- paste0(rep(expression(Lambda), times=nrow(xx)), '=', spr)
   colnames(tmp1) <- c("    Minimum", "    Maximum")
   print(tmp1)
 
   cat("RMST for unexposed group: \n")
   tmp2 <- round(cbind(xx$min.unexposed, xx$max.unexposed), digits)
-  rownames(tmp2) <- paste0(rep(expression(Lambda),nrow(xx)), '=', spr)
+  rownames(tmp2) <- paste0(rep(expression(Lambda), times=nrow(xx)), '=', spr)
   colnames(tmp2) <- c("    Minimum", "    Maximum")
   print(tmp2)
   # printCoefmat(tmp2, digits = digits)
 
   cat("Range of RMST difference: \n")
   tmp3 <- round(cbind(xx$RMST.diff.min, xx$RMST.diff.max), digits)
-  rownames(tmp3) <- paste0(rep(expression(Lambda),nrow(xx)), '=', spr)
+  rownames(tmp3) <- paste0(rep(expression(Lambda), times=nrow(xx)), '=', spr)
   colnames(tmp3) <- c("Lower bound", "Upper bound")
   print(tmp3)
 
   if("RMST.diff.max.upper" %in% colnames(xx)){
     cat("Confidence interval of RMST difference: \n")
     tmp4 <- round(cbind(xx$RMST.diff.min.lower, xx$RMST.diff.max.upper), digits)
-    rownames(tmp4) <- paste0(rep(expression(Lambda),nrow(xx)), '=', spr)
+    rownames(tmp4) <- paste0(rep(expression(Lambda), times=nrow(xx)), '=', spr)
     colnames(tmp4) <- c("Lower bound", "Upper bound")
     print(tmp4)
   }

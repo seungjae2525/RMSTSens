@@ -215,8 +215,8 @@ RMSTSens <- function(time, status,
             ## Not using multi-core
 
             ## Set initial optimization parameter zi
-            par.exposed <- rep(ini.par, len.exposed)
-            par.unexposed <- rep(ini.par, len.unexposed)
+            par.exposed <- rep(ini.par, times=len.exposed)
+            par.unexposed <- rep(ini.par, times=len.unexposed)
 
             # Minimum of shifted RMST for exposed group
             opt1_min_result1 <- stats::optim(par=par.exposed, data=dat.exposed, fn=optim_f,
@@ -256,8 +256,8 @@ RMSTSens <- function(time, status,
             setDefaultCluster(cl=cl)
 
             ## Set initial parameters
-            par.exposed <- rep(ini.par, len.exposed)
-            par.unexposed <- rep(ini.par, len.unexposed)
+            par.exposed <- rep(ini.par, times=len.exposed)
+            par.unexposed <- rep(ini.par, times=len.unexposed)
 
             # Minimum of shifted RMST for exposed group
             opt1_min_result1 <- optimParallel(par=par.exposed, data=dat.exposed, fn=optim_f,
@@ -314,11 +314,11 @@ RMSTSens <- function(time, status,
 
       } else if (methods == "Approx") {
         ## Set initial optimization parameter zi
-        par.exposed.min <- rep(1/lambda, len.exposed)
-        par.exposed.max <- rep(lambda, len.exposed)
+        par.exposed.min <- rep(1/lambda, times=len.exposed)
+        par.exposed.max <- rep(lambda, times=len.exposed)
 
-        par.unexposed.min <- rep(1/lambda, len.unexposed)
-        par.unexposed.max <- rep(lambda, len.unexposed)
+        par.unexposed.min <- rep(1/lambda, times=len.unexposed)
+        par.unexposed.max <- rep(lambda, times=len.unexposed)
 
         ## Make the list of parameters
         aa1 <- aa2 <- aa3 <- aa4 <- list()
@@ -537,8 +537,8 @@ RMSTSens <- function(time, status,
               ## Not using multi-core
 
               ## Set initial optimization parameter zi
-              par.exposed <- rep(ini.par, len.exposed)
-              par.unexposed <- rep(ini.par, len.unexposed)
+              par.exposed <- rep(ini.par, times=len.exposed)
+              par.unexposed <- rep(ini.par, times=len.unexposed)
 
               # Minimum of shifted RMST for exposed group
               opt1_min_result1 <- optim(par=par.exposed, data=dat.exposed, fn=optim_f,
@@ -578,8 +578,8 @@ RMSTSens <- function(time, status,
               setDefaultCluster(cl=cl)
 
               ## Set initial parameters
-              par.exposed <- rep(ini.par, len.exposed)
-              par.unexposed <- rep(ini.par, len.unexposed)
+              par.exposed <- rep(ini.par, times=len.exposed)
+              par.unexposed <- rep(ini.par, times=len.unexposed)
 
               # Minimum of shifted RMST for exposed group
               opt1_min_result1 <- optimParallel(par=par.exposed, data=dat.exposed, fn=optim_f,
@@ -636,11 +636,11 @@ RMSTSens <- function(time, status,
 
         } else if (methods == "Approx") {
           ## Set initial optimization parameter zi
-          par.exposed.min <- rep(1/lambda[i], len.exposed)
-          par.exposed.max <- rep(lambda[i], len.exposed)
+          par.exposed.min <- rep(1/lambda[i], times=len.exposed)
+          par.exposed.max <- rep(lambda[i], times=len.exposed)
 
-          par.unexposed.min <- rep(1/lambda[i], len.unexposed)
-          par.unexposed.max <- rep(lambda[i], len.unexposed)
+          par.unexposed.min <- rep(1/lambda[i], times=len.unexposed)
+          par.unexposed.max <- rep(lambda[i], times=len.unexposed)
 
           ## Make the list of parameters
           aa1 <- aa2 <- aa3 <- aa4 <- list()

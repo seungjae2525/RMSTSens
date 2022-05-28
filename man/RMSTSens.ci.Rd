@@ -93,10 +93,10 @@ dat$Ps <- predict(denom.fit, type='response')
 ## Adjusted RMST with not specified tau and with multiple lambda
 # Using approximate optimization method
 results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-                            exposed.ref.level=1, ps='Ps', data=dat, methods="Approx",
+                            exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
                             use.multicore=TRUE, n.core=2,
                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
-re.ap.boot <- RMSTSens.ci(x=results.approx2, B=20, level=0.95, seed=220524,
+re.ap.boot <- RMSTSens.ci(x=results.approx2, B=40, level=0.95, seed=220524,
               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
 re.ap.boot
@@ -110,10 +110,10 @@ model.rf <- train(factor(hormon)~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+
                  data=dat, method="rf", verbose=FALSE, trContol=ctrl)
 dat$Ps.rf <- as.numeric(predict(model.rf, newdata=dat, type="prob")[, 2])
 results.approx.rf <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-                                exposed.ref.level=1, ps='Ps.rf', data=dat, methods="Approx",
+                                exposed.ref.level=1, ps='Ps.rf', data=dat, methods='Approx',
                               use.multicore=TRUE, n.core=2,
                               lambda=c(1,1.5,2), tau=365.25*5, ini.par=1, verbose=FALSE)
-re.rf <- RMSTSens.ci(x=results.approx.rf, B=10, level=0.95, seed=220528,
+re.rf <- RMSTSens.ci(x=results.approx.rf, B=40, level=0.95, seed=220528,
          formula=factor(hormon)~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
       model="rf", use.multicore=TRUE, n.core=2, verbose=TRUE,
       trContol=ctrl)
