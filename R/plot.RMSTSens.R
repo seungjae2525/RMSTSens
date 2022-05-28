@@ -127,6 +127,8 @@ autoplot_RMSTSens <- function(xxx=NULL,
   xx <- xxx$result.df
   xx <- ggplot2::fortify(xx)
 
+  smooth.par <- 2*length(xx$Lambda)-1
+
   if (length(xx$Lambda) == 1) {
     stop("\n Error: To plot the sensitivity analysis results, \"lambda\" must be a vector.")
   }
@@ -182,16 +184,16 @@ autoplot_RMSTSens <- function(xxx=NULL,
     } else {
       g1 <- ggplot(xx) +
         stat_smooth(aes(x=Lambda, y=RMST.diff.min.lower, colour = "min"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=length(xx$Lambda)) +
+                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.par) +
         stat_smooth(aes(x=Lambda, y=RMST.diff.max.upper, colour = "max"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=length(xx$Lambda))
+                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.par)
       gg1 <- ggplot_build(g1)
 
       g2 <- ggplot(xx) +
         stat_smooth(aes(x=Lambda, y=RMST.diff.min, colour = "min"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=length(xx$Lambda)) +
+                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.par) +
         stat_smooth(aes(x=Lambda, y=RMST.diff.max, colour = "max"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=length(xx$Lambda))
+                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.par)
       gg2 <- ggplot_build(g2)
 
       df <- data.frame(Lambda = gg1$data[[1]]$x,
@@ -264,9 +266,9 @@ autoplot_RMSTSens <- function(xxx=NULL,
 
       g2 <- ggplot(xx) +
         stat_smooth(aes(x=Lambda, y=RMST.diff.min, colour = "min"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=length(xx$Lambda)) +
+                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.par) +
         stat_smooth(aes(x=Lambda, y=RMST.diff.max, colour = "max"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=length(xx$Lambda))
+                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.par)
       gg2 <- ggplot_build(g2)
 
       df <- data.frame(Lambda = gg2$data[[1]]$x,
@@ -299,7 +301,7 @@ autoplot_RMSTSens <- function(xxx=NULL,
   ##
   if(save.plot == TRUE){
     file.name <- paste0(save.plot.name, ".", save.plot.device)
-    ggsave(filename=save.plot.name, plot=g,
+    ggsave(filename=file.name, plot=g,
            width=save.plot.width, height=save.plot.height,
            device=save.plot.device, dpi=save.plot.dpi)
     # dev.off()

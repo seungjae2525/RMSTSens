@@ -7,11 +7,11 @@
 #' @param level The confidence level required (i.e., \eqn{1-\alpha}), Default: 0.95.
 #' @param seed The seed number. If the propensity score was estimated using methods in the \code{caret} package, then should enter the seed number used at that time.
 #' @param formula The formula for estimating propensity score. See Examples.
-#' @param model The method for estimating propensity score, Default: "logistic".
+#' @param model The method for estimating propensity score, Default: "logistic". If model is not "logistic", only models available in the \code{caret}package are available. See \url{http://topepo.github.io/caret/train-models-by-tag.html} for details to check a list of functions which can be inputted.
 #' @param use.multicore Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE.
 #' @param n.core The number of cores to use, Default: parallel::detectCores()/2.
 #' @param verbose According to the verbose level, whether or not print the completion message for each 100th bootstrap, Default: TRUE.
-#' @param \dots Additional arguments passed on to \code{train} function in \code{caret} package.
+#' @param \dots Additional arguments passed on to \code{train} function in \code{caret} package such as \code{trControl}.
 #'
 #' @return The object is a data.frame with class \code{RMSTSens}. The function returns following components:
 #' \item{N}{Total number of subjects}
@@ -41,6 +41,10 @@
 #' To generate result plot comparing sensitivity parameters \eqn{\Lambda} with confidence interval and range of adjusted RMST based on shifted propensity score, use the \code{\link{autoplot.RMSTSens}} function.
 #'
 #' @details To assess details of method for sensitivity analysis, see Lee et al. (2022).
+#' When estimating the range of the adjusted RMST based on the shifted propensity score using \code{RMSTSens}, there is no need for the formula and seed number used to estimate the propensity score.
+#' However, when estimating the confidence interval, the formula and seed number are absolutely necessary.
+#' Note that propensity score should be estimated by using 1) \code{glm} that has a binomial distribution and logit link function or 2) \code{train} function in \code{caret} package.
+#' Also, if propensity score was estimated using methods in the \code{caret} package, then you should enter the seed number used at that time in "seed" argument.
 #'
 #' @examples
 #' \dontrun{
@@ -50,7 +54,7 @@
 #' dat$age2 <- dat$age/100
 #' dat$er2 <- dat$er/1000
 #'
-#' ## Estimation of propensity score
+#' ## Estimation of propensity score using logistic model
 #' denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
 #'                  data=dat, family=binomial(link='logit'))
 #' dat$Ps <- predict(denom.fit, type='response')
@@ -66,6 +70,24 @@
 #'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
 #'           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
 #' re.ap.boot
+#'
+#'
+#' ## Estimate of propensity score using random forest
+#' library(caret)
+#' set.seed(220528)
+#' ctrl <- trainControl(method = "none")
+#' model.rf <- train(factor(hormon)~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
+#'                   data=dat, method="rf", verbose=FALSE, trContol=ctrl)
+#' dat$Ps.rf <- as.numeric(predict(model.rf, newdata=dat, type="prob")[,2])
+#' results.approx.rf <- RMSTSens(time='rfstime', status='status', exposure='hormon',
+#'                               exposed.ref.level=1, ps='Ps.rf' ,data=dat, methods="Approx",
+#'                               use.multicore=TRUE, n.core=2,
+#'                               lambda=c(1,1.5,2), tau=365.25*5, ini.par=1, verbose=FALSE)
+#' re.rf <- RMSTSens.ci(x=results.approx.rf, B=10, level=0.95, seed=220528,
+#'          formula=factor(hormon)~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
+#'      model="rf", use.multicore=TRUE, n.core=2, verbose=TRUE,
+#'      trContol=ctrl)
+#' re.rf
 #' }
 #'
 #' @author Seungjae Lee \email{seungjae2525@@gmail.com}
