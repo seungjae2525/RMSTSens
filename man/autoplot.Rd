@@ -2,7 +2,11 @@
 % Please edit documentation in R/reexports.R
 \name{autoplot}
 \alias{autoplot}
-\title{Re-export of \code{autoplot}}
+\title{Objects exported from other package}
 \description{
-See \code{\link[ggplot2:autoplot]{ggplot2::autoplot()}}.
+This object is imported from other package. Follow the links below to see its documentation.
+
+\describe{
+\item{ggplot2}{\code{\link[ggplot2]{autoplot}}}
+}
 }
