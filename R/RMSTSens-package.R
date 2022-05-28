@@ -20,7 +20,6 @@
 #'
 #' @import parallel
 #' @import optimParallel
-#' @import ggplot2
 #'
 #' @importFrom stats binomial glm optim predict qlogis quantile
 #' @importFrom splines ns

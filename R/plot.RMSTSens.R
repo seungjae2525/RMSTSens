@@ -4,11 +4,11 @@
 #' This object is imported from other package. Follow the links below to see its documentation.
 #'
 #' \describe{
-#'   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}}.
+#'   \item{ggplot2}{\code{\link[ggplot2]{autoplot}}}
 #' }
 #'
 #' @param x An object of \code{autoplot.RMSTSens}
-#' @param ... Further arguments passed to or from other methods.
+#' @param ... Further arguments in \code{autoplot.RMSTSens}.
 #'
 #' @keywords plot
 #'
@@ -40,6 +40,7 @@ plot.RMSTSens <- function(x, ...) {
 #' @param save.plot.width Plot width size in units.
 #' @param save.plot.height Plot height size in units.
 #' @param save.plot.dpi Resolution of plot. By default, set to 300. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72). Applies only to raster output types.
+#' @param save.plot.height Plot height size in units.
 #'
 #' @return Result plot for sensitivity analysis.
 #'
@@ -85,17 +86,17 @@ plot.RMSTSens <- function(x, ...) {
 #' @seealso
 #'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}
 #'
-#' @importFrom ggplot2 autoplot
-#'
 #' @rdname autoplot.RMSTSens
 #'
 #' @export
+#'
+#' @import ggplot2
 autoplot.RMSTSens <- function(x,
                               alpha.ci=0.9, alpha.range=0.4,
                               yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
                               axis.title.size=15, axis.text.size=12,
                               save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
-                              save.plot.width=10, save.plot.height=6, save.plot.dpi=300) {
+                              save.plot.width=10, save.plot.height=6, save.plot.dpi=300, ...) {
   if (!inherits(x, "RMSTSens")){
     stop("Argument 'x' must be an object of class \"RMSTSens\".")
   }

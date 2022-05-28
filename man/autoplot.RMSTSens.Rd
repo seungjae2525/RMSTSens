@@ -22,13 +22,14 @@
   save.plot.device = "png",
   save.plot.width = 10,
   save.plot.height = 6,
-  save.plot.dpi = 300
+  save.plot.dpi = 300,
+  ...
 )
 }
 \arguments{
 \item{x}{an object of class \code{RMSTSens}}
 
-\item{...}{Further arguments passed to or from other methods.}
+\item{...}{Further arguments in \code{autoplot.RMSTSens}.}
 
 \item{alpha.ci}{It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9.}
 
@@ -66,7 +67,7 @@ Plot for sensitivity analysis either or both of range and confidence interval fo
 This object is imported from other package. Follow the links below to see its documentation.
 
 \describe{
-\item{ggplot2}{\code{\link[ggplot2]{autoplot}}}.
+\item{ggplot2}{\code{\link[ggplot2]{autoplot}}}
 }
 }
 \details{
