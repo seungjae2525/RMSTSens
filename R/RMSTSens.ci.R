@@ -134,6 +134,7 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=920818, formula, model="logi
   lambda <- x$result.df$Lambda
   tau <- x$result.df$Tau[1]
   ini.par <- as.numeric(x$argument[6])
+  propensity <- as.numeric(data[,x$argument[5]])
 
   ## Check propensity score
   if(model=="logistic"){
@@ -143,10 +144,10 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=920818, formula, model="logi
       stop("\n Error: If model is not equal to \"logistic\", then \"caret\" package needed for this function to work. Please install it.")
     }
     set.seed(seed)
-    ps.present <- as.numeric(predict(caret::train(form=formula, data=data, method=model, verbose=FALSE, ...),
-                                     newdata=data, type="prob")[,2])
+    model.ps <- caret::train(form=formula, data=data, method=model, verbose=FALSE, ...)
+    ps.present <- as.numeric(predict(model.ps, newdata=data, type="prob")[, 2])
   }
-  stopcond <- identical(ps.present, data[,x$argument[5]])
+  stopcond <- identical(ps.present, propensity)
 
   if (stopcond==FALSE) {
     stop("\n Error: Formula used here may be different from its used in cacluating range of RMST.")
@@ -169,8 +170,8 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=920818, formula, model="logi
       if(!requireNamespace("caret", quietly=TRUE)) {
         stop("\n Error: If model is not equal to \"logistic\", then \"caret\" package needed for this function to work. Please install it.")
       }
-      dat.temp$Ps <- as.numeric(predict(caret::train(form=formula, data=dat.temp, method=model, verbose=FALSE, ...),
-                                        newdata=data, type="prob")[,2])
+      model.ps.temp <- caret::train(form=formula, data=dat.temp, method=model, verbose=FALSE, ...)
+      dat.temp$Ps <- as.numeric(predict(model.ps.temp,newdata=data, type="prob")[,2])
     }
 
     for(j in 1:length(lambda)){
@@ -192,7 +193,7 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=920818, formula, model="logi
       RMST.diff.min[(i-1)*length(lambda)+j] <- temp.re$result.df$RMST.diff.min
       RMST.diff.max[(i-1)*length(lambda)+j] <- temp.re$result.df$RMST.diff.max
 
-      if(verbose & ((i-1)*length(lambda)+j) %% 100 == 0){
+      if(verbose & ((i-1)*length(lambda)+j) %% (100*length(lambda)) == 0){
         cat(paste0("[", Sys.time(), "]"), (i-1)*length(lambda)+j,"th end! \n")
       }
     }
