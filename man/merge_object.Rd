@@ -2,18 +2,18 @@
 % Please edit documentation in R/merge_object.R
 \name{merge_object}
 \alias{merge_object}
-\title{Function to make object for plotting results of sensitivity analysis}
+\title{Function to merge \code{RMSTSens} objects about results of sensitivity analysis}
 \usage{
-merge_object(xxx)
+merge_object(x = list())
 }
 \arguments{
-\item{xxx}{An object or list of objects for class \code{RMSTSens}.}
+\item{x}{A list of objects for class \code{RMSTSens}. For example, list(result1, result2, result3, ...). See examples.}
 }
 \value{
-Dataframe of objects
+New merged \code{RMSTSens} object
 }
 \description{
-Function to make object for plotting results of sensitivity analysis
+Merge the \code{RMSTSens} object, which is the result of the previously performed analysis, and the additional \code{RMSTSens} objects, which are the results of the additional analyses.
 }
 \examples{
 dat <- gbsg
@@ -33,13 +33,13 @@ dat$Ps <- predict(denom.fit, type='response')
 results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
                             exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
                             use.multicore=TRUE, n.core=2,
-                            lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
-merge_object(results.approx2)
+                            lambda=c(1,1.5,2.0), tau=365.25*5, ini.par=1, verbose=FALSE)
+merge_object(x=list(results.approx2))
 
 results.approx3 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
                             exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
                             use.multicore=TRUE, n.core=2,
                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
-merge_object(list(results.approx2, results.approx3))
+merge_object(x=list(results.approx2, results.approx3))
 
 }

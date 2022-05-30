@@ -1,6 +1,6 @@
 #' @title Plot for sensitivity analysis
 #'
-#' @param object An object or list of objects for class \code{RMSTSens}. If the input is a list of several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.
+#' @param object An object or list of objects for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.
 #' @param alpha.ci It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9.
 #' @param alpha.range It refers to the opacity of range.Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.4.
 #' @param yscale 1, 10, 100, 1000, Default: 100.
@@ -46,11 +46,12 @@
 #'          axis.title.size=15, axis.text.size=12,
 #'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
 #'          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
-#'
+#' # Additional sensitivity analysis when lambda=1.7
 #' results.approx3 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
 #'                             exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
+#' # After Merging two results, plot the analysis results.
 #' autoplot(object=merge_object(list(results.approx2, results.approx3)),
 #'          alpha.ci=0.9, alpha.range=0.4,
 #'          yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
@@ -61,7 +62,7 @@
 #' \dontrun{
 #' # Bootstrap confidence interval
 #' re.ap.boot <- RMSTSens.ci(x=merge_object(list(results.approx2, results.approx3)),
-#'               B=40, level=0.95, seed=220524,
+#'           B=40, level=0.95, seed=220524,
 #'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
 #'           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
 #' autoplot(object=re.ap.boot, alpha.ci=0.9, alpha.range=0.4,

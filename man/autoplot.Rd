@@ -2,7 +2,7 @@
 % Please edit documentation in R/reexports.R
 \name{autoplot}
 \alias{autoplot}
-\title{Objects exported from other package}
+\title{Create a complete ggplot appropriate to a particular data type}
 \description{
 This object is imported from other package. Follow the links below to see its documentation.
 
