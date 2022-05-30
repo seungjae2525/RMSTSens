@@ -126,9 +126,15 @@ RMSTSens <- function(time, status,
     if (sum(data[,ps] < 0) + sum(data[,ps] > 1) > 0) {
       stop("\n Error: Propensity score must be between 0 and 1.")
     }
+    if (sum(data[,ps] == 0) + sum(data[,ps] == 1) > 0) {
+      stop("\n Error: There is a propensity score of 0 or 1.")
+    }
   } else if (is.vector(ps)) {
     if (sum(ps < 0) + sum(ps > 1) > 0) {
       stop("\n Error: Propensity score must be between 0 and 1.")
+    }
+    if (sum(ps == 0) + sum(ps == 1) > 0) {
+      stop("\n Error: There is a propensity score of 0 or 1.")
     }
     data$ps <- ps
     ps <- "ps"

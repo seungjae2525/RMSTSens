@@ -9,6 +9,7 @@
   object = object,
   alpha.ci = 0.9,
   alpha.range = 0.4,
+  smooth.par = 100,
   ytickdiff = 100,
   point.size = 1.4,
   h.width = 1,
@@ -31,6 +32,8 @@
 \item{alpha.ci}{It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9.}
 
 \item{alpha.range}{It refers to the opacity of range.Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.4.}
+
+\item{smooth.par}{Smooth parameter, Default=100.}
 
 \item{ytickdiff}{Distance between y-axis tick, Default: 100.}
 
@@ -86,7 +89,7 @@ results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
                             use.multicore=TRUE, n.core=2,
                             lambda=c(1,1.5,2.0), tau=365.25*5, ini.par=1, verbose=FALSE)
-autoplot(object=results.approx2, alpha.ci=0.9, alpha.range=0.4,
+autoplot(object=results.approx2, alpha.ci=0.9, alpha.range=0.4, smooth.par=100,
          ytickdiff=100, point.size=1.4, h.width=1,
          axis.title.size=15, axis.text.size=12,
          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -97,7 +100,7 @@ results.approx3 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             use.multicore=TRUE, n.core=2,
                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
 # After Merging two results, plot the analysis results.
-autoplot(object=merge_object(list(results.approx2, results.approx3)),
+autoplot(object=merge_object(list(results.approx2, results.approx3)), smooth.par=100,
          alpha.ci=0.9, alpha.range=0.4,
          ytickdiff=100, point.size=1.4, h.width=1,
          axis.title.size=15, axis.text.size=12,
@@ -110,7 +113,7 @@ re.ap.boot <- RMSTSens.ci(x=merge_object(list(results.approx2, results.approx3))
           B=40, level=0.95, seed=220524,
               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
-autoplot(object=re.ap.boot, alpha.ci=0.9, alpha.range=0.4,
+autoplot(object=re.ap.boot, alpha.ci=0.9, alpha.range=0.4, smooth.par=100,
          ytickdiff=100, point.size=1.4, h.width=1,
          axis.title.size=15, axis.text.size=12,
          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -118,7 +121,7 @@ autoplot(object=re.ap.boot, alpha.ci=0.9, alpha.range=0.4,
 }
 
 \dontrun{
-plot(results.approx2, alpha.ci=0.9, alpha.range=0.4,
+plot(results.approx2, alpha.ci=0.9, alpha.range=0.4, smooth.par=100,
      ytickdiff=100, point.size=1.4, h.width=1,
      axis.title.size=15, axis.text.size=12,
      save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",

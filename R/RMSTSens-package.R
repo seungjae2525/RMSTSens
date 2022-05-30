@@ -22,7 +22,7 @@
 #' @import optimParallel
 #' @import ggplot2
 #'
-#' @importFrom stats binomial glm optim predict qlogis quantile
+#' @importFrom stats binomial glm optim predict qlogis quantile spline
 #' @importFrom splines ns
 NULL
 

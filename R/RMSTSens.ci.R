@@ -8,6 +8,7 @@
 #' @param seed The seed number. If the propensity score was estimated using methods in the \code{caret} package, then enter the seed number used at that time.
 #' @param formula The formula for estimating propensity score. See Examples.
 #' @param model The method for estimating propensity score, Default: "logistic". If model is not "logistic", only models available in the \code{caret}package are available. See \url{http://topepo.github.io/caret/train-models-by-tag.html} for details to check a list of functions which can be inputted.
+#' @param trunc.prop Optional truncation percentile (0-0.5), Default: 0. E.g. when trunc.prop=0.01, the left tail is truncated to the 1st percentile, and the right tail is truncated to the 99th percentile. When specified, truncated propensity scores are returned.
 #' @param use.multicore Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE.
 #' @param n.core The number of cores to use, Default: parallel::detectCores()/2.
 #' @param verbose According to the verbose level, whether or not print the completion message for each \code{B}/100\emph{th} bootstrap, Default: TRUE.
@@ -68,7 +69,7 @@
 #'                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' re.ap.boot <- RMSTSens.ci(x=results.approx2, B=40, level=0.95, seed=220524,
 #'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-#'           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
+#'           model="logistic", trunc.prop=0, use.multicore=TRUE, n.core=2, verbose=TRUE)
 #' re.ap.boot
 #'
 #'
@@ -85,7 +86,7 @@
 #'                               lambda=c(1,1.5,2), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' re.rf <- RMSTSens.ci(x=results.approx.rf, B=40, level=0.95, seed=220528,
 #'          formula=factor(hormon)~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-#'       model="rf", use.multicore=TRUE, n.core=2, verbose=TRUE,
+#'       model="rf", trunc.prop=0.01, use.multicore=TRUE, n.core=2, verbose=TRUE,
 #'       trContol=ctrl)
 #' re.rf
 #' }
@@ -105,7 +106,7 @@
 #' @keywords methods
 #'
 #' @export
-RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logistic",
+RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logistic", trunc.prop=0,
                         use.multicore=TRUE, n.core=parallel::detectCores()/2, verbose=TRUE, ...){
 
   if (!inherits(x, "RMSTSens")){
@@ -122,6 +123,10 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logist
 
   if (use.multicore==TRUE & n.core > parallel::detectCores()) {
     stop("\n Error: \"n.core\" is more than the number of available cores.")
+  }
+
+  if (trunc.prop < 0 | trunc.prop > 0.5){
+    stop("\n Error: \"trunc.prop\" should be between 0 and 0.5.")
   }
 
   ## arguments and parameters used in previous range calculation
@@ -150,7 +155,7 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logist
   stopcond <- identical(ps.present, propensity)
 
   if (stopcond==FALSE) {
-    stop("\n Error: Formula used here may be different from its used in cacluating range of RMST.")
+    stop("\n Error: Formula used here may be different from the formula used to calculate range of RMST.")
   }
 
   ## Empty vector
@@ -172,6 +177,16 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logist
       }
       model.ps.temp <- caret::train(form=formula, data=dat.temp, method=model, verbose=FALSE, ...)
       dat.temp$PS <- as.numeric(predict(model.ps.temp, newdata=data, type="prob")[,2])
+    }
+
+    if(sum(dat.temp$PS == 0 | dat.temp$PS == 1) != 0){
+      warning("There is a propensity score of 0 or 1. 0 or 1 will be truncated by \"trunc.prop\". \n")
+
+      if (trunc.prop==0) {
+        stop("\n Error: If there is a propensity score of 0 or 1, \"trunc.prop\" should not be 0.")
+      }
+      dat.temp$PS <- ifelse(dat.temp$PS > quantile(dat.temp$PS, 1-trunc.prop), quantile(dat.temp$PS, 1-trunc.prop),
+                            ifelse(dat.temp$PS < quantile(dat.temp$PS, trunc.prop), quantile(dat.temp$PS, trunc.prop), dat.temp$PS))
     }
 
     for(j in 1:length(lambda)){

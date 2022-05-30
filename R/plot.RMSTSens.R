@@ -3,6 +3,7 @@
 #' @param object An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.
 #' @param alpha.ci It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9.
 #' @param alpha.range It refers to the opacity of range.Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.4.
+#' @param smooth.par Smooth parameter, Default=100.
 #' @param ytickdiff Distance between y-axis tick, Default: 100.
 #' @param point.size Point size of estimate of lower and upper for bias-adjusted RMST, Default: 1.4.
 #' @param h.width Horizon lines width, Default: 1.
@@ -39,7 +40,7 @@
 #'                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1,1.5,2.0), tau=365.25*5, ini.par=1, verbose=FALSE)
-#' autoplot(object=results.approx2, alpha.ci=0.9, alpha.range=0.4,
+#' autoplot(object=results.approx2, alpha.ci=0.9, alpha.range=0.4, smooth.par=100,
 #'          ytickdiff=100, point.size=1.4, h.width=1,
 #'          axis.title.size=15, axis.text.size=12,
 #'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -50,7 +51,7 @@
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' # After Merging two results, plot the analysis results.
-#' autoplot(object=merge_object(list(results.approx2, results.approx3)),
+#' autoplot(object=merge_object(list(results.approx2, results.approx3)), smooth.par=100,
 #'          alpha.ci=0.9, alpha.range=0.4,
 #'          ytickdiff=100, point.size=1.4, h.width=1,
 #'          axis.title.size=15, axis.text.size=12,
@@ -63,7 +64,7 @@
 #'           B=40, level=0.95, seed=220524,
 #'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
 #'           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
-#' autoplot(object=re.ap.boot, alpha.ci=0.9, alpha.range=0.4,
+#' autoplot(object=re.ap.boot, alpha.ci=0.9, alpha.range=0.4, smooth.par=100,
 #'          ytickdiff=100, point.size=1.4, h.width=1,
 #'          axis.title.size=15, axis.text.size=12,
 #'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -79,13 +80,13 @@
 #'
 #' @export
 autoplot.RMSTSens <- function(object=object,
-                              alpha.ci=0.9, alpha.range=0.4,
+                              alpha.ci=0.9, alpha.range=0.4, smooth.par=100,
                               ytickdiff=100, point.size=1.4, h.width=1,
                               axis.title.size=15, axis.text.size=12,
                               save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
                               save.plot.width=10, save.plot.height=6, save.plot.dpi=300, ...){
   autoplot_RMSTSens(xxx=object,
-                    alpha.ci=alpha.ci, alpha.range=alpha.range,
+                    alpha.ci=alpha.ci, alpha.range=alpha.range, smooth.par=smooth.par,
                     ytickdiff=ytickdiff, point.size=point.size, h.width=h.width,
                     axis.title.size=axis.title.size, axis.text.size=axis.text.size,
                     save.plot=save.plot, save.plot.name=save.plot.name,
@@ -104,7 +105,7 @@ autoplot.RMSTSens <- function(object=object,
 #'
 #' @examples
 #' \dontrun{
-#' plot(results.approx2, alpha.ci=0.9, alpha.range=0.4,
+#' plot(results.approx2, alpha.ci=0.9, alpha.range=0.4, smooth.par=100,
 #'      ytickdiff=100, point.size=1.4, h.width=1,
 #'      axis.title.size=15, axis.text.size=12,
 #'      save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -126,7 +127,7 @@ plot.RMSTSens <- function(x, ...) {
 
 #########---------------------------------------------------------------------------------------------
 autoplot_RMSTSens <- function(xxx=NULL,
-                              alpha.ci=NULL, alpha.range=NULL,
+                              alpha.ci=NULL, alpha.range=NULL, smooth.par=NULL,
                               ytickdiff=NULL, point.size=NULL, h.width=NULL,
                               axis.title.size=NULL, axis.text.size=NULL,
                               save.plot=FALSE, save.plot.name=NULL, save.plot.device=NULL,
@@ -136,7 +137,7 @@ autoplot_RMSTSens <- function(xxx=NULL,
   xx <- xxx$result.df
 
   ## Make the line smooth
-  smooth.par <- 2*length(xx$Lambda)-1
+  # smooth.par <- 2*length(xx$Lambda)-1
 
   ##
   if (length(xx$Lambda) == 1) {
@@ -194,25 +195,17 @@ autoplot_RMSTSens <- function(xxx=NULL,
               panel.grid.minor.y = element_blank())
 
     } else {
-      g1 <- ggplot(xx) +
-        stat_smooth(aes(x=Lambda, y=RMST.diff.min.lower, colour = "min"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.par) +
-        stat_smooth(aes(x=Lambda, y=RMST.diff.max.upper, colour = "max"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.par)
-      gg1 <- ggplot_build(g1)
+      s1 <- spline(xx$Lambda, xx$RMST.diff.min.lower, n=smooth.par)
+      s2 <- spline(xx$Lambda, xx$RMST.diff.max.upper, n=smooth.par)
+      s3 <- spline(xx$Lambda, xx$RMST.diff.min, n=smooth.par)
+      s4 <- spline(xx$Lambda, xx$RMST.diff.max, n=smooth.par)
 
-      g2 <- ggplot(xx) +
-        stat_smooth(aes(x=Lambda, y=RMST.diff.min, colour = "min"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.par) +
-        stat_smooth(aes(x=Lambda, y=RMST.diff.max, colour = "max"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.par)
-      gg2 <- ggplot_build(g2)
+      df <- data.frame(Lambda = s1$x,
+                       RMST.diff.min.lower = s1$y,
+                       RMST.diff.max.upper = s2$y,
+                       RMST.diff.min = s3$y,
+                       RMST.diff.max = s4$y)
 
-      df <- data.frame(Lambda = gg1$data[[1]]$x,
-                       RMST.diff.min.lower = gg1$data[[1]]$y,
-                       RMST.diff.max.upper = gg1$data[[2]]$y,
-                       RMST.diff.min = gg2$data[[1]]$y,
-                       RMST.diff.max = gg2$data[[2]]$y)
       df <- rbind(df, xx[,c("Lambda","RMST.diff.min.lower","RMST.diff.max.upper",
                             "RMST.diff.min","RMST.diff.max")])
       df <- df[order(df$Lambda),]
@@ -275,17 +268,13 @@ autoplot_RMSTSens <- function(xxx=NULL,
               panel.grid.minor.x = element_blank(),
               panel.grid.minor.y = element_blank())
     } else {
+      s3 <- spline(xx$Lambda, xx$RMST.diff.min, n=smooth.par)
+      s4 <- spline(xx$Lambda, xx$RMST.diff.max, n=smooth.par)
 
-      g2 <- ggplot(xx) +
-        stat_smooth(aes(x=Lambda, y=RMST.diff.min, colour = "min"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.par) +
-        stat_smooth(aes(x=Lambda, y=RMST.diff.max, colour = "max"),
-                    method = "glm", formula = y ~ splines::ns(x,2), n=smooth.par)
-      gg2 <- ggplot_build(g2)
+      df <- data.frame(Lambda = s3$x,
+                       RMST.diff.min = s3$y,
+                       RMST.diff.max = s4$y)
 
-      df <- data.frame(Lambda = gg2$data[[1]]$x,
-                       RMST.diff.min = gg2$data[[1]]$y,
-                       RMST.diff.max = gg2$data[[2]]$y)
       df <- rbind(df, xx[,c("Lambda","RMST.diff.min","RMST.diff.max")])
       df <- df[order(df$Lambda),]
       df <- df[!duplicated(round(df, 10), fromLast = TRUE),]

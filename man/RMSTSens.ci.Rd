@@ -11,6 +11,7 @@ RMSTSens.ci(
   seed = NULL,
   formula,
   model = "logistic",
+  trunc.prop = 0,
   use.multicore = TRUE,
   n.core = parallel::detectCores()/2,
   verbose = TRUE,
@@ -29,6 +30,8 @@ RMSTSens.ci(
 \item{formula}{The formula for estimating propensity score. See Examples.}
 
 \item{model}{The method for estimating propensity score, Default: "logistic". If model is not "logistic", only models available in the \code{caret}package are available. See \url{http://topepo.github.io/caret/train-models-by-tag.html} for details to check a list of functions which can be inputted.}
+
+\item{trunc.prop}{Optional truncation percentile (0-0.5), Default: 0. E.g. when trunc.prop=0.01, the left tail is truncated to the 1st percentile, and the right tail is truncated to the 99th percentile. When specified, truncated propensity scores are returned.}
 
 \item{use.multicore}{Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE.}
 
@@ -98,7 +101,7 @@ results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
 re.ap.boot <- RMSTSens.ci(x=results.approx2, B=40, level=0.95, seed=220524,
               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-          model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
+          model="logistic", trunc.prop=0, use.multicore=TRUE, n.core=2, verbose=TRUE)
 re.ap.boot
 
 
@@ -115,7 +118,7 @@ results.approx.rf <- RMSTSens(time="rfstime", status="status", exposure="hormon"
                               lambda=c(1,1.5,2), tau=365.25*5, ini.par=1, verbose=FALSE)
 re.rf <- RMSTSens.ci(x=results.approx.rf, B=40, level=0.95, seed=220528,
          formula=factor(hormon)~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-      model="rf", use.multicore=TRUE, n.core=2, verbose=TRUE,
+      model="rf", trunc.prop=0.01, use.multicore=TRUE, n.core=2, verbose=TRUE,
       trContol=ctrl)
 re.rf
 }
