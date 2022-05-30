@@ -16,7 +16,7 @@
 #'   \item{\code{er}}{Estrogen receptors (fmol/l)}
 #'   \item{\code{hormon}}{Hormonal therapy, 0= no, 1= yes}
 #'   \item{\code{rfstime}}{Recurrence free survival time; days to first of reccurence, death or last follow-up}
-#'   \item{\code{status}}{Status, 0= alive without recurrence, 1= recurrence or death}
+#'   \item{\code{status}}{Censoring indicator, 0= alive without recurrence, 1= recurrence or death}
 #'}
 #'
 #' @details These data sets are used in the paper by Royston and Altman (2013). The Rotterdam data is used to create a fitted model, and the GBSG data for validation of the model. The paper gives references for the data source.

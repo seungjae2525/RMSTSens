@@ -9,7 +9,6 @@
   object = object,
   alpha.ci = 0.9,
   alpha.range = 0.4,
-  yscale = 100,
   ytickdiff = 100,
   point.size = 1.4,
   h.width = 1,
@@ -27,39 +26,37 @@
 \method{plot}{RMSTSens}(x, ...)
 }
 \arguments{
-\item{object}{An object or list of objects for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.}
+\item{object}{An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.}
 
 \item{alpha.ci}{It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9.}
 
 \item{alpha.range}{It refers to the opacity of range.Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.4.}
 
-\item{yscale}{1, 10, 100, 1000, Default: 100.}
-
 \item{ytickdiff}{Distance between y-axis tick, Default: 100.}
 
-\item{point.size}{Size of estimate of lower and upper for bias-adjusted RMST.}
+\item{point.size}{Point size of estimate of lower and upper for bias-adjusted RMST, Default: 1.4.}
 
-\item{h.width}{Horizon lines width. By default, set to 1.}
+\item{h.width}{Horizon lines width, Default: 1.}
 
-\item{axis.title.size}{Size of x and y axis title.}
+\item{axis.title.size}{Size of x and y axis title, Default: 15.}
 
-\item{axis.text.size}{Size of x and y axis text.}
+\item{axis.text.size}{Size of x and y axis text, Default: 12.}
 
 \item{save.plot}{When TRUE, it will save image, Default: FALSE.}
 
-\item{save.plot.name}{File name to create on disk, Default: 'Plot'.}
+\item{save.plot.name}{File name to create on disk, Default: "Plot".}
 
-\item{save.plot.device}{Device to use. Can either be a device function (e.g. png), or one of "eps", "ps", "tex" (pictex), "pdf", "jpeg", "tiff", "png", "bmp", "svg" or "wmf" (windows only).}
+\item{save.plot.device}{Device to use. Can either of "png", "eps", "ps", "tex" (pictex), "pdf", "jpeg", "tiff", bmp", "svg" or "wmf" (windows only), Default: "png".}
 
-\item{save.plot.width}{Plot width size in units.}
+\item{save.plot.width}{Plot width size in units, Default: 10.}
 
-\item{save.plot.height}{Plot height size in units.}
+\item{save.plot.height}{Plot height size in units, Default: 6.}
 
-\item{save.plot.dpi}{Resolution of plot. By default, set to 300. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72). Applies only to raster output types.}
+\item{save.plot.dpi}{Resolution of plot, Default: 300. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72). Applies only to raster output types.}
 
 \item{...}{Further arguments (currently not used).}
 
-\item{x}{An object of class \code{RMSTSens}}
+\item{x}{An object for class \code{RMSTSens}.}
 }
 \value{
 Result plot for sensitivity analysis.
@@ -79,30 +76,30 @@ dat$er2 <- dat$er/1000
 
 ## Estimation of propensity score
 denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-                 data=dat, family=binomial(link='logit'))
-dat$Ps <- predict(denom.fit, type='response')
+                 data=dat, family=binomial(link="logit"))
+dat$Ps <- predict(denom.fit, type="response")
 
 ## Between-group difference in adjusted RMST based on shifted propensity score
 ## Adjusted RMST with not specified tau and with multiple lambda
 # Using approximate optimization method
-results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-                            exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
+results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
+                            level.exposed="1", ps="Ps", data=dat, methods="Approx",
                             use.multicore=TRUE, n.core=2,
                             lambda=c(1,1.5,2.0), tau=365.25*5, ini.par=1, verbose=FALSE)
 autoplot(object=results.approx2, alpha.ci=0.9, alpha.range=0.4,
-         yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+         ytickdiff=100, point.size=1.4, h.width=1,
          axis.title.size=15, axis.text.size=12,
          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 # Additional sensitivity analysis when lambda=1.7
-results.approx3 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-                            exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
+results.approx3 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
+                            level.exposed="1", ps="Ps", data=dat, methods="Approx",
                             use.multicore=TRUE, n.core=2,
                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
 # After Merging two results, plot the analysis results.
 autoplot(object=merge_object(list(results.approx2, results.approx3)),
          alpha.ci=0.9, alpha.range=0.4,
-         yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+         ytickdiff=100, point.size=1.4, h.width=1,
          axis.title.size=15, axis.text.size=12,
          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
@@ -114,7 +111,7 @@ re.ap.boot <- RMSTSens.ci(x=merge_object(list(results.approx2, results.approx3))
               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
 autoplot(object=re.ap.boot, alpha.ci=0.9, alpha.range=0.4,
-         yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+         ytickdiff=100, point.size=1.4, h.width=1,
          axis.title.size=15, axis.text.size=12,
          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
@@ -122,7 +119,7 @@ autoplot(object=re.ap.boot, alpha.ci=0.9, alpha.range=0.4,
 
 \dontrun{
 plot(results.approx2, alpha.ci=0.9, alpha.range=0.4,
-     yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+     ytickdiff=100, point.size=1.4, h.width=1,
      axis.title.size=15, axis.text.size=12,
      save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
      save.plot.width=10, save.plot.height=6, save.plot.dpi=300)

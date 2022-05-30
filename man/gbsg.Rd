@@ -17,7 +17,7 @@ A data frame with 686 rows and 11 variables:
 \item{\code{er}}{Estrogen receptors (fmol/l)}
 \item{\code{hormon}}{Hormonal therapy, 0= no, 1= yes}
 \item{\code{rfstime}}{Recurrence free survival time; days to first of reccurence, death or last follow-up}
-\item{\code{status}}{Status, 0= alive without recurrence, 1= recurrence or death}
+\item{\code{status}}{Censoring indicator, 0= alive without recurrence, 1= recurrence or death}
 }
 }
 \source{

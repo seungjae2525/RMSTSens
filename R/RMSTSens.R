@@ -5,12 +5,12 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #' @description Function for sensitivity analysis of unmeasured confounding for restricted mean survival time using propensity score.
 #'
 #' @param time The name of variable for time to event.
-#' @param status The name of variable for status (0 if censored, 1 if event).
+#' @param status The name of variable for censoring indicator (0 if censored, 1 if event).
 #' @param exposure The name of variable for exposure (0 if unexposed, 1 if exposed).
-#' @param exposed.ref.level Reference level in exposure variable, Default: 1.
+#' @param level.exposed Level for exposed group in exposure variable, Default: "1".
 #' @param ps The name of variable for propensity score variable or the vector for propensity score i.e., P(A=1|L).
 #' @param data A data frame in which contains the follow-up time (time), the event (status), the exposure (exposure), and the propensity score (ps).
-#' @param methods A character with the methods how to calculate the adjusted RMST ("Optim", "Approx", "LP1", "LP2"), Default: 'Approx'. See Details.
+#' @param methods A character with the methods how to calculate the adjusted RMST ("Optim", "Approx", "LP1", "LP2"), Default: "Approx". See Details.
 #' @param use.multicore Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE.
 #' @param n.core The number of cores to use, Default: parallel::detectCores()/2.
 #' @param lambda A scalar or vector for sensitivity parameter \eqn{\Lambda}, Default: 2.
@@ -39,7 +39,11 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #' The results for the \code{RMSTSens} are printed with the \code{\link{print.RMSTSens}} functions.
 #' To generate result plot comparing sensitivity parameters \eqn{\Lambda} with range of adjusted RMST based on shifted propensity score, use the \code{\link{autoplot.RMSTSens}} functions.
 #'
-#' @details To assess details of method for sensitivity analysis, see Lee et al. (2022).
+#' @details There are four possible methods for our sensitivity analysis.
+#' In general survival analysis setting, if the censoring rates in both exposure group are less than 0.7, the approximate optimization method (methods="Approx") is not inferior to the direct optimization method in terms of both bias and computational time.
+#' Otherwise, one may use the direct optimization method (methods="Optim") to perform the sensitivity analysis, although it takes slightly more computational time than the approximate optimization method.
+#' In special settings, to obtain the solution of optimization problem, only need to compute the objective function of linear fractional programming (methods="LP1" or methods="LP2) for at most m (the number of event) candidates of optimization parameters.
+#' To assess detail of methods and special settings, see Lee et al. (2022).
 #'
 #' @examples
 #' dat <- gbsg
@@ -50,31 +54,31 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #'
 #' ## Estimation of propensity score
 #' denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-#'                  data=dat, family=binomial(link='logit'))
-#' dat$Ps <- predict(denom.fit, type='response')
+#'                  data=dat, family=binomial(link="logit"))
+#' dat$Ps <- predict(denom.fit, type="response")
 #'
 #' ## Between-group difference in adjusted RMST based on shifted propensity score
 #' ## Adjusted RMST with tau equal to 5-year
 #' \dontrun{
 #' # Using direct optimization method
-#' results.optim <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-#'                           exposed.ref.level=1, ps='Ps', data=dat, methods='Optim',
+#' results.optim <- RMSTSens(time="rfstime", status="status", exposure="hormon",
+#'                           level.exposed="1", ps="Ps", data=dat, methods="Optim",
 #'                           use.multicore=TRUE, n.core=parallel::detectCores()/2,
 #'                           lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
 #' results.optim
 #' }
 #'
 #' # Using approximate optimization method
-#' results.approx <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-#'                            exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
+#' results.approx <- RMSTSens(time="rfstime", status="status", exposure="hormon",
+#'                            level.exposed="1", ps="Ps", data=dat, methods="Approx",
 #'                            use.multicore=TRUE, n.core=2,
 #'                            lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
 #' results.approx
 #'
 #' ## Adjusted RMST with not specified tau and with multiple lambda
 #' # Using approximate optimization method
-#' results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-#'                             exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
+#' results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
+#'                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' results.approx2
@@ -82,7 +86,7 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #' @author Seungjae Lee \email{seungjae2525@@gmail.com}
 #'
 #' @seealso
-#'  \code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{autoplot.RMSTSens}}
+#'  \code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{autoplot.RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}
 #'
 #' @references
 #' Bakbergenuly I, Hoaglin DC, Kulinskaya E (2020):
@@ -95,7 +99,7 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #'
 #' @export
 RMSTSens <- function(time, status,
-                     exposure, exposed.ref.level=1, ps, data,
+                     exposure, level.exposed="1", ps, data,
                      methods="Approx", use.multicore=TRUE, n.core=parallel::detectCores()/2,
                      lambda=2, tau=NULL, ini.par=1, verbose=FALSE) {
   if (!(methods %in% c("Optim", "Approx", "LP1", "LP2"))) {
@@ -127,7 +131,7 @@ RMSTSens <- function(time, status,
       stop("\n Error: Propensity score must be between 0 and 1.")
     }
     data$ps <- ps
-    ps <- 'ps'
+    ps <- "ps"
   } else {
     stop("\n Error: Propensity scores are not specified.")
   }
@@ -165,9 +169,9 @@ RMSTSens <- function(time, status,
   ## Set tau
   group <- unique(data[, exposure])
   .tau <- min(c(max(data[, time][data[, status] == 1 &
-                                   data[, exposure] == group[group != exposed.ref.level]]),
+                                   data[, exposure] == group[group != level.exposed]]),
                 max(data[, time][data[, status] == 1 &
-                                   data[, exposure] == exposed.ref.level])))
+                                   data[, exposure] == level.exposed])))
   if (is.null(tau)) {
     tau <- .tau
   } else if (tau > .tau) {
@@ -177,10 +181,10 @@ RMSTSens <- function(time, status,
 
   ## Make dataset for optimization
   dat.exposed <- optim_data(data, time=time, status=status, exposure=exposure,
-                            ps=ps, group=exposed.ref.level)
+                            ps=ps, group=level.exposed)
 
   dat.unexposed <- optim_data(data, time=time, status=status, exposure=exposure,
-                              ps=ps, group=group[group != exposed.ref.level])
+                              ps=ps, group=group[group != level.exposed])
 
   dat.exposed.event <- dat.exposed[dat.exposed$status == 1, ]
   dat.unexposed.event <- dat.unexposed[dat.unexposed$status == 1, ]
@@ -504,11 +508,11 @@ RMSTSens <- function(time, status,
   } else {
     ## If Lmabda is a vector
     result.df <- data.frame(matrix(NA, ncol = 17))
-    colnames(result.df) <- c('N','N.exposed','N.unexposed','N.event.exposed','N.event.unexposed',
-                             'cen.rate','cen.rate.exposed','cen.rate.unexposed',
-                             'Lambda','Tau','Method',
-                             'min.exposed','max.exposed','min.unexposed','max.unexposed',
-                             'RMST.diff.min','RMST.diff.max')
+    colnames(result.df) <- c("N","N.exposed","N.unexposed","N.event.exposed","N.event.unexposed",
+                             "cen.rate","cen.rate.exposed","cen.rate.unexposed",
+                             "Lambda","Tau","Method",
+                             "min.exposed","max.exposed","min.unexposed","max.unexposed",
+                             "RMST.diff.min","RMST.diff.max")
 
     for(i in 1:length(lambda)){
 
@@ -826,7 +830,7 @@ RMSTSens <- function(time, status,
   }
 
   data <- data
-  argument <- c(time, status, exposure, exposed.ref.level, ps, ini.par)
+  argument <- c(time, status, exposure, level.exposed, ps, ini.par)
 
   final.result <- list(data=data, argument=argument, result.df=result.df)
 

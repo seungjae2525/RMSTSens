@@ -7,10 +7,10 @@
 merge_object(x = list())
 }
 \arguments{
-\item{x}{A list of objects for class \code{RMSTSens}. For example, list(result1, result2, result3, ...). See examples.}
+\item{x}{A list of objects for class \code{RMSTSens}. For example, list(result1, result2, ...). See Examples.}
 }
 \value{
-New merged \code{RMSTSens} object
+New merged object for class \code{RMSTSens}
 }
 \description{
 Merge the \code{RMSTSens} object, which is the result of the previously performed analysis, and the additional \code{RMSTSens} objects, which are the results of the additional analyses.
@@ -24,20 +24,20 @@ dat$er2 <- dat$er/1000
 
 ## Estimation of propensity score
 denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-                 data=dat, family=binomial(link='logit'))
-dat$Ps <- predict(denom.fit, type='response')
+                 data=dat, family=binomial(link="logit"))
+dat$Ps <- predict(denom.fit, type="response")
 
 ## Between-group difference in adjusted RMST based on shifted propensity score
 ## Adjusted RMST with not specified tau and with multiple lambda
 # Using approximate optimization method
-results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-                            exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
+results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
+                            level.exposed="1", ps="Ps", data=dat, methods="Approx",
                             use.multicore=TRUE, n.core=2,
                             lambda=c(1,1.5,2.0), tau=365.25*5, ini.par=1, verbose=FALSE)
 merge_object(x=list(results.approx2))
 
-results.approx3 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-                            exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
+results.approx3 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
+                            level.exposed="1", ps="Ps", data=dat, methods="Approx",
                             use.multicore=TRUE, n.core=2,
                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
 merge_object(x=list(results.approx2, results.approx3))

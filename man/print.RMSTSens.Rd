@@ -7,11 +7,11 @@
 \method{print}{RMSTSens}(x, digits = max(1L, getOption("digits") - 3L), ...)
 }
 \arguments{
-\item{x}{an object of class \code{RMSTSens}.}
+\item{x}{An object of class \code{RMSTSens}.}
 
-\item{digits}{print digits, Default: max(1L, getOption("digits") - 3L).}
+\item{digits}{Print digits, Default: max(1L, getOption("digits") - 3L).}
 
-\item{...}{further arguments passed to or from other methods.}
+\item{...}{Further arguments (currently not used).}
 }
 \description{
 Print for objects of class \code{RMSTSens}.
@@ -28,31 +28,31 @@ dat$er2 <- dat$er/1000
 
 ## Estimation of propensity score
 denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-                 data=dat, family=binomial(link='logit'))
-dat$Ps <- predict(denom.fit, type='response')
+                 data=dat, family=binomial(link="logit"))
+dat$Ps <- predict(denom.fit, type="response")
 
 ## Between-group difference in adjusted RMST based on shifted propensity score
 ## Adjusted RMST with tau equal to 5-year
 \dontrun{
 # Using direct optimization method
-results.optim <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-                          exposed.ref.level=1, ps='Ps', data=dat, methods='Optim',
+results.optim <- RMSTSens(time="rfstime", status="status", exposure="hormon",
+                          level.exposed="1", ps="Ps", data=dat, methods="Optim",
                           use.multicore=TRUE, n.core=parallel::detectCores()/2,
                           lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
 print(results.optim)
 }
 
 # Using approximate optimization method
-results.approx <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-                           exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
+results.approx <- RMSTSens(time="rfstime", status="status", exposure="hormon",
+                           level.exposed="1", ps="Ps", data=dat, methods="Approx",
                            use.multicore=TRUE, n.core=2,
                            lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
 print(results.approx)
 
 ## Adjusted RMST with not specified tau and with multiple lambda
 # Using approximate optimization method
-results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-                            exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
+results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
+                            level.exposed="1", ps="Ps", data=dat, methods="Approx",
                             use.multicore=TRUE, n.core=2,
                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
 print(results.approx2)

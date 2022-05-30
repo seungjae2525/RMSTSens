@@ -8,7 +8,7 @@ RMSTSens.ci(
   x,
   B = 1000,
   level = 0.95,
-  seed = 920818,
+  seed = NULL,
   formula,
   model = "logistic",
   use.multicore = TRUE,
@@ -24,7 +24,7 @@ RMSTSens.ci(
 
 \item{level}{The confidence level required (i.e., \eqn{1-\alpha}), Default: 0.95.}
 
-\item{seed}{The seed number. If the propensity score was estimated using methods in the \code{caret} package, then should enter the seed number used at that time.}
+\item{seed}{The seed number. If the propensity score was estimated using methods in the \code{caret} package, then enter the seed number used at that time.}
 
 \item{formula}{The formula for estimating propensity score. See Examples.}
 
@@ -34,7 +34,7 @@ RMSTSens.ci(
 
 \item{n.core}{The number of cores to use, Default: parallel::detectCores()/2.}
 
-\item{verbose}{According to the verbose level, whether or not print the completion message for each 100th bootstrap, Default: TRUE.}
+\item{verbose}{According to the verbose level, whether or not print the completion message for each \code{B}/100\emph{th} bootstrap, Default: TRUE.}
 
 \item{\dots}{Additional arguments passed on to \code{train} function in \code{caret} package such as \code{trControl}.}
 }
@@ -71,9 +71,9 @@ Function for constructing the confidence interval(s) for restricted mean surviva
 }
 \details{
 To assess details of method for sensitivity analysis, see Lee et al. (2022).
-When estimating the range of the adjusted RMST based on the shifted propensity score using \code{RMSTSens}, there is no need for the formula and seed number used to estimate the propensity score.
-However, when estimating the confidence interval, the formula and seed number are absolutely necessary.
-Note that propensity score should be estimated by using 1) \code{glm} that has a binomial distribution and logit link function or 2) \code{train} function in \code{caret} package.
+When estimating the range of the adjusted RMST based on the shifted propensity score using \code{RMSTSens} function, there is no need for the formula and model used to estimate the propensity score.
+However, when estimating the confidence interval, the formula and model are absolutely necessary.
+Note that to use \code{RMSTSens} function in our pacakge, propensity score should be estimated by using 1) \code{glm} that has a binomial distribution with logit link function or 2) \code{train} function in \code{caret} package.
 Also, if propensity score was estimated using methods in the \code{caret} package, then you should enter the seed number used at that time in "seed" argument.
 }
 \examples{
@@ -84,21 +84,21 @@ dat$size2 <- ifelse(dat$size <= 20, 0,
 dat$age2 <- dat$age/100
 dat$er2 <- dat$er/1000
 
-## Estimation of propensity score using logistic model
+## Estimation of propensity score
 denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-                 data=dat, family=binomial(link='logit'))
-dat$Ps <- predict(denom.fit, type='response')
+                 data=dat, family=binomial(link="logit"))
+dat$Ps <- predict(denom.fit, type="response")
 
 ## Between-group difference in adjusted RMST based on shifted propensity score
 ## Adjusted RMST with not specified tau and with multiple lambda
 # Using approximate optimization method
-results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-                            exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
+results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
+                            level.exposed="1", ps="Ps", data=dat, methods="Approx",
                             use.multicore=TRUE, n.core=2,
                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
 re.ap.boot <- RMSTSens.ci(x=results.approx2, B=40, level=0.95, seed=220524,
               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-              model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
+          model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
 re.ap.boot
 
 
@@ -109,14 +109,14 @@ ctrl <- trainControl(method = "none") # no cross-validation
 model.rf <- train(factor(hormon)~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
                  data=dat, method="rf", verbose=FALSE, trContol=ctrl)
 dat$Ps.rf <- as.numeric(predict(model.rf, newdata=dat, type="prob")[, 2])
-results.approx.rf <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-                              exposed.ref.level=1, ps='Ps.rf', data=dat, methods='Approx',
+results.approx.rf <- RMSTSens(time="rfstime", status="status", exposure="hormon",
+                              level.exposed="1", ps="Ps.rf", data=dat, methods="Approx",
                               use.multicore=TRUE, n.core=2,
                               lambda=c(1,1.5,2), tau=365.25*5, ini.par=1, verbose=FALSE)
 re.rf <- RMSTSens.ci(x=results.approx.rf, B=40, level=0.95, seed=220528,
          formula=factor(hormon)~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-         model="rf", use.multicore=TRUE, n.core=2, verbose=TRUE,
-         trContol=ctrl)
+      model="rf", use.multicore=TRUE, n.core=2, verbose=TRUE,
+      trContol=ctrl)
 re.rf
 }
 
@@ -129,7 +129,7 @@ effect in meta-analysis of odds-ratios.
 DOI: 10.1002/jrsm.1404
 }
 \seealso{
-\code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{autoplot.RMSTSens}}
+\code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{autoplot.RMSTSens}}
 }
 \author{
 Seungjae Lee \email{seungjae2525@gmail.com}

@@ -1,21 +1,19 @@
 #' @title Plot for sensitivity analysis
 #'
-#' @param object An object or list of objects for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.
+#' @param object An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.
 #' @param alpha.ci It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9.
 #' @param alpha.range It refers to the opacity of range.Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.4.
-#' @param yscale 1, 10, 100, 1000, Default: 100.
 #' @param ytickdiff Distance between y-axis tick, Default: 100.
-#' @param point.size Size of estimate of lower and upper for bias-adjusted RMST.
-#' @param h.width Horizon lines width. By default, set to 1.
-#' @param axis.title.size Size of x and y axis title.
-#' @param axis.text.size Size of x and y axis text.
+#' @param point.size Point size of estimate of lower and upper for bias-adjusted RMST, Default: 1.4.
+#' @param h.width Horizon lines width, Default: 1.
+#' @param axis.title.size Size of x and y axis title, Default: 15.
+#' @param axis.text.size Size of x and y axis text, Default: 12.
 #' @param save.plot When TRUE, it will save image, Default: FALSE.
-#' @param save.plot.name File name to create on disk, Default: 'Plot'.
-#' @param save.plot.device Device to use. Can either be a device function (e.g. png), or one of "eps", "ps", "tex" (pictex), "pdf", "jpeg", "tiff", "png", "bmp", "svg" or "wmf" (windows only).
-#' @param save.plot.width Plot width size in units.
-#' @param save.plot.height Plot height size in units.
-#' @param save.plot.dpi Resolution of plot. By default, set to 300. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72). Applies only to raster output types.
-#' @param save.plot.height Plot height size in units.
+#' @param save.plot.name File name to create on disk, Default: "Plot".
+#' @param save.plot.device Device to use. Can either of "png", "eps", "ps", "tex" (pictex), "pdf", "jpeg", "tiff", bmp", "svg" or "wmf" (windows only), Default: "png".
+#' @param save.plot.width Plot width size in units, Default: 10.
+#' @param save.plot.height Plot height size in units, Default: 6.
+#' @param save.plot.dpi Resolution of plot, Default: 300. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72). Applies only to raster output types.
 #' @param ... Further arguments (currently not used).
 #'
 #' @return Result plot for sensitivity analysis.
@@ -31,30 +29,30 @@
 #'
 #' ## Estimation of propensity score
 #' denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-#'                  data=dat, family=binomial(link='logit'))
-#' dat$Ps <- predict(denom.fit, type='response')
+#'                  data=dat, family=binomial(link="logit"))
+#' dat$Ps <- predict(denom.fit, type="response")
 #'
 #' ## Between-group difference in adjusted RMST based on shifted propensity score
 #' ## Adjusted RMST with not specified tau and with multiple lambda
 #' # Using approximate optimization method
-#' results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-#'                             exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
+#' results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
+#'                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1,1.5,2.0), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' autoplot(object=results.approx2, alpha.ci=0.9, alpha.range=0.4,
-#'          yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+#'          ytickdiff=100, point.size=1.4, h.width=1,
 #'          axis.title.size=15, axis.text.size=12,
 #'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
 #'          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 #' # Additional sensitivity analysis when lambda=1.7
-#' results.approx3 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-#'                             exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
+#' results.approx3 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
+#'                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' # After Merging two results, plot the analysis results.
 #' autoplot(object=merge_object(list(results.approx2, results.approx3)),
 #'          alpha.ci=0.9, alpha.range=0.4,
-#'          yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+#'          ytickdiff=100, point.size=1.4, h.width=1,
 #'          axis.title.size=15, axis.text.size=12,
 #'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
 #'          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
@@ -66,7 +64,7 @@
 #'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
 #'           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
 #' autoplot(object=re.ap.boot, alpha.ci=0.9, alpha.range=0.4,
-#'          yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+#'          ytickdiff=100, point.size=1.4, h.width=1,
 #'          axis.title.size=15, axis.text.size=12,
 #'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
 #'          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
@@ -82,13 +80,13 @@
 #' @export
 autoplot.RMSTSens <- function(object=object,
                               alpha.ci=0.9, alpha.range=0.4,
-                              yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+                              ytickdiff=100, point.size=1.4, h.width=1,
                               axis.title.size=15, axis.text.size=12,
                               save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
                               save.plot.width=10, save.plot.height=6, save.plot.dpi=300, ...){
   autoplot_RMSTSens(xxx=object,
                     alpha.ci=alpha.ci, alpha.range=alpha.range,
-                    yscale=yscale, ytickdiff=ytickdiff, point.size=point.size, h.width=h.width,
+                    ytickdiff=ytickdiff, point.size=point.size, h.width=h.width,
                     axis.title.size=axis.title.size, axis.text.size=axis.text.size,
                     save.plot=save.plot, save.plot.name=save.plot.name,
                     save.plot.device=save.plot.device, save.plot.width=save.plot.width,
@@ -102,12 +100,12 @@ autoplot.RMSTSens <- function(object=object,
 #'
 #' @description Plot for sensitivity analysis either or both of range and confidence interval for bias-adjusted restricted mean survival time.
 #'
-#' @param x An object of class \code{RMSTSens}
+#' @param x An object for class \code{RMSTSens}.
 #'
 #' @examples
 #' \dontrun{
 #' plot(results.approx2, alpha.ci=0.9, alpha.range=0.4,
-#'      yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+#'      ytickdiff=100, point.size=1.4, h.width=1,
 #'      axis.title.size=15, axis.text.size=12,
 #'      save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
 #'      save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
@@ -129,7 +127,7 @@ plot.RMSTSens <- function(x, ...) {
 #########---------------------------------------------------------------------------------------------
 autoplot_RMSTSens <- function(xxx=NULL,
                               alpha.ci=NULL, alpha.range=NULL,
-                              yscale=NULL, ytickdiff=NULL, point.size=NULL, h.width=NULL,
+                              ytickdiff=NULL, point.size=NULL, h.width=NULL,
                               axis.title.size=NULL, axis.text.size=NULL,
                               save.plot=FALSE, save.plot.name=NULL, save.plot.device=NULL,
                               save.plot.width=NULL, save.plot.height=NULL, save.plot.dpi=NULL, ...) {
@@ -147,6 +145,7 @@ autoplot_RMSTSens <- function(xxx=NULL,
 
   ## Plot
   Lambda <- RMST.diff.min.lower <- RMST.diff.max.upper <- RMST.diff.min <- RMST.diff.max <- NULL
+  yscale <- 10^(floor(log10(ytickdiff)))
   if("RMST.diff.max.upper" %in% colnames(xx)){
     ylabel <- seq(floor(min(xx$RMST.diff.min.lower)/yscale)*yscale,
                   ceiling(max(xx$RMST.diff.max.upper)/yscale)*yscale, ytickdiff)
