@@ -56,12 +56,12 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #' ## Between-group difference in adjusted RMST based on shifted propensity score
 #' ## Adjusted RMST with tau equal to 5-year
 #' \dontrun{
-#'   # Using direct optimization method
-#'   results.optim <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-#'                             exposed.ref.level=1, ps='Ps', data=dat, methods='Optim',
-#'                             use.multicore=TRUE, n.core=parallel::detectCores()/2,
-#'                             lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
-#'   results.optim
+#' # Using direct optimization method
+#' results.optim <- RMSTSens(time='rfstime', status='status', exposure='hormon',
+#'                           exposed.ref.level=1, ps='Ps', data=dat, methods='Optim',
+#'                           use.multicore=TRUE, n.core=parallel::detectCores()/2,
+#'                           lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
+#' results.optim
 #' }
 #'
 #' # Using approximate optimization method
@@ -534,7 +534,7 @@ RMSTSens <- function(time, status,
 
       } else {
         if (methods == "Optim") {
-          if (ini.par > lambda | ini.par < (1/lambda)) {
+          if (ini.par > lambda[i] | ini.par < (1/lambda[i])) {
             stop("\n Error: \"ini.par\" must be between 1/Lambda and Lambda.")
           } else {
             ## If the optimParallel package is not available

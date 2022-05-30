@@ -33,7 +33,7 @@ RMSTSens(
 
 \item{data}{A data frame in which contains the follow-up time (time), the event (status), the exposure (exposure), and the propensity score (ps).}
 
-\item{methods}{A character with the methods how to calculate the adjusted RMST ("Optim", "Approx", "LP1", "LP2"), Default: 'Approx'.}
+\item{methods}{A character with the methods how to calculate the adjusted RMST ("Optim", "Approx", "LP1", "LP2"), Default: 'Approx'. See Details.}
 
 \item{use.multicore}{Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE.}
 
@@ -90,12 +90,12 @@ dat$Ps <- predict(denom.fit, type='response')
 ## Between-group difference in adjusted RMST based on shifted propensity score
 ## Adjusted RMST with tau equal to 5-year
 \dontrun{
-  # Using direct optimization method
-  results.optim <- RMSTSens(time='rfstime', status='status', exposure='hormon',
-                            exposed.ref.level=1, ps='Ps', data=dat, methods='Optim',
-                            use.multicore=TRUE, n.core=parallel::detectCores()/2,
-                            lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
-  results.optim
+# Using direct optimization method
+results.optim <- RMSTSens(time='rfstime', status='status', exposure='hormon',
+                          exposed.ref.level=1, ps='Ps', data=dat, methods='Optim',
+                          use.multicore=TRUE, n.core=parallel::detectCores()/2,
+                          lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
+results.optim
 }
 
 # Using approximate optimization method

@@ -1,6 +1,6 @@
 #' @title Plot for sensitivity analysis
 #'
-#' @param object An object or list of objects for class \code{RMSTSens}.
+#' @param object An object or list of objects for class \code{RMSTSens}. If the input is a list of several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.
 #' @param alpha.ci It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9.
 #' @param alpha.range It refers to the opacity of range.Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.4.
 #' @param yscale 1, 10, 100, 1000, Default: 100.
@@ -20,7 +20,7 @@
 #'
 #' @return Result plot for sensitivity analysis.
 #'
-#' @details If the object contains results of bootstrap confidence interval, then it will return plot of range and confidence interval for bias-adjusted restricted mean survival time, otherwise it will only plot of range for bias-adjusted restricted mean survival time
+#' @details If the object contains results of bootstrap confidence interval, then it will return plot of range and confidence interval for bias-adjusted restricted mean survival time, otherwise it will only plot of range for bias-adjusted restricted mean survival time.
 #'
 #' @examples
 #' dat <- gbsg
@@ -40,8 +40,19 @@
 #' results.approx2 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
 #'                             exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
 #'                             use.multicore=TRUE, n.core=2,
-#'                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
+#'                             lambda=c(1,1.5,2.0), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' autoplot(object=results.approx2, alpha.ci=0.9, alpha.range=0.4,
+#'          yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
+#'          axis.title.size=15, axis.text.size=12,
+#'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
+#'          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
+#'
+#' results.approx3 <- RMSTSens(time='rfstime', status='status', exposure='hormon',
+#'                             exposed.ref.level=1, ps='Ps', data=dat, methods='Approx',
+#'                             use.multicore=TRUE, n.core=2,
+#'                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
+#' autoplot(object=merge_object(list(results.approx2, results.approx3)),
+#'          alpha.ci=0.9, alpha.range=0.4,
 #'          yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
 #'          axis.title.size=15, axis.text.size=12,
 #'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -49,7 +60,8 @@
 #'
 #' \dontrun{
 #' # Bootstrap confidence interval
-#' re.ap.boot <- RMSTSens.ci(x=results.approx2, B=40, level=0.95, seed=220524,
+#' re.ap.boot <- RMSTSens.ci(x=merge_object(list(results.approx2, results.approx3)),
+#'               B=40, level=0.95, seed=220524,
 #'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
 #'           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
 #' autoplot(object=re.ap.boot, alpha.ci=0.9, alpha.range=0.4,
@@ -60,14 +72,14 @@
 #' }
 #'
 #' @seealso
-#'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}
+#'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{make_object}}
 #'
 #' @import ggplot2
 #'
 #' @rdname autoplot.RMSTSens
 #'
 #' @export
-autoplot.RMSTSens <- function(object,
+autoplot.RMSTSens <- function(object=object,
                               alpha.ci=0.9, alpha.range=0.4,
                               yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
                               axis.title.size=15, axis.text.size=12,
@@ -90,8 +102,8 @@ autoplot.RMSTSens <- function(object,
 #' @description Plot for sensitivity analysis either or both of range and confidence interval for bias-adjusted restricted mean survival time.
 #'
 #' @param x An object of class \code{RMSTSens}
-#' @examples
 #'
+#' @examples
 #' \dontrun{
 #' plot(results.approx2, alpha.ci=0.9, alpha.range=0.4,
 #'      yscale=100, ytickdiff=100, point.size=1.4, h.width=1,
@@ -120,25 +132,9 @@ autoplot_RMSTSens <- function(xxx=NULL,
                               axis.title.size=NULL, axis.text.size=NULL,
                               save.plot=FALSE, save.plot.name=NULL, save.plot.device=NULL,
                               save.plot.width=NULL, save.plot.height=NULL, save.plot.dpi=NULL, ...) {
-  if(is.data.frame(xxx$data)){ # an object
-    if (!inherits(xxx, "RMSTSens")){
-      stop("Argument 'object' must be an object of class \"RMSTSens\".")
-    }
-    xx <- xxx$result.df
 
-  } else { # a list of objects
-    xx <- xxx[[1]]$result.df
-
-    for(i in 1:length(xxx)){
-      if (!inherits(xxx[[i]], "RMSTSens")){
-        stop("Argument 'object' must be an object of class \"RMSTSens\".")
-      }
-      xx <- rbind(xx, xxx[[i]]$result.df)
-    }
-
-    ## Remove duplicates
-    xx <- unique(xx)
-  }
+  ##
+  xx <- xxx$result.df
 
   ## Make the line smooth
   smooth.par <- 2*length(xx$Lambda)-1
@@ -325,3 +321,6 @@ autoplot_RMSTSens <- function(xxx=NULL,
 
   return(g)
 }
+
+
+
