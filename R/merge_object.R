@@ -2,7 +2,7 @@
 #'
 #' @param xxx An object or list of objects for class \code{RMSTSens}.
 #'
-#' @rdname make_object
+#' @rdname merge_object
 #'
 #' @return Dataframe of objects
 #'
