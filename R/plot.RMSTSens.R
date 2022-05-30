@@ -1,6 +1,6 @@
 #' @title Plot for sensitivity analysis
 #'
-#' @param object An object of class \code{RMSTSens}
+#' @param object An object or list of objects for class \code{RMSTSens}.
 #' @param alpha.ci It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9.
 #' @param alpha.range It refers to the opacity of range.Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.4.
 #' @param yscale 1, 10, 100, 1000, Default: 100.
@@ -120,19 +120,35 @@ autoplot_RMSTSens <- function(xxx=NULL,
                               axis.title.size=NULL, axis.text.size=NULL,
                               save.plot=FALSE, save.plot.name=NULL, save.plot.device=NULL,
                               save.plot.width=NULL, save.plot.height=NULL, save.plot.dpi=NULL, ...) {
-  if (!inherits(xxx, "RMSTSens")){
-    stop("Argument 'object' must be an object of class \"RMSTSens\".")
+  if(is.data.frame(xxx$data)){ # an object
+    if (!inherits(xxx, "RMSTSens")){
+      stop("Argument 'object' must be an object of class \"RMSTSens\".")
+    }
+    xx <- xxx$result.df
+
+  } else { # a list of objects
+    xx <- xxx[[1]]$result.df
+
+    for(i in 1:length(xxx)){
+      if (!inherits(xxx[[i]], "RMSTSens")){
+        stop("Argument 'object' must be an object of class \"RMSTSens\".")
+      }
+      xx <- rbind(xx, xxx[[i]]$result.df)
+    }
+
+    ## Remove duplicates
+    xx <- unique(xx)
   }
 
-  xx <- xxx$result.df
-  xx <- ggplot2::fortify(xx)
-
+  ## Make the line smooth
   smooth.par <- 2*length(xx$Lambda)-1
 
+  ##
   if (length(xx$Lambda) == 1) {
     stop("\n Error: To plot the sensitivity analysis results, \"lambda\" must be a vector.")
   }
 
+  ## Plot
   Lambda <- RMST.diff.min.lower <- RMST.diff.max.upper <- RMST.diff.min <- RMST.diff.max <- NULL
   if("RMST.diff.max.upper" %in% colnames(xx)){
     ylabel <- seq(floor(min(xx$RMST.diff.min.lower)/yscale)*yscale,

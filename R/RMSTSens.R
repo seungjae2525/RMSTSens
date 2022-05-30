@@ -10,7 +10,7 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #' @param exposed.ref.level Reference level in exposure variable, Default: 1.
 #' @param ps The name of variable for propensity score variable or the vector for propensity score i.e., P(A=1|L).
 #' @param data A data frame in which contains the follow-up time (time), the event (status), the exposure (exposure), and the propensity score (ps).
-#' @param methods A character with the methods how to calculate the adjusted RMST ("Optim", "Approx", "LP1", "LP2"), Default: 'Approx'.
+#' @param methods A character with the methods how to calculate the adjusted RMST ("Optim", "Approx", "LP1", "LP2"), Default: 'Approx'. See Details.
 #' @param use.multicore Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE.
 #' @param n.core The number of cores to use, Default: parallel::detectCores()/2.
 #' @param lambda A scalar or vector for sensitivity parameter \eqn{\Lambda}, Default: 2.
@@ -150,6 +150,11 @@ RMSTSens <- function(time, status,
     stop("\n Error: If \"lambda\" is a vector, then it must include 1.")
   }
 
+  if(length(lambda) != length(unique(lambda))){
+    warning("There is a duplicate in \"lambda\". We will remove the duplicate \"lambda\".")
+    lambda <- unique(lambda)
+  }
+
   ## Shut down an R parallel cluster
   if(!is.null(getDefaultCluster())) try(parallel::setDefaultCluster(NULL), silent = TRUE)
   if(requireNamespace("doParallel", quietly=TRUE)) doParallel::stopImplicitCluster()
@@ -167,7 +172,7 @@ RMSTSens <- function(time, status,
     tau <- .tau
   } else if (tau > .tau) {
     ## If tau not specified, use the minimum of the largest observed event time in both groups.
-    warning("\"tau\" may have to smaller than the minimum of the largest observed event time in both groups.\n")
+    warning("\"tau\" may have to smaller than the minimum of the largest observed event time in both groups.")
   }
 
   ## Make dataset for optimization

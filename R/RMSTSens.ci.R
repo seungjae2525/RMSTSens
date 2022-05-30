@@ -171,7 +171,7 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=920818, formula, model="logi
         stop("\n Error: If model is not equal to \"logistic\", then \"caret\" package needed for this function to work. Please install it.")
       }
       model.ps.temp <- caret::train(form=formula, data=dat.temp, method=model, verbose=FALSE, ...)
-      dat.temp$PS <- as.numeric(predict(model.ps.temp,newdata=data, type="prob")[,2])
+      dat.temp$PS <- as.numeric(predict(model.ps.temp, newdata=data, type="prob")[,2])
     }
 
     for(j in 1:length(lambda)){
