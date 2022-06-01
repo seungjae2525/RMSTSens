@@ -179,7 +179,7 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logist
       stop("\n Error: If model is \"rf\", then \"randomForest\" package needed for this function to work. Please install it.")
     }
     set.seed(seed)
-    model.ps <- randomForest::randomForest(formula=formula, data=dat.temp, do.trace=FALSE, ...)
+    model.ps <- randomForest::randomForest(formula=formula, data=data, do.trace=FALSE, ...)
     ps.present <- as.numeric(predict(model.ps, type = "prob")[,2])
 
   } else if (model == "gbm"){
@@ -187,7 +187,7 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logist
       stop("\n Error: If model is \"gbm\", then \"gbm\" package needed for this function to work. Please install it.")
     }
     set.seed(seed)
-    model.ps <- gbm::gbm(formula=formula, data=dat.temp, distribution = "bernoulli", verbose=FALSE, ...)
+    model.ps <- gbm::gbm(formula=formula, data=data, distribution = "bernoulli", verbose=FALSE, ...)
     ps.present <- suppressMessages(as.numeric(predict(model.ps, type = "response")))
 
   } else {
