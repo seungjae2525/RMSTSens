@@ -7,7 +7,7 @@
 \method{print}{RMSTSens}(x, digits = max(1L, getOption("digits") - 3L), ...)
 }
 \arguments{
-\item{x}{An object of class \code{RMSTSens}.}
+\item{x}{An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.}
 
 \item{digits}{Print digits, Default: max(1L, getOption("digits") - 3L).}
 

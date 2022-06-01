@@ -19,17 +19,17 @@ RMSTSens.ci(
 )
 }
 \arguments{
-\item{x}{An object of class \code{RMSTSens}.}
+\item{x}{An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.}
 
 \item{B}{The number of bootstrap replicates, Default: 1000.}
 
 \item{level}{The confidence level required (i.e., \eqn{1-\alpha}), Default: 0.95.}
 
-\item{seed}{The seed number. If the propensity score was estimated using methods in the \code{caret} package, then enter the seed number used at that time.}
+\item{seed}{The seed number. If the propensity score was estimated using methods in the \code{randomForest} or \code{gbm} package, then enter the seed number used at that time.}
 
 \item{formula}{The formula for estimating propensity score. See Examples.}
 
-\item{model}{The method for estimating propensity score, Default: "logistic". If model is not "logistic", only models available in the \code{caret}package are available. See \url{http://topepo.github.io/caret/train-models-by-tag.html} for details to check a list of functions which can be inputted.}
+\item{model}{The method for estimating propensity score, Default: "logistic". "logistic", "rf", or "gbm" can be available. If model is not "logistic", \code{randomForest} or \code{gbm} package are available.}
 
 \item{trunc.prop}{Optional truncation percentile (0-0.5), Default: 0. E.g. when trunc.prop=0.01, the left tail is truncated to the 1st percentile, and the right tail is truncated to the 99th percentile. When specified, truncated propensity scores are returned.}
 
@@ -39,7 +39,7 @@ RMSTSens.ci(
 
 \item{verbose}{According to the verbose level, whether or not print the completion message for each \code{B}/100\emph{th} bootstrap, Default: TRUE.}
 
-\item{\dots}{Additional arguments passed on to \code{train} function in \code{caret} package such as \code{trControl}.}
+\item{\dots}{Additional arguments passed on to \code{randomForest} or \code{gbm} function in \code{randomForest} or \code{gbm} package.}
 }
 \value{
 The object is a data.frame with class \code{RMSTSens}. The function returns following components:
@@ -76,8 +76,8 @@ Function for constructing the confidence interval(s) for restricted mean surviva
 To assess details of method for sensitivity analysis, see Lee et al. (2022).
 When estimating the range of the adjusted RMST based on the shifted propensity score using \code{RMSTSens} function, there is no need for the formula and model used to estimate the propensity score.
 However, when estimating the confidence interval, the formula and model are absolutely necessary.
-Note that to use \code{RMSTSens} function in our pacakge, propensity score should be estimated by using 1) \code{glm} that has a binomial distribution with logit link function or 2) \code{train} function in \code{caret} package.
-Also, if propensity score was estimated using methods in the \code{caret} package, then you should enter the seed number used at that time in "seed" argument.
+Note that to use \code{RMSTSens.ci} function in our package, propensity score should be estimated by using 1) \code{glm} that has a binomial distribution with logit link function or 2) \code{randomForest} or \code{gbm} function in \code{randomForest} or \code{gbm} package.
+Also, if propensity score was estimated using methods in the \code{randomForest} or \code{gbm} package, then you should enter the seed number used at that time in "seed" argument.
 }
 \examples{
 \dontrun{
@@ -91,6 +91,7 @@ dat$er2 <- dat$er/1000
 denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
                  data=dat, family=binomial(link="logit"))
 dat$Ps <- predict(denom.fit, type="response")
+
 
 ## Between-group difference in adjusted RMST based on shifted propensity score
 ## Adjusted RMST with not specified tau and with multiple lambda
@@ -106,21 +107,49 @@ re.ap.boot
 
 
 ## Estimate of propensity score using random forest
-library(caret)
+library(randomForest)
 set.seed(220528)
-ctrl <- trainControl(method = "none") # no cross-validation
-model.rf <- train(factor(hormon)~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-                 data=dat, method="rf", verbose=FALSE, trContol=ctrl)
-dat$Ps.rf <- as.numeric(predict(model.rf, newdata=dat, type="prob")[, 2])
+model.rf <- randomForest(formula=factor(hormon)~age2+meno+size2+nodes+er2, data=dat)
+dat$Ps.rf <- as.numeric(predict(model.rf, type= "prob")[,2])
+sum(dat$Ps.rf== 0) + sum(dat$Ps.rf== 1) # There are some 0 or 1 values
+# Trimming the propensity score
+trunc.prop <- 0.01
+dat$Ps.rf <- ifelse(dat$Ps.rf > quantile(dat$Ps.rf, 1-trunc.prop),
+                    quantile(dat$Ps.rf, 1-trunc.prop),
+                    ifelse(dat$Ps.rf < quantile(dat$Ps.rf, trunc.prop),
+                           quantile(dat$Ps.rf, trunc.prop), dat$Ps.rf))
+sum(dat$Ps.rf== 0) + sum(dat$Ps.rf== 1)
+# Range of RMST
 results.approx.rf <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                               level.exposed="1", ps="Ps.rf", data=dat, methods="Approx",
                               use.multicore=TRUE, n.core=2,
                               lambda=c(1,1.5,2), tau=365.25*5, ini.par=1, verbose=FALSE)
+# CI of RMST
 re.rf <- RMSTSens.ci(x=results.approx.rf, B=40, level=0.95, seed=220528,
-         formula=factor(hormon)~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-      model="rf", trunc.prop=0.01, use.multicore=TRUE, n.core=2, verbose=TRUE,
-      trContol=ctrl)
+              formula=factor(hormon)~age2+meno+size2+nodes+er2,
+                     model="rf", trunc.prop=trunc.prop, use.multicore=TRUE, n.core=2, verbose=TRUE,
+              trContol=ctrl)
 re.rf
+
+
+## Estimate of propensity score using generalized boosted regression modeling
+library(gbm)
+set.seed(220528)
+model.gbm <- gbm(formula=hormon~age2+meno+size2+nodes+er2,
+                 data=dat, distribution= "bernoulli", verbose= FALSE)
+dat$Ps.gbm <- as.numeric(predict(model.gbm, type= "response"))
+sum(dat$Ps.gbm== 0) + sum(dat$Ps.gbm== 1)
+# Range of RMST
+results.approx.gbm <- RMSTSens(time="rfstime", status="status", exposure="hormon",
+                               level.exposed="1", ps="Ps.gbm", data=dat, methods="Approx",
+                             use.multicore=TRUE, n.core=2,
+                             lambda=c(1,1.5,2), tau=365.25*5, ini.par=1, verbose=FALSE)
+# CI of RMST
+re.gbm <- RMSTSens.ci(x=results.approx.gbm, B=40, level=0.95, seed=220528,
+                  formula=hormon~age2+meno+size2+nodes+er2,
+                      model="gbm", trunc.prop=0, use.multicore=TRUE, n.core=2, verbose=TRUE,
+                  trContol=ctrl)
+re.gbm
 }
 
 }

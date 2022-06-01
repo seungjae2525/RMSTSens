@@ -2,7 +2,7 @@
 #'
 #' @description Print for objects of class \code{RMSTSens}.
 #'
-#' @param x An object of class \code{RMSTSens}.
+#' @param x An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.
 #' @param digits Print digits, Default: max(1L, getOption("digits") - 3L).
 #' @param ... Further arguments (currently not used).
 #'
