@@ -59,14 +59,12 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #'
 #' ## Between-group difference in adjusted RMST based on shifted propensity score
 #' ## Adjusted RMST with tau equal to 5-year
-#' \dontrun{
 #' # Using direct optimization method
 #' results.optim <- RMSTSens(time="rfstime", status="status", exposure="hormon",
 #'                           level.exposed="1", ps="Ps", data=dat, methods="Optim",
-#'                           use.multicore=TRUE, n.core=parallel::detectCores()/2,
+#'                           use.multicore=TRUE, n.core=2,
 #'                           lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
 #' results.optim
-#' }
 #'
 #' # Using approximate optimization method
 #' results.approx <- RMSTSens(time="rfstime", status="status", exposure="hormon",
@@ -103,7 +101,7 @@ RMSTSens <- function(time, status,
                      methods="Approx", use.multicore=TRUE, n.core=parallel::detectCores()/2,
                      lambda=2, tau=NULL, ini.par=1, verbose=FALSE) {
   if (!(methods %in% c("Optim", "Approx", "LP1", "LP2"))) {
-    stop("\n Error: Method must be \"Optim\", \"Approx\", \"LP1\", or \"LP2\".")
+    stop("\n Error: Method must be one of \"Optim\", \"Approx\", \"LP1\", or \"LP2\".")
   }
 
   if (sum(data[, time] < 0) > 0) {

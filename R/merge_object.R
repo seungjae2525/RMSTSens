@@ -51,6 +51,12 @@ merge_object <- function(x = list()){
         stop("Argument 'object' must be an object of class \"RMSTSens\".")
       }
       xx.data.frame <- rbind(xx.data.frame, x[[i]]$result.df)
+
+      if(i != 1){
+        if(!identical(as.numeric(x[[i-1]]$data[,x$argument[5]]), as.numeric(x[[i]]$data[,x$argument[5]]))){
+          stop("Each object of class \"RMSTSens\" has a different propensity score.")
+        }
+      }
     }
 
     ## Remove duplicates
