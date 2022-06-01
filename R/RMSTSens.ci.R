@@ -180,18 +180,22 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logist
     }
     set.seed(seed)
     model.ps <- randomForest::randomForest(formula=formula, data=data, do.trace=FALSE, ...)
-    ps.present <- as.numeric(predict(model.ps, type = "prob")[,2])
+    ps.present <- as.numeric(predict(model.ps, type="prob")[,2])
 
   } else if (model == "gbm"){
     if(!requireNamespace("gbm", quietly=TRUE)) {
       stop("\n Error: If model is \"gbm\", then \"gbm\" package needed for this function to work. Please install it.")
     }
     set.seed(seed)
-    model.ps <- gbm::gbm(formula=formula, data=data, distribution = "bernoulli", verbose=FALSE, ...)
-    ps.present <- suppressMessages(as.numeric(predict(model.ps, type = "response")))
+    model.ps <- gbm::gbm(formula=formula, data=data, distribution="bernoulli", verbose=FALSE, ...)
+    ps.present <- suppressMessages(as.numeric(predict(model.ps, type="response")))
 
   } else {
     stop("\n Error: model must be \"logistic\", \"rf\", or \"gbm\".")
+  }
+
+  if (trunc.prop == 0 & sum(propensity == 0) + sum(propensity == 1) != 0) {
+    stop("\n Error: Because there is a propensity score of 0 or 1, \"trunc.prop\" should not be 0.")
   }
 
   if (trunc.prop != 0) {
@@ -201,7 +205,7 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logist
 
   stopcond <- identical(ps.present, propensity)
 
-  if (stopcond==FALSE) {
+  if (stopcond == FALSE) {
     stop("\n Error: Formula used here may be different from the formula used to calculate range of RMST.")
   }
 
@@ -220,19 +224,14 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logist
       dat.temp$PS <- glm(formula, data=dat.temp, family=binomial(link="logit"))$fitted.values
     } else if (model == "rf") {
       model.ps.temp <- randomForest::randomForest(formula=formula, data=dat.temp, do.trace=FALSE, ...)
-      dat.temp$PS <- as.numeric(predict(model.ps.temp, type = "prob")[,2])
+      dat.temp$PS <- as.numeric(predict(model.ps.temp, type="prob")[,2])
     } else if (model == "gbm"){
-      model.ps.temp <- gbm::gbm(formula=formula, data=dat.temp, distribution = "bernoulli", verbose=FALSE, ...)
-      dat.temp$PS <- suppressMessages(as.numeric(predict(model.ps.temp, type = "response")))
+      model.ps.temp <- gbm::gbm(formula=formula, data=dat.temp, distribution="bernoulli", verbose=FALSE, ...)
+      dat.temp$PS <- suppressMessages(as.numeric(predict(model.ps.temp, type="response")))
     }
 
-    if(sum(dat.temp$PS == 0 | dat.temp$PS == 1) != 0){
-      warning(paste0("There is a propensity score of 0 or 1 in ",B,"-th replicate. 0 or 1 will be truncated by \"trunc.prop\". \n"))
-
-      if (trunc.prop==0) {
-        stop("\n Error: Because there is a propensity score of 0 or 1, \"trunc.prop\" should not be 0.")
-      }
-
+    if(sum(dat.temp$PS == 0) + sum(dat.temp$PS == 1) != 0){
+      warning(paste0("There is a propensity score of 0 or 1 in ",i,"-th replicate. 0 or 1 will be truncated by \"trunc.prop\". \n"))
       dat.temp$PS <- ifelse(dat.temp$PS > quantile(dat.temp$PS, 1-trunc.prop), quantile(dat.temp$PS, 1-trunc.prop),
                             ifelse(dat.temp$PS < quantile(dat.temp$PS, trunc.prop), quantile(dat.temp$PS, trunc.prop), dat.temp$PS))
     }
@@ -265,13 +264,13 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logist
   # which(avaiable.mintau < tau)
 
   ## Dataframe for summary results
-  results.summary.dat <- data.frame(min.exposd = min.exposd,
-                                    max.exposed = max.exposed,
-                                    min.unexposd = min.unexposd,
-                                    max.unexposed = max.unexposed,
-                                    RMST.diff.min = RMST.diff.min,
-                                    RMST.diff.max = RMST.diff.max,
-                                    lambda = rep(lambda, times=B))
+  results.summary.dat <- data.frame(min.exposd=min.exposd,
+                                    max.exposed=max.exposed,
+                                    min.unexposd=min.unexposd,
+                                    max.unexposed=max.unexposed,
+                                    RMST.diff.min=RMST.diff.min,
+                                    RMST.diff.max=RMST.diff.max,
+                                    lambda=rep(lambda, times=B))
 
   ## Confidence interval
   aa <- (1 - level)/2 # alpha/2
