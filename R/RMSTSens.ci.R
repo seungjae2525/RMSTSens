@@ -194,6 +194,10 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logist
     stop("\n Error: model must be \"logistic\", \"rf\", or \"gbm\".")
   }
 
+  if (trunc.prop != 0) {
+    ps.present <- ifelse(ps.present > quantile(ps.present, 1-trunc.prop), quantile(ps.present, 1-trunc.prop),
+                         ifelse(ps.present < quantile(ps.present, trunc.prop), quantile(ps.present, trunc.prop), ps.present))
+  }
 
   stopcond <- identical(ps.present, propensity)
 
@@ -223,11 +227,12 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logist
     }
 
     if(sum(dat.temp$PS == 0 | dat.temp$PS == 1) != 0){
-      warning("There is a propensity score of 0 or 1. 0 or 1 will be truncated by \"trunc.prop\". \n")
+      warning(paste0("There is a propensity score of 0 or 1 in ",B,"-th replicate. 0 or 1 will be truncated by \"trunc.prop\". \n"))
 
       if (trunc.prop==0) {
-        stop("\n Error: If there is a propensity score of 0 or 1, \"trunc.prop\" should not be 0.")
+        stop("\n Error: Because there is a propensity score of 0 or 1, \"trunc.prop\" should not be 0.")
       }
+
       dat.temp$PS <- ifelse(dat.temp$PS > quantile(dat.temp$PS, 1-trunc.prop), quantile(dat.temp$PS, 1-trunc.prop),
                             ifelse(dat.temp$PS < quantile(dat.temp$PS, trunc.prop), quantile(dat.temp$PS, trunc.prop), dat.temp$PS))
     }
