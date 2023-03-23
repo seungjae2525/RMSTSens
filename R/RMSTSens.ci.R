@@ -1,17 +1,23 @@
-#' @title Confidence interval for bias-adjusted restricted mean survival time
+#' @title Confidence interval for population sensitivity range
 #'
-#' @description Function for constructing the confidence interval(s) for restricted mean survival time using propensity score.
+#' @description Function for constructing the percentile bootstrap confidence interval(s) for population sensitivity range.
 #'
-#' @param x An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.
+#' @param x An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects,
+#' use the \code{merge_object} function. See \code{merge_object}.
 #' @param B The number of bootstrap replicates, Default: 1000.
 #' @param level The confidence level required (i.e., \eqn{1-\alpha}), Default: 0.95.
-#' @param seed The seed number. If the propensity score was estimated using methods in the \code{randomForest} or \code{gbm} package, then enter the seed number used at that time.
+#' @param seed The seed number. If the propensity score was estimated using methods in the \code{randomForest} or \code{gbm} package,
+#' then enter the seed number used at that time.
 #' @param formula The formula for estimating propensity score. See Examples.
-#' @param model The method for estimating propensity score, Default: "logistic". "logistic", "rf", or "gbm" can be available. If model is not "logistic", \code{randomForest} or \code{gbm} package are available.
-#' @param trunc.prop Optional truncation percentile (0-0.5), Default: 0. E.g. when trunc.prop=0.01, the left tail is truncated to the 1st percentile, and the right tail is truncated to the 99th percentile. When specified, truncated propensity scores are returned.
+#' @param model The method for estimating propensity score, Default: "logistic". "logistic", "rf", or "gbm" can be available.
+#'  If model is not "logistic", \code{randomForest} or \code{gbm} package is needed.
+#' @param trunc.prop Optional truncation percentile (0-0.5), Default: 0.
+#' E.g. when trunc.prop=0.01, the left tail is truncated to the 1st percentile,
+#' and the right tail is truncated to the 99th percentile. When specified, truncated propensity scores are returned.
 #' @param use.multicore Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE.
-#' @param n.core The number of cores to use, Default: parallel::detectCores()/2.
-#' @param verbose According to the verbose level, whether or not print the completion message for each \code{B}/100\emph{th} bootstrap, Default: TRUE.
+#' @param n.core The number of CPU cores to use, Default: parallel::detectCores()/2.
+#' @param verbose Conditional on the verbose level.
+#' According to the verbose level, whether or not print the completion message for each \code{B}/100\emph{th} bootstrap, Default: TRUE.
 #' @param \dots Additional arguments passed on to \code{randomForest} or \code{gbm} function in \code{randomForest} or \code{gbm} package.
 #'
 #' @return The object is a data.frame with class \code{RMSTSens}. The function returns following components:
@@ -23,29 +29,33 @@
 #' \item{cen.rate}{Total censoring rate}
 #' \item{cen.rate.exposed}{Censoring rate in exposed group}
 #' \item{cen.rate.unexposed}{Censoring rate in unexposed group}
-#' \item{Lambda}{A scalar or vector of sensitivity parameter \eqn{\Lambda} used}
-#' \item{Tau}{User-specific time point \eqn{\tau}, If tau not specified (NULL), use the minimum between the largest observed event time in each groups}
+#' \item{Lambda}{A scalar or vector of sensitivity parameter(s) \eqn{\Lambda} used}
+#' \item{Tau}{User-specific time point \eqn{\tau}, If tau not specified (NULL), use the minimum value of last event times in each group}
 #' \item{Method}{A optimization method used}
-#' \item{min.exposed}{The minimum of adjusted RMST based on the shifted propensity score for exposed group}
-#' \item{max.exposed}{The maximum of adjusted RMST based on the shifted propensity score for exposed group}
-#' \item{min.unexposed}{The minimum of adjusted RMST based on the shifted propensity score for unexposed group}
-#' \item{max.unexposed}{The maximum of adjusted RMST based on the shifted propensity score for unexposed group}
-#' \item{RMST.diff.min}{Lower bound of point estimate for between-group difference in adjusted RMST based on shifted propensity score}
-#' \item{RMST.diff.max}{Upper bound of point estimate for between-group difference in adjusted RMST based on shifted propensity score}
-#' \item{RMST.diff.min.lower}{Lower bound of (\eqn{1-\alpha})% confidence interval for between-group difference in adjusted RMST based on shifted propensity score}
-#' \item{RMST.diff.max.upper}{Upper bound of (\eqn{1-\alpha})% confidence interval for between-group difference in adjusted RMST based on shifted propensity score}
-#' \item{min.exposed.lower}{Lower (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for exposed group}
-#' \item{max.exposed.upper}{Upper (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for exposed group}
-#' \item{min.unexposd.lower}{Lower (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for unexposed group}
-#' \item{max.unexposed.upper}{Upper (\eqn{\alpha/2})-quantile of adjusted RMST based on the shifted propensity score for unexposed group}
+#' \item{min.exposed}{The minimum value of adjusted RMST for exposed group}
+#' \item{max.exposed}{The maximum value of adjusted RMST for exposed group}
+#' \item{min.unexposed}{The minimum value of adjusted RMST for unexposed group}
+#' \item{max.unexposed}{The maximum value of adjusted RMST for unexposed group}
+#' \item{RMST.diff.min}{Lower bound of the sensitivity range for the difference in adjusted RMST}
+#' \item{RMST.diff.max}{Upper bound of the sensitivity range for the difference in adjusted RMST}
+#' \item{min.exposed.lower}{Lower (\eqn{\alpha/2})-quantile of adjusted RMST for exposed group}
+#' \item{max.exposed.upper}{Upper (\eqn{\alpha/2})-quantile of adjusted RMST for exposed group}
+#' \item{min.unexposed.lower}{Lower (\eqn{\alpha/2})-quantile of adjusted RMST for unexposed group}
+#' \item{max.unexposed.upper}{Upper (\eqn{\alpha/2})-quantile of adjusted RMST for unexposed group}
+#' \item{RMST.diff.min.lower}{Lower bound of (\eqn{1-\alpha})% percentile bootstrap confidence interval for the population sensitivity range}
+#' \item{RMST.diff.max.upper}{Upper bound of (\eqn{1-\alpha})% percentile bootstrap confidence interval for the population sensitivity range}
 #' The results for the \code{\link{RMSTSens.ci}} are printed with the \code{\link{print.RMSTSens}} functions.
-#' To generate result plot comparing sensitivity parameters \eqn{\Lambda} with confidence interval and range of adjusted RMST based on shifted propensity score, use the \code{\link{autoplot.RMSTSens}} function.
+#' To generate the plot of results for the \code{RMSTSens.ci}, use the \code{\link{autoplot.RMSTSens}} functions.
 #'
 #' @details To assess details of method for sensitivity analysis, see Lee et al. (2022).
-#' When estimating the range of the adjusted RMST based on the shifted propensity score using \code{RMSTSens} function, there is no need for the formula and model used to estimate the propensity score.
-#' However, when estimating the confidence interval, the formula and model are absolutely necessary.
-#' Note that to use \code{RMSTSens.ci} function in our package, propensity score should be estimated by using 1) \code{glm} that has a binomial distribution with logit link function or 2) \code{randomForest} or \code{gbm} function in \code{randomForest} or \code{gbm} package.
-#' Also, if propensity score was estimated using methods in the \code{randomForest} or \code{gbm} package, then you should enter the seed number used at that time in "seed" argument.
+#' When estimating the sensitivity range of the difference in adjusted RMST using \code{RMSTSens} function,
+#' there is no need for the argument of formula and model to estimate the propensity score.
+#' However, when estimating the confidence interval for the population sensitivity range, the argument of formula and model are absolutely necessary.
+#' Note that to use \code{RMSTSens.ci} function in this package, propensity score should be estimated by using
+#' 1) \code{glm} that has a binomial distribution with logit link function or
+#' 2) \code{randomForest} or \code{gbm} function in \code{randomForest} or \code{gbm} package.
+#' Also, if propensity score was estimated using method either \code{randomForest} or \code{gbm} package,
+#' then you should enter the seed number used at that time in "seed" argument.
 #'
 #' @examples
 #' \dontrun{
@@ -125,17 +135,14 @@
 #' re.gbm
 #' }
 #'
-#' @author Seungjae Lee \email{seungjae2525@@gmail.com}
-#'
 #' @seealso
 #'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{autoplot.RMSTSens}}
 #'
 #' @references
-#' Bakbergenuly I, Hoaglin DC, Kulinskaya E (2020):
-#' Methods for estimating between-study variance and overall
-#' effect in meta-analysis of odds-ratios.
-#' \emph{Research Synthesis Methods},
-#' DOI: 10.1002/jrsm.1404
+#' Lee S, Park JH, Lee W (2023):
+#' Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time
+#' \emph{xxx},
+#' DOI: xxx
 #'
 #' @keywords methods
 #'
@@ -277,23 +284,24 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logist
                                     RMST.diff.max=RMST.diff.max,
                                     lambda=rep(lambda, times=B))
 
-  ## Confidence interval
+  ##
   aa <- (1 - level)/2 # alpha/2
+  x$result.df$min.exposed.lower <- sapply(x$result.df$Lambda,
+                                          function(x) quantile(results.summary.dat$min.exposd[results.summary.dat$lambda == x], aa))
+  x$result.df$max.exposed.upper <- sapply(x$result.df$Lambda,
+                                          function(x) quantile(results.summary.dat$max.exposed[results.summary.dat$lambda == x], 1-aa))
+  x$result.df$min.unexposed.lower <- sapply(x$result.df$Lambda,
+                                            function(x) quantile(results.summary.dat$min.unexposd[results.summary.dat$lambda == x], aa))
+  x$result.df$max.unexposed.upper <- sapply(x$result.df$Lambda,
+                                            function(x) quantile(results.summary.dat$max.unexposed[results.summary.dat$lambda == x], 1-aa))
+
+  ## Confidence interval
   # (alpha/2) quantile of infimum
   x$result.df$RMST.diff.min.lower <- sapply(x$result.df$Lambda,
                                             function(x) quantile(results.summary.dat$RMST.diff.min[results.summary.dat$lambda == x], aa))
   # (1-alpha/2) quantile of supremum
   x$result.df$RMST.diff.max.upper <- sapply(x$result.df$Lambda,
                                             function(x) quantile(results.summary.dat$RMST.diff.max[results.summary.dat$lambda == x], 1-aa))
-
-  x$result.df$min.exposed.lower <- sapply(x$result.df$Lambda,
-                                          function(x) quantile(results.summary.dat$min.exposd[results.summary.dat$lambda == x], aa))
-  x$result.df$max.exposed.upper <- sapply(x$result.df$Lambda,
-                                          function(x) quantile(results.summary.dat$max.exposed[results.summary.dat$lambda == x], 1-aa))
-  x$result.df$min.unexposd.lower <- sapply(x$result.df$Lambda,
-                                           function(x) quantile(results.summary.dat$min.unexposd[results.summary.dat$lambda == x], aa))
-  x$result.df$max.unexposed.upper <- sapply(x$result.df$Lambda,
-                                            function(x) quantile(results.summary.dat$max.unexposed[results.summary.dat$lambda == x], 1-aa))
 
   return(x)
 }

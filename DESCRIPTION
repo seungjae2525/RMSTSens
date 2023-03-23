@@ -23,7 +23,7 @@ Authors@R:
            family = "Lee",
            role = "aut",
            comment = c(ORCID = "0000-0001-7447-7045")))
-Packaged: 2022-06-01 07:58:53 UTC; seung
+Packaged: 2022-06-01 10:46:08 UTC; seung
 Author: Seungjae Lee [aut, cre] (<https://orcid.org/0000-0001-5508-8634>),
   Woojoo Lee [aut] (<https://orcid.org/0000-0001-7447-7045>)
 Maintainer: Seungjae Lee <seungjae2525@gmail.com>

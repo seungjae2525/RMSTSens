@@ -1,12 +1,14 @@
-#' @title Plot for sensitivity analysis
+#' @title Plot for sensitivity analysis results
 #'
 #' @param object An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.
-#' @param alpha.ci It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9.
-#' @param alpha.range It refers to the opacity of range.Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.4.
+#' @param alpha.ci It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors,
+#' Default: 0.9.
+#' @param alpha.range It refers to the opacity of sensitivity range. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors,
+#' Default: 0.4.
 #' @param smooth.par Smooth parameter, Default=100.
 #' @param ytickdiff Distance between y-axis tick, Default: 100.
-#' @param point.size Point size of estimate of lower and upper for bias-adjusted RMST, Default: 1.4.
-#' @param h.width Horizon lines width, Default: 1.
+#' @param point.size Point size of the the lower and upper bound of the sensitivity range, Default: 1.4.
+#' @param h.width Width of horizon line which represents the estimated difference in adjusted RMST, Default: 1.
 #' @param axis.title.size Size of x and y axis title, Default: 15.
 #' @param axis.text.size Size of x and y axis text, Default: 12.
 #' @param save.plot When TRUE, it will save image, Default: FALSE.
@@ -14,12 +16,14 @@
 #' @param save.plot.device Device to use. Can either of "png", "eps", "ps", "tex" (pictex), "pdf", "jpeg", "tiff", bmp", "svg" or "wmf" (windows only), Default: "png".
 #' @param save.plot.width Plot width size in units, Default: 10.
 #' @param save.plot.height Plot height size in units, Default: 6.
-#' @param save.plot.dpi Resolution of plot, Default: 300. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72). Applies only to raster output types.
+#' @param save.plot.dpi Resolution of plot, Default: 300. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72).
+#' Applies only to raster output types.
 #' @param ... Further arguments (currently not used).
 #'
 #' @return Result plot for sensitivity analysis.
 #'
-#' @details If the object contains results of bootstrap confidence interval, then it will return plot of range and confidence interval for bias-adjusted restricted mean survival time, otherwise it will only plot of range for bias-adjusted restricted mean survival time.
+#' @details If the object also contains the results of confidence interval for the population sensitivity range as well as the sensitivity range,
+#' then it will return a plot with sensitivity range and confidence interval, otherwise it will only return a plot of sensitivity range.
 #'
 #' @examples
 #' dat <- gbsg
@@ -97,9 +101,10 @@ autoplot.RMSTSens <- function(object=object,
 
 
 
-#' @title Plot for sensitivity analysis
+#' @title Plot for sensitivity analysis results
 #'
-#' @description Plot for sensitivity analysis either or both of range and confidence interval for bias-adjusted restricted mean survival time.
+#' @description Plot for sensitivity analysis results of either or both the sensitivity range of the difference in adjusted RMST and
+#' the confidence interval for the population sensitivity range.
 #'
 #' @param x An object for class \code{RMSTSens}.
 #'
@@ -183,7 +188,7 @@ autoplot_RMSTSens <- function(xxx=NULL,
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.min), size=point.size, colour="blue") +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.max), size=point.size, colour="blue") +
         geom_line(aes(x=Lambda, y=0), colour="black", size=h.width, linetype = "dashed", alpha=0.5) +
-        xlab(expression(Lambda)) + ylab("Between-group difference in bias-adjusted RMST")  +
+        xlab(expression(bold(Lambda))) + ylab("Difference in adjusted RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,
                            labels = sprintf("%.1f", xx$Lambda), expand = c(0.005,0.005)) +
@@ -220,7 +225,7 @@ autoplot_RMSTSens <- function(xxx=NULL,
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.min), size=point.size, colour="blue") +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.max), size=point.size, colour="blue") +
         geom_line(aes(x=Lambda, y=0), colour="black", size=h.width, linetype = "dashed", alpha=0.5) +
-        xlab(expression(Lambda)) + ylab("Between-group difference in bias-adjusted RMST")  +
+        xlab(expression(bold(Lambda))) + ylab("Difference in adjusted RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,
                            labels = sprintf("%.1f", xx$Lambda), expand = c(0.005,0.005)) +
@@ -257,7 +262,7 @@ autoplot_RMSTSens <- function(xxx=NULL,
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.min), size=point.size, colour="blue") +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.max), size=point.size, colour="blue") +
         geom_line(aes(x=Lambda, y=0), colour="black", size=h.width, linetype = "dashed", alpha=0.5) +
-        xlab(expression(Lambda)) + ylab("Between-group difference in bias-adjusted RMST")  +
+        xlab(expression(bold(Lambda))) + ylab("Difference in adjusted RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,
                            labels = sprintf("%.1f", xx$Lambda), expand = c(0.005,0.005)) +
@@ -286,7 +291,7 @@ autoplot_RMSTSens <- function(xxx=NULL,
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.min), size=point.size, colour="blue") +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.max), size=point.size, colour="blue") +
         geom_line(aes(x=Lambda, y=0), colour="black", size=h.width, linetype = "dashed", alpha=0.5) +
-        xlab(expression(Lambda)) + ylab("Between-group difference in bias-adjusted RMST")  +
+        xlab(expression(bold(Lambda))) + ylab("Difference in adjusted RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,
                            labels = sprintf("%.1f", xx$Lambda), expand = c(0.005,0.005)) +

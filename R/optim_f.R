@@ -1,5 +1,5 @@
 ## Optimization function
-optim_f <- function(par, data, minmax="min", lambda=2, tau=NULL) {
+optim_f <- function(par, data, minmax="min", lambda, tau=NULL) {
   if (!(minmax %in% c("min", "max"))) {
     stop("\n Error: minmax must be \"min\" or \"max\".")
   }
@@ -40,7 +40,7 @@ optim_f <- function(par, data, minmax="min", lambda=2, tau=NULL) {
 
 
 ## Optimization function via linear programming
-optim_LP <- function(data, minmax="min", lambda=3, tau=NULL) {
+optim_LP <- function(data, minmax="min", lambda, tau=NULL) {
   time <- data$time
   status <- data$status
   exp_logit_Pr <- data$exp_logit_Pr

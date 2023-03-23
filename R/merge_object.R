@@ -1,6 +1,7 @@
 #' @title Function to merge \code{RMSTSens} objects about results of sensitivity analysis
 #'
-#' @description Merge the \code{RMSTSens} object, which is the result of the previously performed analysis, and the additional \code{RMSTSens} objects, which are the results of the additional analyses.
+#' @description Merge the \code{RMSTSens} object, which is the result of the previously performed sensitivity analysis,
+#' and the additional \code{RMSTSens} objects, which are the results of the additionally performed sensitivity analyses.
 #'
 #' @param x A list of objects for class \code{RMSTSens}. For example, list(result1, result2, ...). See Examples.
 #'

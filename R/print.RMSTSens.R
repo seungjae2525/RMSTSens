@@ -2,11 +2,12 @@
 #'
 #' @description Print for objects of class \code{RMSTSens}.
 #'
-#' @param x An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.
+#' @param x An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function.
+#' See \code{merge_object}.
 #' @param digits Print digits, Default: max(1L, getOption("digits") - 3L).
 #' @param ... Further arguments (currently not used).
 #'
-#' @details Print results for \code{RMSTSens} or \code{RMSTSens.ci} object about sensitivity analysis.
+#' @details Print results for \code{RMSTSens} or \code{RMSTSens.ci} object of sensitivity analysis.
 #'
 #' @examples
 #' dat <- gbsg
@@ -112,14 +113,14 @@ print.RMSTSens <- function (x, digits = max(1L, getOption("digits") - 3L), ...){
   print(tmp2)
   # printCoefmat(tmp2, digits = digits)
 
-  cat("Range of RMST difference: \n")
+  cat("Sensitivity range of difference in RMST: \n")
   tmp3 <- round(cbind(xx$RMST.diff.min, xx$RMST.diff.max), digits)
   rownames(tmp3) <- paste0(rep(expression(Lambda), times=nrow(xx)), '=', spr)
   colnames(tmp3) <- c("Lower bound", "Upper bound")
   print(tmp3)
 
   if("RMST.diff.max.upper" %in% colnames(xx)){
-    cat("Confidence interval of RMST difference: \n")
+    cat("Confidence interval for population sensitivity range: \n")
     tmp4 <- round(cbind(xx$RMST.diff.min.lower, xx$RMST.diff.max.upper), digits)
     rownames(tmp4) <- paste0(rep(expression(Lambda), times=nrow(xx)), '=', spr)
     colnames(tmp4) <- c("Lower bound", "Upper bound")
