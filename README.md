@@ -1,5 +1,4 @@
 # RMSTSens
-## Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time
 
 <!-- badges: start -->
 [![Project Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active/)
@@ -9,25 +8,26 @@
 [![R-CMD-check](https://github.com/seungjae2525/RMSTSens/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/seungjae2525/RMSTSens/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
+# Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time
 
 ## Description
 This is the source code for the `RMSTSens` package in R. 
 `RMSTSens` is a package aimed at providing a novel sensitivity analysis method for the RMST difference when unmeasured confounding is suspected.
-Given a user-specified sensitivity parameter, the sensitivity range of the difference in adjusted RMST is calculated with the percentile bootstrap confidence interval for the population sensitivity range.
+Given a user-specified sensitivity parameter, the sensitivity range of the difference in adjusted RMST is calculated with the percentile bootstrap confidence interval for the population sensitivity range. See reference for details
  
-### References
-Submitted to biostatistics journal.
+### Reference
+Not yet published (submitted to journal related to biostatistics).
 
 
 ## Installation
 ### Current GitHub release:
-Installation using R package remotes:
+Installation using R package `remotes`:
 
 ```r
 install.packages("remotes") # if devtools not already installed
 remotes::install_github("seungjae2525/RMSTSens")
+library(RMSTSens)
 ```
-
 
 ### Bug Reports:
 You can also report bugs on GitHub under [Issues](https://github.com/seungjae2525/RMSTSens/issues/).
