@@ -1,12 +1,13 @@
 #' @title Plot for sensitivity analysis results
 #'
-#' @param object An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.
+#' @param object An object for class \code{RMSTSens}. Either object \code{RMSTSens} or \code{RMSTSens.ci} is allowed.
+#' If you want to see the results of several \code{RMSTSens} objects together, use the \code{merge_object} function. See \code{merge_object}.
 #' @param alpha.range A opacity of sensitivity range. Values of \code{alpha.range} range from 0 to 1, with lower values corresponding to more transparent colors.
 #' Default: 0.4.
 #' @param alpha.ci A opacity of confidence interval. Values of \code{alpha.ci} range from 0 to 1, with lower values corresponding to more transparent colors.
 #' Default: 0.9.
 #' @param smooth.par Smooth parameter. It corresponds to argument \code{n} in \code{spline} function in \code{stats} package.
-#' Default=100.
+#' Default: 100.
 #' @param ytickdiff Distance between y-axis tick. Default: 100.
 #' @param point.size Point size of the the lower and upper bound of the sensitivity range. Default: 1.4.
 #' @param h.width Width of horizon line which represents the estimated difference in adjusted RMST. Default: 1.
@@ -21,8 +22,6 @@
 #' @param save.plot.dpi Resolution of plot. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72). Applies only to raster output types.
 #' Default: 300.
 #' @param ... Further arguments (currently not used).
-#'
-#' @return Result plot for sensitivity analysis.
 #'
 #' @details If the object contains the results of confidence interval for the population sensitivity range as well as the sensitivity range,
 #' then it will return a plot with sensitivity range with confidence interval, otherwise it will only return a plot of sensitivity range.
@@ -64,18 +63,17 @@
 #'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
 #'          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 #'
-#' \dontrun{
 #' # Bootstrap confidence interval
 #' re.ap.boot <- RMSTSens.ci(x=merge_object(list(results.approx2, results.approx3)),
-#'           B=40, level=0.95, seed=220524,
+#'               B=50, # Set B=50 to reduce computation time for R checks
+#'               level=0.95, seed=220524,
 #'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-#'           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
+#'               model="logistic", use.multicore=TRUE, n.core=2)
 #' autoplot(object=re.ap.boot, alpha.range=0.4, alpha.ci=0.9, smooth.par=100,
 #'          ytickdiff=100, point.size=1.4, h.width=1,
 #'          axis.title.size=15, axis.text.size=12,
 #'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
 #'          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
-#' }
 #'
 #' @seealso
 #'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{merge_object}}

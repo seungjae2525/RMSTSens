@@ -70,7 +70,8 @@ The results for the \code{RMSTSens} are printed with the \code{\link{print.RMSTS
 To generate the plot of results for the \code{RMSTSens}, use the \code{\link{autoplot.RMSTSens}} functions.
 }
 \description{
-Function for estimating the sensitivity range(s) of the difference in adjusted RMST
+\code{RMSTSens()} is the main function of RMSTSens and
+performs the sensitivity analysis for estimating the sensitivity range(s) of the difference in adjusted RMST
 }
 \details{
 There are four possible methods for our sensitivity analysis.
@@ -136,9 +137,8 @@ results.approx2
 }
 \references{
 Lee S, Park JH, Lee W (2023):
-Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time
-\emph{xxx},
-DOI: xxx
+Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time.
+\emph{xxx}. DOI: xxx.
 }
 \seealso{
 \code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{autoplot.RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}

@@ -2,7 +2,8 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 
 #' @title Sensitivity range of the difference in adjusted RMST
 #'
-#' @description Function for estimating the sensitivity range(s) of the difference in adjusted RMST
+#' @description \code{RMSTSens()} is the main function of RMSTSens and
+#' performs the sensitivity analysis for estimating the sensitivity range(s) of the difference in adjusted RMST
 #'
 #' @param time The name of variable for survival time (i.e., time to event).
 #' @param status The name of variable for event indicator (0 if censored, 1 if event).
@@ -100,9 +101,8 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #'
 #' @references
 #' Lee S, Park JH, Lee W (2023):
-#' Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time
-#' \emph{xxx},
-#' DOI: xxx
+#' Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time.
+#' \emph{xxx}. DOI: xxx.
 #'
 #' @keywords methods
 #'

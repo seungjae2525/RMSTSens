@@ -9,15 +9,15 @@ A data frame with 686 rows and 11 variables:
 \describe{
 \item{\code{pid}}{Patient identifier}
 \item{\code{age}}{Age, years}
-\item{\code{meno}}{Menopausal status (0= premenopausal, 1= postmenopausal)}
+\item{\code{meno}}{Menopausal status (0=premenopausal, 1=postmenopausal)}
 \item{\code{size}}{Tumor size, mm}
 \item{\code{grade}}{Tumor grade}
 \item{\code{nodes}}{The number of positive lymph nodes}
 \item{\code{pgr}}{Progesterone receptors (fmol/l)}
 \item{\code{er}}{Estrogen receptors (fmol/l)}
-\item{\code{hormon}}{Hormonal therapy, 0= no, 1= yes}
+\item{\code{hormon}}{Hormonal therapy, 0=no, 1=yes}
 \item{\code{rfstime}}{Recurrence free survival time; days to first of reccurence, death or last follow-up}
-\item{\code{status}}{Censoring indicator, 0= alive without recurrence, 1= recurrence or death}
+\item{\code{status}}{Censoring indicator, 0=alive without recurrence, 1=recurrence or death}
 }
 }
 \source{
@@ -35,7 +35,9 @@ These data sets are used in the paper by Royston and Altman (2013). The Rotterda
 and the GBSG data for validation of the model. The paper gives references for the data source.
 }
 \references{
-Patrick Royston and Douglas Altman, External validation of a Cox prognostic model: principles and methods.
-\emph{BMC Medical Research Methodology} 2013, 13:33
+Royston P, Altman DG (2013): External validation of a Cox prognostic model: principles and methods.
+\emph{BMC Med Res Methodol}. DOI: 10.1186/1471-2288-13-33.
+
+.
 }
 \keyword{datasets}

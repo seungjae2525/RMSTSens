@@ -1,6 +1,7 @@
 #' @title Confidence interval for population sensitivity range
 #'
-#' @description Function for constructing the percentile bootstrap confidence interval(s) for population sensitivity range.
+#' @description \code{RMSTSens.ci()} is the main function of RMSTSens and
+#' constructs the percentile bootstrap confidence interval(s) for population sensitivity range.
 #'
 #' @param x An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects,
 #' use the \code{merge_object} function. See \code{merge_object}.
@@ -81,13 +82,12 @@
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' re.ap.boot <- RMSTSens.ci(x=merge_object(x=list(results.approx2, results.approx3)),
-#'           B=10, level=0.95, seed=220524,
+#'               B=50, # Set B=50 to reduce computation time for R checks
+#'               level=0.95, seed=220524,
 #'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-#'           model="logistic", trunc.prop=0, use.multicore=TRUE, n.core=2)
+#'               model="logistic", trunc.prop=0, use.multicore=TRUE, n.core=2)
 #' re.ap.boot
 #'
-#'
-#' \dontrun{
 #' ## Estimate of propensity score using random forest
 #' library(randomForest)
 #' set.seed(220528)
@@ -108,10 +108,12 @@
 #'                               use.multicore=TRUE, n.core=2,
 #'                               lambda=c(1,1.5,2), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' # CI of RMST
-#' re.rf <- RMSTSens.ci(x=results.approx.rf, B=40, level=0.95, seed=220528,
-#'               formula=factor(hormon)~age2+meno+size2+nodes+er2,
+#' re.rf <- RMSTSens.ci(x=results.approx.rf,
+#'                      B=50, # Set B=50 to reduce computation time for R checks
+#'                      level=0.95, seed=220528,
+#'                      formula=factor(hormon)~age2+meno+size2+nodes+er2,
 #'                      model="rf", trunc.prop=trunc.prop, use.multicore=TRUE, n.core=2,
-#'               ntree=1501, mtry=5)
+#'                      ntree=1501, mtry=5)
 #' re.rf
 #'
 #'
@@ -121,27 +123,27 @@
 #' model.gbm <- gbm(formula=hormon~age2+meno+size2+nodes+er2,
 #'                  data=dat, distribution= "bernoulli", verbose= FALSE)
 #' dat$Ps.gbm <- as.numeric(predict(model.gbm, type= "response"))
-#' sum(dat$Ps.gbm== 0) + sum(dat$Ps.gbm== 1) # no 0 or 1 value
+#' sum(dat$Ps.gbm== 0) + sum(dat$Ps.gbm== 1) # Check that there is 0 or 1 value
 #' # Range of RMST
 #' results.approx.gbm <- RMSTSens(time="rfstime", status="status", exposure="hormon",
 #'                                level.exposed="1", ps="Ps.gbm", data=dat, methods="Approx",
-#'                              use.multicore=TRUE, n.core=2,
-#'                              lambda=c(1,1.5,2), tau=365.25*5, ini.par=1, verbose=FALSE)
+#'                                use.multicore=TRUE, n.core=2,
+#'                                lambda=c(1,1.5,2), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' # CI of RMST
-#' re.gbm <- RMSTSens.ci(x=results.approx.gbm, B=40, level=0.95, seed=220528,
-#'                   formula=hormon~age2+meno+size2+nodes+er2,
+#' re.gbm <- RMSTSens.ci(x=results.approx.gbm,
+#'                       B=50, # Set B=50 to reduce computation time for R checks
+#'                       level=0.95, seed=220528,
+#'                       formula=hormon~age2+meno+size2+nodes+er2,
 #'                       model="gbm", trunc.prop=0, use.multicore=TRUE, n.core=2)
 #' re.gbm
-#' }
 #'
 #' @seealso
 #'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{autoplot.RMSTSens}}
 #'
 #' @references
 #' Lee S, Park JH, Lee W (2023):
-#' Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time
-#' \emph{xxx},
-#' DOI: xxx
+#' Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time.
+#' \emph{xxx}. DOI: xxx.
 #'
 #' @keywords methods
 #'
@@ -235,7 +237,7 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logist
   registerDoParallel(cl, cores=cores)
 
   ## Percentile bootstrap
-  set.seed(seed)
+  set.seed(seed, kind = "L'Ecuyer-CMRG")
   mat.total <- foreach(iii=1:cores,
                        .combine='rbind',
                        .export=c('RMSTSens','optim_data','optim_f'),

@@ -56,12 +56,13 @@ results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
 print(results.approx2)
 
-\dontrun{
-re.ap.boot <- RMSTSens.ci(x=results.approx2, B=40, level=0.95, seed=220524,
+# Bootstrap confidence interval
+re.ap.boot <- RMSTSens.ci(x=results.approx2,
+              B=50, # Set B=50 to reduce computation time for R checks
+              level=0.95, seed=220524,
               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-          model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
+              model="logistic", use.multicore=TRUE, n.core=2)
 print(re.ap.boot)
-}
 
 }
 \seealso{
