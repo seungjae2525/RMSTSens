@@ -6,7 +6,7 @@ License: MIT + file LICENSE
 URL: https://github.com/seungjae2525/RMSTSens
 BugReports: https://github.com/seungjae2525/RMSTSens/issues
 Depends: R (>= 4.0.0), stats, graphics
-Imports: doParallel, foreach, ggplot2, optimParallel, parallel
+Imports: doParallel, doRNG, foreach, ggplot2, optimParallel, parallel
 Suggests: gbm, randomForest
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

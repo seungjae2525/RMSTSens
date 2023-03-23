@@ -22,6 +22,7 @@
 #' @import ggplot2
 #' @import doParallel
 #' @import foreach
+#' @import doRNG
 #'
 #' @importFrom stats binomial glm optim predict qlogis quantile spline
 #' @importFrom splines ns

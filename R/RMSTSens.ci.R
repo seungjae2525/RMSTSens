@@ -237,7 +237,7 @@ RMSTSens.ci <- function(x, B=1000, level=0.95, seed=NULL, formula, model="logist
   registerDoParallel(cl, cores=cores)
 
   ## Percentile bootstrap
-  set.seed(seed, kind = "L'Ecuyer-CMRG")
+  registerDoRNG(seed)
   mat.total <- foreach(iii=1:cores,
                        .combine='rbind',
                        .export=c('RMSTSens','optim_data','optim_f'),
