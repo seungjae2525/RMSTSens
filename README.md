@@ -1,4 +1,5 @@
 # RMSTSens
+## Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time
 
 <!-- badges: start -->
 [![Project Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active/)
@@ -15,7 +16,7 @@ This is the source code for the `RMSTSens` package in R.
 Given a user-specified sensitivity parameter, the sensitivity range of the difference in adjusted RMST is calculated with the percentile bootstrap confidence interval for the population sensitivity range.
  
 ### References
-Not yet...
+Submitted to biostatistics journal.
 
 
 ## Installation
