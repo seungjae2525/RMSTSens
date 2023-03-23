@@ -4,3 +4,4 @@
 ^\.gitignore$
 ^\.Rhistory$
 ^data-raw$
+^\.github$
