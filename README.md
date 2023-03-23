@@ -13,7 +13,7 @@
 ## Description
 This is the source code for the `RMSTSens` package in R. 
 `RMSTSens` is a package aimed at providing a novel sensitivity analysis method for the RMST difference when unmeasured confounding is suspected.
-Given a user-specified sensitivity parameter, the sensitivity range of the difference in adjusted RMST is calculated with the percentile bootstrap confidence interval for the population sensitivity range. See reference for details
+Given a user-specified sensitivity parameter, the sensitivity range of the difference in adjusted RMST is calculated with the percentile bootstrap confidence interval for the population sensitivity range. See reference for details.
  
 ### Reference
 Not yet published (submitted to journal related to biostatistics).
