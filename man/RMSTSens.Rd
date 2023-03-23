@@ -27,25 +27,25 @@ RMSTSens(
 
 \item{exposure}{The name of variable for exposure (0 if unexposed, 1 if exposed).}
 
-\item{level.exposed}{Level for exposed group in exposure variable, Default: "1".}
+\item{level.exposed}{Level for exposed group in exposure variable. Default: "1".}
 
 \item{ps}{The name of variable or the vector for the estimated propensity score.}
 
 \item{data}{A data frame in which contains the follow-up time (time), the event (status), the exposure (exposure), and the propensity score (ps).}
 
-\item{methods}{A character with the methods how to calculate the adjusted RMST ("Optim", "Approx", "LP1", "LP2"), Default: "Approx". See Details.}
+\item{methods}{A character with the methods how to calculate the adjusted RMST ("Optim", "Approx", "LP1", "LP2"). Default: "Approx". See Details.}
 
-\item{use.multicore}{Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE.}
+\item{use.multicore}{Logical scalar indicating whether to parallelize our optimization problem. Default: TRUE.}
 
-\item{n.core}{The number of CPU cores to use, Default: parallel::detectCores()/2.}
+\item{n.core}{The number of CPU cores to use. Default: parallel::detectCores()/2.}
 
-\item{lambda}{A scalar or vector for sensitivity parameter \eqn{\Lambda}, Default: 2.}
+\item{lambda}{A scalar or vector for sensitivity parameter \eqn{\Lambda}. Default: 2.}
 
-\item{tau}{User-specific time point, If tau not specified (i.e., NULL), use the minimum value of last event times in each group, Default: NULL.}
+\item{tau}{User-specific time point, If tau not specified (i.e., NULL), use the minimum value of last event times in each group. Default: NULL.}
 
-\item{ini.par}{Initial value for the parameter to be optimized over in the direct optimization method, Default: 1.}
+\item{ini.par}{Initial value for the parameter to be optimized over in the direct optimization method. Default: 1.}
 
-\item{verbose}{Conditional on the verbose level, print the message when each optimization (minimization or maximization) for each group was ended, Default: FALSE.}
+\item{verbose}{Conditional on the verbose level, print the message when each optimization (minimization or maximization) for each group was ended. Default: FALSE.}
 }
 \value{
 An object of class \code{RMSTSens}. The object is a data.frame with the following components:
@@ -74,20 +74,28 @@ Function for estimating the sensitivity range(s) of the difference in adjusted R
 }
 \details{
 There are four possible methods for our sensitivity analysis.
-In general survival analysis setting, if the censoring rate is less than 0.7,
-the approximate optimization method (methods="Approx") can be recommended
+
+In general settings,
+\itemize{
+\item methods="Approx": In general survival analysis setting, if the censoring rate is less than 0.7,
+the approximate optimization method can be recommended
 because it is much faster than and very accurate as the direct optimization method.
-If the censoring rate is greater than 0.7, the direct optimization method (methods="Optim") can be used as an alternative
+\item methods="Optim": If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative
 because it is implemented as fast as the approximate optimization method.
+}
+
 In special settings, some analytic results can be obtained.
-When a closed cohort where all subjects are followed up from the same entry time and
+\itemize{
+\item methods="LP1": When a closed cohort where all subjects are followed up from the same entry time and
 only administrative censoring is allowed at the end of follow-up is considered,
 high-dimensional optimization problems can be expressed as the well-known linear programming problems,
-and thus one can use the analytic solutions for computing the sensitivity range (methods="LP1").
-Similarly, when the minimum value of censoring times in each group is longer than or equal to tau,
+and thus one can use the analytic solutions for computing the sensitivity range.
+\item methods="LP2": Similarly, when the minimum value of censoring times in each group is longer than or equal to tau,
 the optimization problems are also transformed to well-known linear programming problems,
-and thus one can use the analytic solutions for computing the sensitivity range (methods="LP2).
-To assess detail of methods and special settings, see Lee et al. (2023).
+and thus one can use the analytic solutions for computing the sensitivity range.
+}
+
+See Lee et al. (2023) for details.
 }
 \examples{
 dat <- gbsg

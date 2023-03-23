@@ -7,16 +7,16 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #' @param time The name of variable for survival time (i.e., time to event).
 #' @param status The name of variable for event indicator (0 if censored, 1 if event).
 #' @param exposure The name of variable for exposure (0 if unexposed, 1 if exposed).
-#' @param level.exposed Level for exposed group in exposure variable, Default: "1".
+#' @param level.exposed Level for exposed group in exposure variable. Default: "1".
 #' @param ps The name of variable or the vector for the estimated propensity score.
 #' @param data A data frame in which contains the follow-up time (time), the event (status), the exposure (exposure), and the propensity score (ps).
-#' @param methods A character with the methods how to calculate the adjusted RMST ("Optim", "Approx", "LP1", "LP2"), Default: "Approx". See Details.
-#' @param use.multicore Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE.
-#' @param n.core The number of CPU cores to use, Default: parallel::detectCores()/2.
-#' @param lambda A scalar or vector for sensitivity parameter \eqn{\Lambda}, Default: 2.
-#' @param tau User-specific time point, If tau not specified (i.e., NULL), use the minimum value of last event times in each group, Default: NULL.
-#' @param ini.par Initial value for the parameter to be optimized over in the direct optimization method, Default: 1.
-#' @param verbose Conditional on the verbose level, print the message when each optimization (minimization or maximization) for each group was ended, Default: FALSE.
+#' @param methods A character with the methods how to calculate the adjusted RMST ("Optim", "Approx", "LP1", "LP2"). Default: "Approx". See Details.
+#' @param use.multicore Logical scalar indicating whether to parallelize our optimization problem. Default: TRUE.
+#' @param n.core The number of CPU cores to use. Default: parallel::detectCores()/2.
+#' @param lambda A scalar or vector for sensitivity parameter \eqn{\Lambda}. Default: 2.
+#' @param tau User-specific time point, If tau not specified (i.e., NULL), use the minimum value of last event times in each group. Default: NULL.
+#' @param ini.par Initial value for the parameter to be optimized over in the direct optimization method. Default: 1.
+#' @param verbose Conditional on the verbose level, print the message when each optimization (minimization or maximization) for each group was ended. Default: FALSE.
 #'
 #' @return An object of class \code{RMSTSens}. The object is a data.frame with the following components:
 #' \item{N}{Total number of subjects}
@@ -40,20 +40,24 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #' To generate the plot of results for the \code{RMSTSens}, use the \code{\link{autoplot.RMSTSens}} functions.
 #'
 #' @details There are four possible methods for our sensitivity analysis.
-#' In general survival analysis setting, if the censoring rate is less than 0.7,
-#' the approximate optimization method (methods="Approx") can be recommended
-#' because it is much faster than and very accurate as the direct optimization method.
-#' If the censoring rate is greater than 0.7, the direct optimization method (methods="Optim") can be used as an alternative
-#' because it is implemented as fast as the approximate optimization method.
+#'
+#' In general settings,
+#'   * methods="Approx": In general survival analysis setting, if the censoring rate is less than 0.7,
+#'   the approximate optimization method can be recommended
+#'   because it is much faster than and very accurate as the direct optimization method.
+#'   * methods="Optim": If the censoring rate is greater than 0.7, the direct optimization method can be used as an alternative
+#'   because it is implemented as fast as the approximate optimization method.
+#'
 #' In special settings, some analytic results can be obtained.
-#' When a closed cohort where all subjects are followed up from the same entry time and
-#' only administrative censoring is allowed at the end of follow-up is considered,
-#' high-dimensional optimization problems can be expressed as the well-known linear programming problems,
-#' and thus one can use the analytic solutions for computing the sensitivity range (methods="LP1").
-#' Similarly, when the minimum value of censoring times in each group is longer than or equal to tau,
-#' the optimization problems are also transformed to well-known linear programming problems,
-#' and thus one can use the analytic solutions for computing the sensitivity range (methods="LP2).
-#' To assess detail of methods and special settings, see Lee et al. (2023).
+#'   * methods="LP1": When a closed cohort where all subjects are followed up from the same entry time and
+#'   only administrative censoring is allowed at the end of follow-up is considered,
+#'   high-dimensional optimization problems can be expressed as the well-known linear programming problems,
+#'   and thus one can use the analytic solutions for computing the sensitivity range.
+#'   * methods="LP2": Similarly, when the minimum value of censoring times in each group is longer than or equal to tau,
+#'   the optimization problems are also transformed to well-known linear programming problems,
+#'   and thus one can use the analytic solutions for computing the sensitivity range.
+#'
+#' See Lee et al. (2023) for details.
 #'
 #' @examples
 #' dat <- gbsg

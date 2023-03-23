@@ -1,29 +1,31 @@
 #' @title Plot for sensitivity analysis results
 #'
 #' @param object An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.
-#' @param alpha.ci It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors,
-#' Default: 0.9.
-#' @param alpha.range It refers to the opacity of sensitivity range. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors,
+#' @param alpha.range A opacity of sensitivity range. Values of \code{alpha.range} range from 0 to 1, with lower values corresponding to more transparent colors.
 #' Default: 0.4.
-#' @param smooth.par Smooth parameter, Default=100.
-#' @param ytickdiff Distance between y-axis tick, Default: 100.
-#' @param point.size Point size of the the lower and upper bound of the sensitivity range, Default: 1.4.
-#' @param h.width Width of horizon line which represents the estimated difference in adjusted RMST, Default: 1.
-#' @param axis.title.size Size of x and y axis title, Default: 15.
-#' @param axis.text.size Size of x and y axis text, Default: 12.
-#' @param save.plot When TRUE, it will save image, Default: FALSE.
-#' @param save.plot.name File name to create on disk, Default: "Plot".
-#' @param save.plot.device Device to use. Can either of "png", "eps", "ps", "tex" (pictex), "pdf", "jpeg", "tiff", bmp", "svg" or "wmf" (windows only), Default: "png".
-#' @param save.plot.width Plot width size in units, Default: 10.
-#' @param save.plot.height Plot height size in units, Default: 6.
-#' @param save.plot.dpi Resolution of plot, Default: 300. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72).
-#' Applies only to raster output types.
+#' @param alpha.ci A opacity of confidence interval. Values of \code{alpha.ci} range from 0 to 1, with lower values corresponding to more transparent colors.
+#' Default: 0.9.
+#' @param smooth.par Smooth parameter. It corresponds to argument \code{n} in \code{spline} function in \code{stats} package.
+#' Default=100.
+#' @param ytickdiff Distance between y-axis tick. Default: 100.
+#' @param point.size Point size of the the lower and upper bound of the sensitivity range. Default: 1.4.
+#' @param h.width Width of horizon line which represents the estimated difference in adjusted RMST. Default: 1.
+#' @param axis.title.size Size of x and y axis title. Default: 15.
+#' @param axis.text.size Size of x and y axis text. Default: 12.
+#' @param save.plot When TRUE, it will save the resulting plot. To save the resulting plot to a specific directory,
+#' the working directory will be probably need to set using \code{setwd()}. Default: FALSE.
+#' @param save.plot.name File name to create on disk. Default: "Plot".
+#' @param save.plot.device Device to use. Can either of "png", "eps", "ps", "tex" (pictex), "pdf", "jpeg", "tiff", bmp", "svg", or "wmf" (windows only). Default: "png".
+#' @param save.plot.width Plot width size in units. Default: 10.
+#' @param save.plot.height Plot height size in units. Default: 6.
+#' @param save.plot.dpi Resolution of plot. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72). Applies only to raster output types.
+#' Default: 300.
 #' @param ... Further arguments (currently not used).
 #'
 #' @return Result plot for sensitivity analysis.
 #'
-#' @details If the object also contains the results of confidence interval for the population sensitivity range as well as the sensitivity range,
-#' then it will return a plot with sensitivity range and confidence interval, otherwise it will only return a plot of sensitivity range.
+#' @details If the object contains the results of confidence interval for the population sensitivity range as well as the sensitivity range,
+#' then it will return a plot with sensitivity range with confidence interval, otherwise it will only return a plot of sensitivity range.
 #'
 #' @examples
 #' dat <- gbsg
@@ -44,7 +46,7 @@
 #'                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1,1.5,2.0), tau=365.25*5, ini.par=1, verbose=FALSE)
-#' autoplot(object=results.approx2, alpha.ci=0.9, alpha.range=0.4, smooth.par=100,
+#' autoplot(object=results.approx2, alpha.range=0.4, alpha.ci=0.9, smooth.par=100,
 #'          ytickdiff=100, point.size=1.4, h.width=1,
 #'          axis.title.size=15, axis.text.size=12,
 #'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -56,7 +58,7 @@
 #'                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' # After Merging two results, plot the analysis results.
 #' autoplot(object=merge_object(list(results.approx2, results.approx3)), smooth.par=100,
-#'          alpha.ci=0.9, alpha.range=0.4,
+#'          alpha.range=0.4, alpha.ci=0.9,
 #'          ytickdiff=100, point.size=1.4, h.width=1,
 #'          axis.title.size=15, axis.text.size=12,
 #'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -68,7 +70,7 @@
 #'           B=40, level=0.95, seed=220524,
 #'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
 #'           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
-#' autoplot(object=re.ap.boot, alpha.ci=0.9, alpha.range=0.4, smooth.par=100,
+#' autoplot(object=re.ap.boot, alpha.range=0.4, alpha.ci=0.9, smooth.par=100,
 #'          ytickdiff=100, point.size=1.4, h.width=1,
 #'          axis.title.size=15, axis.text.size=12,
 #'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -84,13 +86,13 @@
 #'
 #' @export
 autoplot.RMSTSens <- function(object=object,
-                              alpha.ci=0.9, alpha.range=0.4, smooth.par=100,
+                              alpha.range=0.4, alpha.ci=0.9, smooth.par=100,
                               ytickdiff=100, point.size=1.4, h.width=1,
                               axis.title.size=15, axis.text.size=12,
                               save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
                               save.plot.width=10, save.plot.height=6, save.plot.dpi=300, ...){
   autoplot_RMSTSens(xxx=object,
-                    alpha.ci=alpha.ci, alpha.range=alpha.range, smooth.par=smooth.par,
+                    alpha.range=alpha.range, alpha.ci=alpha.ci, smooth.par=smooth.par,
                     ytickdiff=ytickdiff, point.size=point.size, h.width=h.width,
                     axis.title.size=axis.title.size, axis.text.size=axis.text.size,
                     save.plot=save.plot, save.plot.name=save.plot.name,
@@ -110,7 +112,7 @@ autoplot.RMSTSens <- function(object=object,
 #'
 #' @examples
 #' \dontrun{
-#' plot(results.approx2, alpha.ci=0.9, alpha.range=0.4, smooth.par=100,
+#' plot(results.approx2, alpha.range=0.4, alpha.ci=0.9, smooth.par=100,
 #'      ytickdiff=100, point.size=1.4, h.width=1,
 #'      axis.title.size=15, axis.text.size=12,
 #'      save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -132,7 +134,7 @@ plot.RMSTSens <- function(x, ...) {
 
 #########---------------------------------------------------------------------------------------------
 autoplot_RMSTSens <- function(xxx=NULL,
-                              alpha.ci=NULL, alpha.range=NULL, smooth.par=NULL,
+                              alpha.range=NULL, alpha.ci=NULL, smooth.par=NULL,
                               ytickdiff=NULL, point.size=NULL, h.width=NULL,
                               axis.title.size=NULL, axis.text.size=NULL,
                               save.plot=FALSE, save.plot.name=NULL, save.plot.device=NULL,
@@ -184,10 +186,10 @@ autoplot_RMSTSens <- function(xxx=NULL,
                     alpha=alpha.ci, inherit.aes=F, fill="pink") +
         geom_ribbon(aes(x=Lambda, ymin=RMST.diff.min, ymax=RMST.diff.max),
                     alpha=alpha.range, inherit.aes=F, fill="red") +
-        geom_line(aes(x=Lambda, y=xx$RMST.diff.min[1]), colour="red", size=h.width) +
+        geom_line(aes(x=Lambda, y=xx$RMST.diff.min[1]), colour="red", linewidth=h.width) +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.min), size=point.size, colour="blue") +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.max), size=point.size, colour="blue") +
-        geom_line(aes(x=Lambda, y=0), colour="black", size=h.width, linetype = "dashed", alpha=0.5) +
+        geom_line(aes(x=Lambda, y=0), colour="black", linewidth=h.width, linetype = "dashed", alpha=0.5) +
         xlab(expression(bold(Lambda))) + ylab("Difference in adjusted RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,
@@ -221,10 +223,10 @@ autoplot_RMSTSens <- function(xxx=NULL,
                     alpha=alpha.ci, inherit.aes=F, fill="pink") +
         geom_ribbon(aes(x=Lambda, ymin=RMST.diff.min, ymax=RMST.diff.max),
                     alpha=alpha.range, inherit.aes=F, fill="red") +
-        geom_line(aes(x=Lambda, y=xx$RMST.diff.min[1]), colour="red", size=h.width) +
+        geom_line(aes(x=Lambda, y=xx$RMST.diff.min[1]), colour="red", linewidth=h.width) +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.min), size=point.size, colour="blue") +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.max), size=point.size, colour="blue") +
-        geom_line(aes(x=Lambda, y=0), colour="black", size=h.width, linetype = "dashed", alpha=0.5) +
+        geom_line(aes(x=Lambda, y=0), colour="black", linewidth=h.width, linetype = "dashed", alpha=0.5) +
         xlab(expression(bold(Lambda))) + ylab("Difference in adjusted RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,
@@ -258,10 +260,10 @@ autoplot_RMSTSens <- function(xxx=NULL,
       g <- ggplot(df) +
         geom_ribbon(aes(x=Lambda, ymin=RMST.diff.min, ymax=RMST.diff.max),
                     alpha=alpha.range, inherit.aes=F, fill="red") +
-        geom_line(aes(x=Lambda, y=xx$RMST.diff.min[1]), colour="red", size=h.width) +
+        geom_line(aes(x=Lambda, y=xx$RMST.diff.min[1]), colour="red", linewidth=h.width) +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.min), size=point.size, colour="blue") +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.max), size=point.size, colour="blue") +
-        geom_line(aes(x=Lambda, y=0), colour="black", size=h.width, linetype = "dashed", alpha=0.5) +
+        geom_line(aes(x=Lambda, y=0), colour="black", linewidth=h.width, linetype = "dashed", alpha=0.5) +
         xlab(expression(bold(Lambda))) + ylab("Difference in adjusted RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,
@@ -287,10 +289,10 @@ autoplot_RMSTSens <- function(xxx=NULL,
       g <- ggplot(df) +
         geom_ribbon(aes(x=Lambda, ymin=RMST.diff.min, ymax=RMST.diff.max),
                     alpha=alpha.range, inherit.aes=F, fill="red") +
-        geom_line(aes(x=Lambda, y=xx$RMST.diff.min[1]), colour="red", size=h.width) +
+        geom_line(aes(x=Lambda, y=xx$RMST.diff.min[1]), colour="red", linewidth=h.width) +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.min), size=point.size, colour="blue") +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.max), size=point.size, colour="blue") +
-        geom_line(aes(x=Lambda, y=0), colour="black", size=h.width, linetype = "dashed", alpha=0.5) +
+        geom_line(aes(x=Lambda, y=0), colour="black", linewidth=h.width, linetype = "dashed", alpha=0.5) +
         xlab(expression(bold(Lambda))) + ylab("Difference in adjusted RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,

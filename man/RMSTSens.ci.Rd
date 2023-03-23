@@ -14,7 +14,6 @@ RMSTSens.ci(
   trunc.prop = 0,
   use.multicore = TRUE,
   n.core = parallel::detectCores()/2,
-  verbose = TRUE,
   ...
 )
 }
@@ -22,28 +21,25 @@ RMSTSens.ci(
 \item{x}{An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects,
 use the \code{merge_object} function. See \code{merge_object}.}
 
-\item{B}{The number of bootstrap replicates, Default: 1000.}
+\item{B}{The number of bootstrap replicates. Default: 1000.}
 
-\item{level}{The confidence level required (i.e., \eqn{1-\alpha}), Default: 0.95.}
+\item{level}{The confidence level required (i.e., \eqn{1-\alpha}). Default: 0.95.}
 
 \item{seed}{The seed number. If the propensity score was estimated using methods in the \code{randomForest} or \code{gbm} package,
 then enter the seed number used at that time.}
 
 \item{formula}{The formula for estimating propensity score. See Examples.}
 
-\item{model}{The method for estimating propensity score, Default: "logistic". "logistic", "rf", or "gbm" can be available.
-If model is not "logistic", \code{randomForest} or \code{gbm} package is needed.}
+\item{model}{The method for estimating propensity score. "logistic", "rf", or "gbm" can be available.
+If model is not "logistic", \code{randomForest} or \code{gbm} package is needed. Default: "logistic"}
 
-\item{trunc.prop}{Optional truncation percentile (0-0.5), Default: 0.
-E.g. when trunc.prop=0.01, the left tail is truncated to the 1st percentile,
-and the right tail is truncated to the 99th percentile. When specified, truncated propensity scores are returned.}
+\item{trunc.prop}{Optional truncation percentile (0-0.5).
+For example, when trunc.prop=0.01, the left tail is truncated to the 1st percentile,
+and the right tail is truncated to the 99th percentile. When specified, truncated propensity scores are returned. Default: 0.}
 
-\item{use.multicore}{Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE.}
+\item{use.multicore}{Logical scalar indicating whether to parallelize our optimization problem. Default: TRUE.}
 
-\item{n.core}{The number of CPU cores to use, Default: parallel::detectCores()/2.}
-
-\item{verbose}{Conditional on the verbose level.
-According to the verbose level, whether or not print the completion message for each \code{B}/100\emph{th} bootstrap, Default: TRUE.}
+\item{n.core}{The number of CPU cores to use. Default: parallel::detectCores()/2.}
 
 \item{\dots}{Additional arguments passed on to \code{randomForest} or \code{gbm} function in \code{randomForest} or \code{gbm} package.}
 }
@@ -83,16 +79,16 @@ To assess details of method for sensitivity analysis, see Lee et al. (2022).
 When estimating the sensitivity range of the difference in adjusted RMST using \code{RMSTSens} function,
 there is no need for the argument of formula and model to estimate the propensity score.
 However, when estimating the confidence interval for the population sensitivity range, the argument of formula and model are absolutely necessary.
-Note that to use \code{RMSTSens.ci} function in this package, propensity score should be estimated by using
+Note that to use \code{RMSTSens.ci} function in this package, propensity score should be re-estimated by using
 \enumerate{
 \item \code{glm} that has a binomial distribution with logit link function or
 \item \code{randomForest} or \code{gbm} function in \code{randomForest} or \code{gbm} package.
-Also, if propensity score was estimated using method either \code{randomForest} or \code{gbm} package,
+}
+
+Also, if propensity score was re-estimated using method either \code{randomForest} or \code{gbm} package,
 then you should enter the seed number used at that time in "seed" argument.
 }
-}
 \examples{
-\dontrun{
 dat <- gbsg
 dat$size2 <- ifelse(dat$size <= 20, 0,
                     ifelse(dat$size > 20 & dat$size <= 50, 1, 2))
@@ -117,12 +113,13 @@ results.approx3 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             use.multicore=TRUE, n.core=2,
                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
 re.ap.boot <- RMSTSens.ci(x=merge_object(x=list(results.approx2, results.approx3)),
-          B=40, level=0.95, seed=220524,
+          B=10, level=0.95, seed=220524,
               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
-          model="logistic", trunc.prop=0, use.multicore=TRUE, n.core=2, verbose=TRUE)
+          model="logistic", trunc.prop=0, use.multicore=TRUE, n.core=2)
 re.ap.boot
 
 
+\dontrun{
 ## Estimate of propensity score using random forest
 library(randomForest)
 set.seed(220528)
@@ -145,7 +142,7 @@ results.approx.rf <- RMSTSens(time="rfstime", status="status", exposure="hormon"
 # CI of RMST
 re.rf <- RMSTSens.ci(x=results.approx.rf, B=40, level=0.95, seed=220528,
               formula=factor(hormon)~age2+meno+size2+nodes+er2,
-                     model="rf", trunc.prop=trunc.prop, use.multicore=TRUE, n.core=2, verbose=TRUE,
+                     model="rf", trunc.prop=trunc.prop, use.multicore=TRUE, n.core=2,
               ntree=1501, mtry=5)
 re.rf
 
@@ -165,7 +162,7 @@ results.approx.gbm <- RMSTSens(time="rfstime", status="status", exposure="hormon
 # CI of RMST
 re.gbm <- RMSTSens.ci(x=results.approx.gbm, B=40, level=0.95, seed=220528,
                   formula=hormon~age2+meno+size2+nodes+er2,
-                      model="gbm", trunc.prop=0, use.multicore=TRUE, n.core=2, verbose=TRUE)
+                      model="gbm", trunc.prop=0, use.multicore=TRUE, n.core=2)
 re.gbm
 }
 

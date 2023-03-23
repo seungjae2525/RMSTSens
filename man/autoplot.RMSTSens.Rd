@@ -7,8 +7,8 @@
 \usage{
 \method{autoplot}{RMSTSens}(
   object = object,
-  alpha.ci = 0.9,
   alpha.range = 0.4,
+  alpha.ci = 0.9,
   smooth.par = 100,
   ytickdiff = 100,
   point.size = 1.4,
@@ -29,36 +29,38 @@
 \arguments{
 \item{object}{An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.}
 
-\item{alpha.ci}{It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors,
-Default: 0.9.}
-
-\item{alpha.range}{It refers to the opacity of sensitivity range. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors,
+\item{alpha.range}{A opacity of sensitivity range. Values of \code{alpha.range} range from 0 to 1, with lower values corresponding to more transparent colors.
 Default: 0.4.}
 
-\item{smooth.par}{Smooth parameter, Default=100.}
+\item{alpha.ci}{A opacity of confidence interval. Values of \code{alpha.ci} range from 0 to 1, with lower values corresponding to more transparent colors.
+Default: 0.9.}
 
-\item{ytickdiff}{Distance between y-axis tick, Default: 100.}
+\item{smooth.par}{Smooth parameter. It corresponds to argument \code{n} in \code{spline} function in \code{stats} package.
+Default=100.}
 
-\item{point.size}{Point size of the the lower and upper bound of the sensitivity range, Default: 1.4.}
+\item{ytickdiff}{Distance between y-axis tick. Default: 100.}
 
-\item{h.width}{Width of horizon line which represents the estimated difference in adjusted RMST, Default: 1.}
+\item{point.size}{Point size of the the lower and upper bound of the sensitivity range. Default: 1.4.}
 
-\item{axis.title.size}{Size of x and y axis title, Default: 15.}
+\item{h.width}{Width of horizon line which represents the estimated difference in adjusted RMST. Default: 1.}
 
-\item{axis.text.size}{Size of x and y axis text, Default: 12.}
+\item{axis.title.size}{Size of x and y axis title. Default: 15.}
 
-\item{save.plot}{When TRUE, it will save image, Default: FALSE.}
+\item{axis.text.size}{Size of x and y axis text. Default: 12.}
 
-\item{save.plot.name}{File name to create on disk, Default: "Plot".}
+\item{save.plot}{When TRUE, it will save the resulting plot. To save the resulting plot to a specific directory,
+the working directory will be probably need to set using \code{setwd()}. Default: FALSE.}
 
-\item{save.plot.device}{Device to use. Can either of "png", "eps", "ps", "tex" (pictex), "pdf", "jpeg", "tiff", bmp", "svg" or "wmf" (windows only), Default: "png".}
+\item{save.plot.name}{File name to create on disk. Default: "Plot".}
 
-\item{save.plot.width}{Plot width size in units, Default: 10.}
+\item{save.plot.device}{Device to use. Can either of "png", "eps", "ps", "tex" (pictex), "pdf", "jpeg", "tiff", bmp", "svg", or "wmf" (windows only). Default: "png".}
 
-\item{save.plot.height}{Plot height size in units, Default: 6.}
+\item{save.plot.width}{Plot width size in units. Default: 10.}
 
-\item{save.plot.dpi}{Resolution of plot, Default: 300. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72).
-Applies only to raster output types.}
+\item{save.plot.height}{Plot height size in units. Default: 6.}
+
+\item{save.plot.dpi}{Resolution of plot. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72). Applies only to raster output types.
+Default: 300.}
 
 \item{...}{Further arguments (currently not used).}
 
@@ -72,8 +74,8 @@ Plot for sensitivity analysis results of either or both the sensitivity range of
 the confidence interval for the population sensitivity range.
 }
 \details{
-If the object also contains the results of confidence interval for the population sensitivity range as well as the sensitivity range,
-then it will return a plot with sensitivity range and confidence interval, otherwise it will only return a plot of sensitivity range.
+If the object contains the results of confidence interval for the population sensitivity range as well as the sensitivity range,
+then it will return a plot with sensitivity range with confidence interval, otherwise it will only return a plot of sensitivity range.
 }
 \examples{
 dat <- gbsg
@@ -94,7 +96,7 @@ results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
                             use.multicore=TRUE, n.core=2,
                             lambda=c(1,1.5,2.0), tau=365.25*5, ini.par=1, verbose=FALSE)
-autoplot(object=results.approx2, alpha.ci=0.9, alpha.range=0.4, smooth.par=100,
+autoplot(object=results.approx2, alpha.range=0.4, alpha.ci=0.9, smooth.par=100,
          ytickdiff=100, point.size=1.4, h.width=1,
          axis.title.size=15, axis.text.size=12,
          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -106,7 +108,7 @@ results.approx3 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
 # After Merging two results, plot the analysis results.
 autoplot(object=merge_object(list(results.approx2, results.approx3)), smooth.par=100,
-         alpha.ci=0.9, alpha.range=0.4,
+         alpha.range=0.4, alpha.ci=0.9,
          ytickdiff=100, point.size=1.4, h.width=1,
          axis.title.size=15, axis.text.size=12,
          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -118,7 +120,7 @@ re.ap.boot <- RMSTSens.ci(x=merge_object(list(results.approx2, results.approx3))
           B=40, level=0.95, seed=220524,
               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
           model="logistic", use.multicore=TRUE, n.core=2, verbose=TRUE)
-autoplot(object=re.ap.boot, alpha.ci=0.9, alpha.range=0.4, smooth.par=100,
+autoplot(object=re.ap.boot, alpha.range=0.4, alpha.ci=0.9, smooth.par=100,
          ytickdiff=100, point.size=1.4, h.width=1,
          axis.title.size=15, axis.text.size=12,
          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
@@ -126,7 +128,7 @@ autoplot(object=re.ap.boot, alpha.ci=0.9, alpha.range=0.4, smooth.par=100,
 }
 
 \dontrun{
-plot(results.approx2, alpha.ci=0.9, alpha.range=0.4, smooth.par=100,
+plot(results.approx2, alpha.range=0.4, alpha.ci=0.9, smooth.par=100,
      ytickdiff=100, point.size=1.4, h.width=1,
      axis.title.size=15, axis.text.size=12,
      save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",

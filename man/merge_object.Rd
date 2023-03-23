@@ -2,7 +2,7 @@
 % Please edit documentation in R/merge_object.R
 \name{merge_object}
 \alias{merge_object}
-\title{Function to merge \code{RMSTSens} objects about results of sensitivity analysis}
+\title{Merging \code{RMSTSens} objects for the results of sensitivity analysis}
 \usage{
 merge_object(x = list())
 }
@@ -13,8 +13,8 @@ merge_object(x = list())
 New merged object for class \code{RMSTSens}
 }
 \description{
-Merge the \code{RMSTSens} object, which is the result of the previously performed sensitivity analysis,
-and the additional \code{RMSTSens} objects, which are the results of the additionally performed sensitivity analyses.
+\code{RMSTSens} is the function to merge the \code{RMSTSens} object, which includes the result of the previously performed sensitivity analysis,
+and the additional \code{RMSTSens} object, which includes the result of the another performed sensitivity analysis.
 }
 \examples{
 dat <- gbsg

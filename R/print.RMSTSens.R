@@ -1,13 +1,13 @@
 #' @title Print for \code{RMSTSens} objects
 #'
-#' @description Print for objects of class \code{RMSTSens}.
+#' @description Print the sensitivity analysis results for object of class \code{RMSTSens}.
 #'
-#' @param x An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function.
-#' See \code{merge_object}.
-#' @param digits Print digits, Default: max(1L, getOption("digits") - 3L).
+#' @param x An object for class \code{RMSTSens}. Either object \code{RMSTSens} or \code{RMSTSens.ci} is allowed.
+#' If you want to see the results of several \code{RMSTSens} objects together, use the \code{merge_object} function. See \code{merge_object}.
+#' @param digits Print digits. Default: max(1L, getOption("digits") - 3L).
 #' @param ... Further arguments (currently not used).
 #'
-#' @details Print results for \code{RMSTSens} or \code{RMSTSens.ci} object of sensitivity analysis.
+#' @details Print the sensitivity analysis results for object (\code{RMSTSens} or \code{RMSTSens.ci}) of class \code{RMSTSens}.
 #'
 #' @examples
 #' dat <- gbsg
@@ -55,7 +55,7 @@
 #' @keywords print
 #'
 #' @seealso
-#'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}
+#'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{merge_object}}
 #'
 #' @export
 
@@ -68,52 +68,52 @@ print.RMSTSens <- function (x, digits = max(1L, getOption("digits") - 3L), ...){
   xx <- x$result.df
 
   cat("\n")
-  cat("N=", xx$N[1])
-  cat(", N in exposed group=", xx$N.exposed[1])
-  cat(", N in unexposed group=", xx$N.unexposed[1], "\n")
+  cat("N =", xx$N[1])
+  cat(", N in exposed group =", xx$N.exposed[1])
+  cat(", N in unexposed group =", xx$N.unexposed[1], "\n")
 
   cat("\n")
-  cat("Number of events=", xx$N.event.exposed[1] + xx$N.event.unexposed[1], "\n")
-  cat("Nunbmer of event in exposed group=", xx$N.event.exposed[1], "\n")
-  cat("Nunbmer of event in unexposed group=", xx$N.event.unexposed[1], "\n")
+  cat("Number of events =", xx$N.event.exposed[1] + xx$N.event.unexposed[1], "\n")
+  cat("Nunbmer of event in exposed group =", xx$N.event.exposed[1], "\n")
+  cat("Nunbmer of event in unexposed group =", xx$N.event.unexposed[1], "\n")
 
   cat("\n")
-  cat("Censoring rate=", round(xx$cen.rate[1], digits), "\n")
-  cat("Censoring rate in exposed group=", round(xx$cen.rate.exposed[1], digits), "\n")
-  cat("Censoring rate in unexposed group=", round(xx$cen.rate.unexposed[1], digits), "\n")
+  cat("Censoring rate =", round(xx$cen.rate[1], digits), "\n")
+  cat("Censoring rate in exposed group =", round(xx$cen.rate.exposed[1], digits), "\n")
+  cat("Censoring rate in unexposed group =", round(xx$cen.rate.unexposed[1], digits), "\n")
 
   lambda.digit <- sapply(xx$Lambda, function(x) match(TRUE, round(x, 1:20) == x))
   spr <- sprintf(paste0("%.",max(lambda.digit),"f"), xx$Lambda)
 
   cat("\n")
   cat("Parameters: \n")
-  cat("Optimization method=", xx$Method[1])
+  cat("Optimization method =", xx$Method[1])
   if(length(xx$Lambda) == 1){
-    cat(", Lambda=", spr)
+    cat(", Lambda =", spr)
   } else {
-    cat(",", paste0("Lambda=(",paste0(spr, collapse=", "),")"))
+    cat(",", paste0("Lambda = (",paste0(spr, collapse=", "),")"))
   }
-  cat(", Tau=", xx$Tau[1], "\n")
+  cat(", Tau =", xx$Tau[1], "\n")
 
   # savedig <- options(digits = digits)
   # on.exit(options(savedig))
 
   cat("\n")
   cat("Results: \n")
-  cat("RMST for exposed group: \n")
+  cat("Adjusted RMST for exposed group: \n")
   tmp1 <- round(cbind(xx$min.exposed, xx$max.exposed), digits)
   rownames(tmp1) <- paste0(rep(expression(Lambda), times=nrow(xx)), '=', spr)
   colnames(tmp1) <- c("    Minimum", "    Maximum")
   print(tmp1)
 
-  cat("RMST for unexposed group: \n")
+  cat("Adjusted RMST for unexposed group: \n")
   tmp2 <- round(cbind(xx$min.unexposed, xx$max.unexposed), digits)
   rownames(tmp2) <- paste0(rep(expression(Lambda), times=nrow(xx)), '=', spr)
   colnames(tmp2) <- c("    Minimum", "    Maximum")
   print(tmp2)
   # printCoefmat(tmp2, digits = digits)
 
-  cat("Sensitivity range of difference in RMST: \n")
+  cat("Sensitivity range of difference in adjusted RMST: \n")
   tmp3 <- round(cbind(xx$RMST.diff.min, xx$RMST.diff.max), digits)
   rownames(tmp3) <- paste0(rep(expression(Lambda), times=nrow(xx)), '=', spr)
   colnames(tmp3) <- c("Lower bound", "Upper bound")

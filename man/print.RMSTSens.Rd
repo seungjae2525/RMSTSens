@@ -7,18 +7,18 @@
 \method{print}{RMSTSens}(x, digits = max(1L, getOption("digits") - 3L), ...)
 }
 \arguments{
-\item{x}{An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function.
-See \code{merge_object}.}
+\item{x}{An object for class \code{RMSTSens}. Either object \code{RMSTSens} or \code{RMSTSens.ci} is allowed.
+If you want to see the results of several \code{RMSTSens} objects together, use the \code{merge_object} function. See \code{merge_object}.}
 
-\item{digits}{Print digits, Default: max(1L, getOption("digits") - 3L).}
+\item{digits}{Print digits. Default: max(1L, getOption("digits") - 3L).}
 
 \item{...}{Further arguments (currently not used).}
 }
 \description{
-Print for objects of class \code{RMSTSens}.
+Print the sensitivity analysis results for object of class \code{RMSTSens}.
 }
 \details{
-Print results for \code{RMSTSens} or \code{RMSTSens.ci} object of sensitivity analysis.
+Print the sensitivity analysis results for object (\code{RMSTSens} or \code{RMSTSens.ci}) of class \code{RMSTSens}.
 }
 \examples{
 dat <- gbsg
@@ -65,6 +65,6 @@ print(re.ap.boot)
 
 }
 \seealso{
-\code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}
+\code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{merge_object}}
 }
 \keyword{print}

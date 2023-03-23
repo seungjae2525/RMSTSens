@@ -1,7 +1,7 @@
-#' @title Function to merge \code{RMSTSens} objects about results of sensitivity analysis
+#' @title Merging \code{RMSTSens} objects for the results of sensitivity analysis
 #'
-#' @description Merge the \code{RMSTSens} object, which is the result of the previously performed sensitivity analysis,
-#' and the additional \code{RMSTSens} objects, which are the results of the additionally performed sensitivity analyses.
+#' @description \code{RMSTSens} is the function to merge the \code{RMSTSens} object, which includes the result of the previously performed sensitivity analysis,
+#' and the additional \code{RMSTSens} object, which includes the result of the another performed sensitivity analysis.
 #'
 #' @param x A list of objects for class \code{RMSTSens}. For example, list(result1, result2, ...). See Examples.
 #'
@@ -56,6 +56,12 @@ merge_object <- function(x = list()){
       if(i != 1){
         if(!identical(as.numeric(x[[i-1]]$data[,x$argument[5]]), as.numeric(x[[i]]$data[,x$argument[5]]))){
           stop("Each object of class \"RMSTSens\" has a different propensity score.")
+        }
+        if(!identical(x[[i-1]]$argument[1:5], x[[i]]$argument[1:5])){
+          stop("Arguments ('time', 'status', 'exposure', 'level.exposed', or 'ps') in each object of class \"RMSTSens\" are different. \n These must be the same for all objects.")
+        }
+        if(!identical(x[[i-1]]$result.df$Tau[1], x[[i]]$result.df$Tau[1])){
+          stop("'Tau' in one or more objects of class \"RMSTSens\" is not the same.")
         }
       }
     }
