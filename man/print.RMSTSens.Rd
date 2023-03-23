@@ -7,7 +7,8 @@
 \method{print}{RMSTSens}(x, digits = max(1L, getOption("digits") - 3L), ...)
 }
 \arguments{
-\item{x}{An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.}
+\item{x}{An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function.
+See \code{merge_object}.}
 
 \item{digits}{Print digits, Default: max(1L, getOption("digits") - 3L).}
 
@@ -17,7 +18,7 @@
 Print for objects of class \code{RMSTSens}.
 }
 \details{
-Print results for \code{RMSTSens} or \code{RMSTSens.ci} object about sensitivity analysis.
+Print results for \code{RMSTSens} or \code{RMSTSens.ci} object of sensitivity analysis.
 }
 \examples{
 dat <- gbsg

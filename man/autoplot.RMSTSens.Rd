@@ -3,7 +3,7 @@
 \name{autoplot.RMSTSens}
 \alias{autoplot.RMSTSens}
 \alias{plot.RMSTSens}
-\title{Plot for sensitivity analysis}
+\title{Plot for sensitivity analysis results}
 \usage{
 \method{autoplot}{RMSTSens}(
   object = object,
@@ -29,17 +29,19 @@
 \arguments{
 \item{object}{An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects, use the \code{merge_object} function. See \code{merge_object}.}
 
-\item{alpha.ci}{It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.9.}
+\item{alpha.ci}{It refers to the opacity of confidence interval. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors,
+Default: 0.9.}
 
-\item{alpha.range}{It refers to the opacity of range.Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors, Default: 0.4.}
+\item{alpha.range}{It refers to the opacity of sensitivity range. Values of alpha range from 0 to 1, with lower values corresponding to more transparent colors,
+Default: 0.4.}
 
 \item{smooth.par}{Smooth parameter, Default=100.}
 
 \item{ytickdiff}{Distance between y-axis tick, Default: 100.}
 
-\item{point.size}{Point size of estimate of lower and upper for bias-adjusted RMST, Default: 1.4.}
+\item{point.size}{Point size of the the lower and upper bound of the sensitivity range, Default: 1.4.}
 
-\item{h.width}{Horizon lines width, Default: 1.}
+\item{h.width}{Width of horizon line which represents the estimated difference in adjusted RMST, Default: 1.}
 
 \item{axis.title.size}{Size of x and y axis title, Default: 15.}
 
@@ -55,7 +57,8 @@
 
 \item{save.plot.height}{Plot height size in units, Default: 6.}
 
-\item{save.plot.dpi}{Resolution of plot, Default: 300. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72). Applies only to raster output types.}
+\item{save.plot.dpi}{Resolution of plot, Default: 300. Also accepts a string input: "retina" (320), "print" (300), or "screen" (72).
+Applies only to raster output types.}
 
 \item{...}{Further arguments (currently not used).}
 
@@ -65,10 +68,12 @@
 Result plot for sensitivity analysis.
 }
 \description{
-Plot for sensitivity analysis either or both of range and confidence interval for bias-adjusted restricted mean survival time.
+Plot for sensitivity analysis results of either or both the sensitivity range of the difference in adjusted RMST and
+the confidence interval for the population sensitivity range.
 }
 \details{
-If the object contains results of bootstrap confidence interval, then it will return plot of range and confidence interval for bias-adjusted restricted mean survival time, otherwise it will only plot of range for bias-adjusted restricted mean survival time.
+If the object also contains the results of confidence interval for the population sensitivity range as well as the sensitivity range,
+then it will return a plot with sensitivity range and confidence interval, otherwise it will only return a plot of sensitivity range.
 }
 \examples{
 dat <- gbsg

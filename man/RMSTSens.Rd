@@ -2,7 +2,7 @@
 % Please edit documentation in R/RMSTSens.R
 \name{RMSTSens}
 \alias{RMSTSens}
-\title{Sensitivity analysis for RMST}
+\title{Sensitivity range of the difference in adjusted RMST}
 \usage{
 RMSTSens(
   time,
@@ -21,15 +21,15 @@ RMSTSens(
 )
 }
 \arguments{
-\item{time}{The name of variable for time to event.}
+\item{time}{The name of variable for survival time (i.e., time to event).}
 
-\item{status}{The name of variable for censoring indicator (0 if censored, 1 if event).}
+\item{status}{The name of variable for event indicator (0 if censored, 1 if event).}
 
 \item{exposure}{The name of variable for exposure (0 if unexposed, 1 if exposed).}
 
 \item{level.exposed}{Level for exposed group in exposure variable, Default: "1".}
 
-\item{ps}{The name of variable for propensity score variable or the vector for propensity score i.e., P(A=1|L).}
+\item{ps}{The name of variable or the vector for the estimated propensity score.}
 
 \item{data}{A data frame in which contains the follow-up time (time), the event (status), the exposure (exposure), and the propensity score (ps).}
 
@@ -37,15 +37,15 @@ RMSTSens(
 
 \item{use.multicore}{Logical scalar indicating whether to parallelize our optimization problem, Default: TRUE.}
 
-\item{n.core}{The number of cores to use, Default: parallel::detectCores()/2.}
+\item{n.core}{The number of CPU cores to use, Default: parallel::detectCores()/2.}
 
 \item{lambda}{A scalar or vector for sensitivity parameter \eqn{\Lambda}, Default: 2.}
 
-\item{tau}{User-specific time point, If tau not specified (NULL), use the minimum of the largest observed event time in both groups, Default: NULL.}
+\item{tau}{User-specific time point, If tau not specified (i.e., NULL), use the minimum value of last event times in each group, Default: NULL.}
 
-\item{ini.par}{Initial parameter for direct optimization method, Default: 1.}
+\item{ini.par}{Initial value for the parameter to be optimized over in the direct optimization method, Default: 1.}
 
-\item{verbose}{Conditional on the verbose level, print the message that each optimization (minimization or maximization) for each group was ended, Default: FALSE.}
+\item{verbose}{Conditional on the verbose level, print the message when each optimization (minimization or maximization) for each group was ended, Default: FALSE.}
 }
 \value{
 An object of class \code{RMSTSens}. The object is a data.frame with the following components:
@@ -57,27 +57,37 @@ An object of class \code{RMSTSens}. The object is a data.frame with the followin
 \item{cen.rate}{Total censoring rate}
 \item{cen.rate.exposed}{Censoring rate in exposed group}
 \item{cen.rate.unexposed}{Censoring rate in unexposed group}
-\item{Lambda}{A scalar or vector of sensitivity parameter \eqn{\Lambda} used}
-\item{Tau}{User-specific time point \eqn{\tau}, If tau not specified (NULL), use the minimum between the largest observed event time in each groups}
+\item{Lambda}{A scalar or vector of sensitivity parameter(s) \eqn{\Lambda} used}
+\item{Tau}{User-specific time point \eqn{\tau}, If tau not specified (NULL), use the minimum value of last event times in each group}
 \item{Method}{A optimization method used}
-\item{min.exposed}{The minimum of adjusted RMST based on the shifted propensity score for exposed group}
-\item{max.exposed}{The maximum of adjusted RMST based on the shifted propensity score for exposed group}
-\item{min.unexposed}{The minimum of adjusted RMST based on the shifted propensity score for unexposed group}
-\item{max.unexposed}{The maximum of adjusted RMST based on the shifted propensity score for unexposed group}
-\item{RMST.diff.min}{Lower bound of point estimate for between-group difference in adjusted RMST based on shifted propensity score}
-\item{RMST.diff.max}{Upper bound of point estimate for between-group difference in adjusted RMST based on shifted propensity score}
+\item{min.exposed}{The minimum value of adjusted RMST for exposed group}
+\item{max.exposed}{The maximum value of adjusted RMST for exposed group}
+\item{min.unexposed}{The minimum value of adjusted RMST for unexposed group}
+\item{max.unexposed}{The maximum value of adjusted RMST for unexposed group}
+\item{RMST.diff.min}{Lower bound of the sensitivity range for the difference in adjusted RMST}
+\item{RMST.diff.max}{Upper bound of the sensitivity range for the difference in adjusted RMST}
 The results for the \code{RMSTSens} are printed with the \code{\link{print.RMSTSens}} functions.
-To generate result plot comparing sensitivity parameters \eqn{\Lambda} with range of adjusted RMST based on shifted propensity score, use the \code{\link{autoplot.RMSTSens}} functions.
+To generate the plot of results for the \code{RMSTSens}, use the \code{\link{autoplot.RMSTSens}} functions.
 }
 \description{
-Function for sensitivity analysis of unmeasured confounding for restricted mean survival time using propensity score.
+Function for estimating the sensitivity range(s) of the difference in adjusted RMST
 }
 \details{
 There are four possible methods for our sensitivity analysis.
-In general survival analysis setting, if the censoring rates in both exposure group are less than 0.7, the approximate optimization method (methods="Approx") is not inferior to the direct optimization method in terms of both bias and computational time.
-Otherwise, one may use the direct optimization method (methods="Optim") to perform the sensitivity analysis, although it takes slightly more computational time than the approximate optimization method.
-In special settings, to obtain the solution of optimization problem, only need to compute the objective function of linear fractional programming (methods="LP1" or methods="LP2) for at most m (the number of event) candidates of optimization parameters.
-To assess detail of methods and special settings, see Lee et al. (2022).
+In general survival analysis setting, if the censoring rate is less than 0.7,
+the approximate optimization method (methods="Approx") can be recommended
+because it is much faster than and very accurate as the direct optimization method.
+If the censoring rate is greater than 0.7, the direct optimization method (methods="Optim") can be used as an alternative
+because it is implemented as fast as the approximate optimization method.
+In special settings, some analytic results can be obtained.
+When a closed cohort where all subjects are followed up from the same entry time and
+only administrative censoring is allowed at the end of follow-up is considered,
+high-dimensional optimization problems can be expressed as the well-known linear programming problems,
+and thus one can use the analytic solutions for computing the sensitivity range (methods="LP1").
+Similarly, when the minimum value of censoring times in each group is longer than or equal to tau,
+the optimization problems are also transformed to well-known linear programming problems,
+and thus one can use the analytic solutions for computing the sensitivity range (methods="LP2).
+To assess detail of methods and special settings, see Lee et al. (2023).
 }
 \examples{
 dat <- gbsg
@@ -117,16 +127,12 @@ results.approx2
 
 }
 \references{
-Bakbergenuly I, Hoaglin DC, Kulinskaya E (2020):
-Methods for estimating between-study variance and overall
-effect in meta-analysis of odds-ratios.
-\emph{Research Synthesis Methods},
-DOI: 10.1002/jrsm.1404
+Lee S, Park JH, Lee W (2023):
+Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time
+\emph{xxx},
+DOI: xxx
 }
 \seealso{
 \code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{autoplot.RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}
-}
-\author{
-Seungjae Lee \email{seungjae2525@gmail.com}
 }
 \keyword{methods}

@@ -1,7 +1,7 @@
 Package: RMSTSens
 Version: 1.0.0
 Title: Sensitivity Analysis for Restricted Mean Survival Time
-Description: Sensitivity analysis of unmeasured confounding for restricted mean survival time based on propensity score.
+Description: Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time.
 License: MIT + file LICENSE
 URL: https://github.com/seungjae2525/RMSTSens
 BugReports: https://github.com/seungjae2525/RMSTSens/issues
@@ -10,7 +10,7 @@ Imports: ggplot2, optimParallel, parallel
 Suggests: doParallel, gbm, randomForest
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 LazyData: true
 NeedsCompilation: no
 Authors@R: 

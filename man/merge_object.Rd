@@ -13,7 +13,8 @@ merge_object(x = list())
 New merged object for class \code{RMSTSens}
 }
 \description{
-Merge the \code{RMSTSens} object, which is the result of the previously performed analysis, and the additional \code{RMSTSens} objects, which are the results of the additional analyses.
+Merge the \code{RMSTSens} object, which is the result of the previously performed sensitivity analysis,
+and the additional \code{RMSTSens} objects, which are the results of the additionally performed sensitivity analyses.
 }
 \examples{
 dat <- gbsg
