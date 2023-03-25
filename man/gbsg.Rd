@@ -37,7 +37,5 @@ and the GBSG data for validation of the model. The paper gives references for th
 \references{
 Royston P, Altman DG (2013): External validation of a Cox prognostic model: principles and methods.
 \emph{BMC Med Res Methodol}. DOI: 10.1186/1471-2288-13-33.
-
-.
 }
 \keyword{datasets}

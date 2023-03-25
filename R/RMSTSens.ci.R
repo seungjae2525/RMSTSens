@@ -4,7 +4,7 @@
 #' constructs the percentile bootstrap confidence interval(s) for population sensitivity range.
 #'
 #' @param x An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects,
-#' use the \code{merge_object} function. See \code{merge_object}.
+#' use the \code{RMSTSens.merge} function. See \code{RMSTSens.merge}.
 #' @param B The number of bootstrap replicates. Default: 1000.
 #' @param level The confidence level required (i.e., \eqn{1-\alpha}). Default: 0.95.
 #' @param seed The seed number. If the propensity score was estimated using methods in the \code{randomForest} or \code{gbm} package,
@@ -29,7 +29,7 @@
 #' \item{cen.rate.exposed}{Censoring rate in exposed group}
 #' \item{cen.rate.unexposed}{Censoring rate in unexposed group}
 #' \item{Lambda}{A scalar or vector of sensitivity parameter(s) \eqn{\Lambda} used}
-#' \item{Tau}{User-specific time point \eqn{\tau}, If tau not specified (NULL), use the minimum value of last event times in each group}
+#' \item{Tau}{User-specific time point \eqn{\tau}; If tau not specified (NULL), the minimum value of last event times in each group}
 #' \item{Method}{A optimization method used}
 #' \item{min.exposed}{The minimum value of adjusted RMST for exposed group}
 #' \item{max.exposed}{The maximum value of adjusted RMST for exposed group}
@@ -83,7 +83,7 @@
 #'                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
 #'
 #' # Percentile bootstrap CI for population sensitivity range
-#' re.ap.boot <- RMSTSens.ci(x=merge_object(x=list(results.approx2, results.approx3)),
+#' re.ap.boot <- RMSTSens.ci(x=RMSTSens.merge(x=list(results.approx2, results.approx3)),
 #'               B=50, # Set B=50 to reduce computation time for R checks
 #'               level=0.95, seed=220524,
 #'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,

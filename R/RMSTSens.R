@@ -3,7 +3,7 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #' @title Sensitivity range of the difference in adjusted RMST
 #'
 #' @description \code{RMSTSens()} is the main function of RMSTSens and
-#' performs the sensitivity analysis for estimating the sensitivity range(s) of the difference in adjusted RMST
+#' performs the sensitivity analysis for estimating the sensitivity range(s) of the difference in adjusted RMST.
 #'
 #' @param time The name of variable for survival time (i.e., time to event).
 #' @param status The name of variable for event indicator (0 if censored, 1 if event).
@@ -29,7 +29,7 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #' \item{cen.rate.exposed}{Censoring rate in exposed group}
 #' \item{cen.rate.unexposed}{Censoring rate in unexposed group}
 #' \item{Lambda}{A scalar or vector of sensitivity parameter(s) \eqn{\Lambda} used}
-#' \item{Tau}{User-specific time point \eqn{\tau}, If tau not specified (NULL), use the minimum value of last event times in each group}
+#' \item{Tau}{User-specific time point \eqn{\tau}; If tau not specified (NULL), the minimum value of last event times in each group}
 #' \item{Method}{A optimization method used}
 #' \item{min.exposed}{The minimum value of adjusted RMST for exposed group}
 #' \item{max.exposed}{The maximum value of adjusted RMST for exposed group}

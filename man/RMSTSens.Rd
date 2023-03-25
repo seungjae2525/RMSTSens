@@ -58,7 +58,7 @@ An object of class \code{RMSTSens}. The object is a data.frame with the followin
 \item{cen.rate.exposed}{Censoring rate in exposed group}
 \item{cen.rate.unexposed}{Censoring rate in unexposed group}
 \item{Lambda}{A scalar or vector of sensitivity parameter(s) \eqn{\Lambda} used}
-\item{Tau}{User-specific time point \eqn{\tau}, If tau not specified (NULL), use the minimum value of last event times in each group}
+\item{Tau}{User-specific time point \eqn{\tau}; If tau not specified (NULL), the minimum value of last event times in each group}
 \item{Method}{A optimization method used}
 \item{min.exposed}{The minimum value of adjusted RMST for exposed group}
 \item{max.exposed}{The maximum value of adjusted RMST for exposed group}
@@ -71,7 +71,7 @@ To generate the plot of results for the \code{RMSTSens}, use the \code{\link{aut
 }
 \description{
 \code{RMSTSens()} is the main function of RMSTSens and
-performs the sensitivity analysis for estimating the sensitivity range(s) of the difference in adjusted RMST
+performs the sensitivity analysis for estimating the sensitivity range(s) of the difference in adjusted RMST.
 }
 \details{
 There are four possible methods for our sensitivity analysis.
@@ -110,8 +110,7 @@ denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(node
                  data=dat, family=binomial(link="logit"))
 dat$Ps <- predict(denom.fit, type="response")
 
-## Between-group difference in adjusted RMST based on shifted propensity score
-## Adjusted RMST with tau equal to 5-year
+## Performing the sensitivity analysis - sensitivity range
 # Using direct optimization method
 results.optim <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                           level.exposed="1", ps="Ps", data=dat, methods="Optim",
@@ -126,7 +125,7 @@ results.approx <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                            lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
 results.approx
 
-## Adjusted RMST with not specified tau and with multiple lambda
+## Performing the sensitivity analysis - sensitivity range with multiple lambda
 # Using approximate optimization method
 results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             level.exposed="1", ps="Ps", data=dat, methods="Approx",

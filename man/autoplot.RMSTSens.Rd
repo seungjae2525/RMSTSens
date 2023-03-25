@@ -28,7 +28,7 @@
 }
 \arguments{
 \item{object}{An object for class \code{RMSTSens}. Either object \code{RMSTSens} or \code{RMSTSens.ci} is allowed.
-If you want to see the results of several \code{RMSTSens} objects together, use the \code{merge_object} function. See \code{merge_object}.}
+If you want to see the results of several \code{RMSTSens} objects together, use the \code{RMSTSens.merge} function. See \code{RMSTSens.merge}.}
 
 \item{alpha.range}{A opacity of sensitivity range. Values of \code{alpha.range} range from 0 to 1, with lower values corresponding to more transparent colors.
 Default: 0.4.}
@@ -87,8 +87,7 @@ denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(node
                  data=dat, family=binomial(link="logit"))
 dat$Ps <- predict(denom.fit, type="response")
 
-## Between-group difference in adjusted RMST based on shifted propensity score
-## Adjusted RMST with not specified tau and with multiple lambda
+## Performing the sensitivity analysis - sensitivity range
 # Using approximate optimization method
 results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
@@ -104,16 +103,16 @@ results.approx3 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
                             use.multicore=TRUE, n.core=2,
                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
-# After Merging two results, plot the analysis results.
-autoplot(object=merge_object(list(results.approx2, results.approx3)), smooth.par=100,
+# After merging two results, plot the analysis results.
+autoplot(object=RMSTSens.merge(list(results.approx2, results.approx3)), smooth.par=100,
          alpha.range=0.4, alpha.ci=0.9,
          ytickdiff=100, point.size=1.4, h.width=1,
          axis.title.size=15, axis.text.size=12,
          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 
-# Bootstrap confidence interval
-re.ap.boot <- RMSTSens.ci(x=merge_object(list(results.approx2, results.approx3)),
+# Percentile bootstrap CI for population sensitivity range
+re.ap.boot <- RMSTSens.ci(x=RMSTSens.merge(list(results.approx2, results.approx3)),
               B=50, # Set B=50 to reduce computation time for R checks
               level=0.95, seed=220524,
               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
@@ -134,6 +133,6 @@ plot(results.approx2, alpha.range=0.4, alpha.ci=0.9, smooth.par=100,
 
 }
 \seealso{
-\code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{merge_object}}
+\code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{RMSTSens.merge}}
 }
 \keyword{plot}

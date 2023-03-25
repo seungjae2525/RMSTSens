@@ -1,7 +1,7 @@
 #' @title Plot for sensitivity analysis results
 #'
 #' @param object An object for class \code{RMSTSens}. Either object \code{RMSTSens} or \code{RMSTSens.ci} is allowed.
-#' If you want to see the results of several \code{RMSTSens} objects together, use the \code{merge_object} function. See \code{merge_object}.
+#' If you want to see the results of several \code{RMSTSens} objects together, use the \code{RMSTSens.merge} function. See \code{RMSTSens.merge}.
 #' @param alpha.range A opacity of sensitivity range. Values of \code{alpha.range} range from 0 to 1, with lower values corresponding to more transparent colors.
 #' Default: 0.4.
 #' @param alpha.ci A opacity of confidence interval. Values of \code{alpha.ci} range from 0 to 1, with lower values corresponding to more transparent colors.
@@ -55,7 +55,7 @@
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' # After merging two results, plot the analysis results.
-#' autoplot(object=merge_object(list(results.approx2, results.approx3)), smooth.par=100,
+#' autoplot(object=RMSTSens.merge(list(results.approx2, results.approx3)), smooth.par=100,
 #'          alpha.range=0.4, alpha.ci=0.9,
 #'          ytickdiff=100, point.size=1.4, h.width=1,
 #'          axis.title.size=15, axis.text.size=12,
@@ -63,7 +63,7 @@
 #'          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 #'
 #' # Percentile bootstrap CI for population sensitivity range
-#' re.ap.boot <- RMSTSens.ci(x=merge_object(list(results.approx2, results.approx3)),
+#' re.ap.boot <- RMSTSens.ci(x=RMSTSens.merge(list(results.approx2, results.approx3)),
 #'               B=50, # Set B=50 to reduce computation time for R checks
 #'               level=0.95, seed=220524,
 #'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
@@ -75,7 +75,7 @@
 #'          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 #'
 #' @seealso
-#'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{merge_object}}
+#'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{RMSTSens.merge}}
 #'
 #' @import ggplot2
 #'

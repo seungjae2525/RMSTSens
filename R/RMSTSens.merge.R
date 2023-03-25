@@ -5,7 +5,7 @@
 #'
 #' @param x A list of objects for class \code{RMSTSens}. For example, list(result1, result2, ...). See Examples.
 #'
-#' @rdname merge_object
+#' @rdname RMSTSens.merge
 #'
 #' @return New merged object for class \code{RMSTSens}
 #'
@@ -27,17 +27,17 @@
 #'                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1,1.5,2.0), tau=365.25*5, ini.par=1, verbose=FALSE)
-#' merge_object(x=list(results.approx2))
+#' RMSTSens.merge(x=list(results.approx2))
 #'
 #' # Additional sensitivity analysis when lambda=1.7
 #' results.approx3 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
 #'                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
-#' merge_object(x=list(results.approx2, results.approx3))
+#' RMSTSens.merge(x=list(results.approx2, results.approx3))
 #'
 #' @export
-merge_object <- function(x = list()){
+RMSTSens.merge <- function(x = list()){
   if(length(x) == 1){ # an object
     if (!inherits(x[[1]], "RMSTSens")){
       stop("Argument 'object' must be an object of class \"RMSTSens\".")

@@ -8,7 +8,7 @@
 }
 \arguments{
 \item{x}{An object for class \code{RMSTSens}. Either object \code{RMSTSens} or \code{RMSTSens.ci} is allowed.
-If you want to see the results of several \code{RMSTSens} objects together, use the \code{merge_object} function. See \code{merge_object}.}
+If you want to see the results of several \code{RMSTSens} objects together, use the \code{RMSTSens.merge} function. See \code{RMSTSens.merge}.}
 
 \item{digits}{Print digits. Default: max(1L, getOption("digits") - 3L).}
 
@@ -32,8 +32,7 @@ denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(node
                  data=dat, family=binomial(link="logit"))
 dat$Ps <- predict(denom.fit, type="response")
 
-## Between-group difference in adjusted RMST based on shifted propensity score
-## Adjusted RMST with tau equal to 5-year
+## Performing the sensitivity analysis - sensitivity range
 # Using direct optimization method
 results.optim <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                           level.exposed="1", ps="Ps", data=dat, methods="Optim",
@@ -48,7 +47,7 @@ results.approx <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                            lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
 print(results.approx)
 
-## Adjusted RMST with not specified tau and with multiple lambda
+## Performing the sensitivity analysis - sensitivity range with multiple lambda
 # Using approximate optimization method
 results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
@@ -56,7 +55,7 @@ results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
 print(results.approx2)
 
-# Bootstrap confidence interval
+# Percentile bootstrap CI for population sensitivity range
 re.ap.boot <- RMSTSens.ci(x=results.approx2,
               B=50, # Set B=50 to reduce computation time for R checks
               level=0.95, seed=220524,
@@ -66,6 +65,6 @@ print(re.ap.boot)
 
 }
 \seealso{
-\code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{merge_object}}
+\code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{RMSTSens.merge}}
 }
 \keyword{print}

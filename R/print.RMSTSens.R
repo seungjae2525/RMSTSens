@@ -3,7 +3,7 @@
 #' @description Print the sensitivity analysis results for object of class \code{RMSTSens}.
 #'
 #' @param x An object for class \code{RMSTSens}. Either object \code{RMSTSens} or \code{RMSTSens.ci} is allowed.
-#' If you want to see the results of several \code{RMSTSens} objects together, use the \code{merge_object} function. See \code{merge_object}.
+#' If you want to see the results of several \code{RMSTSens} objects together, use the \code{RMSTSens.merge} function. See \code{RMSTSens.merge}.
 #' @param digits Print digits. Default: max(1L, getOption("digits") - 3L).
 #' @param ... Further arguments (currently not used).
 #'
@@ -55,7 +55,7 @@
 #' @keywords print
 #'
 #' @seealso
-#'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{merge_object}}
+#'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{RMSTSens.merge}}
 #'
 #' @export
 
