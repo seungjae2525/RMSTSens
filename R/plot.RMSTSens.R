@@ -38,8 +38,7 @@
 #'                  data=dat, family=binomial(link="logit"))
 #' dat$Ps <- predict(denom.fit, type="response")
 #'
-#' ## Between-group difference in adjusted RMST based on shifted propensity score
-#' ## Adjusted RMST with not specified tau and with multiple lambda
+#' ## Performing the sensitivity analysis - sensitivity range
 #' # Using approximate optimization method
 #' results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
 #'                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
@@ -55,7 +54,7 @@
 #'                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
-#' # After Merging two results, plot the analysis results.
+#' # After merging two results, plot the analysis results.
 #' autoplot(object=merge_object(list(results.approx2, results.approx3)), smooth.par=100,
 #'          alpha.range=0.4, alpha.ci=0.9,
 #'          ytickdiff=100, point.size=1.4, h.width=1,
@@ -63,7 +62,7 @@
 #'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
 #'          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 #'
-#' # Bootstrap confidence interval
+#' # Percentile bootstrap CI for population sensitivity range
 #' re.ap.boot <- RMSTSens.ci(x=merge_object(list(results.approx2, results.approx3)),
 #'               B=50, # Set B=50 to reduce computation time for R checks
 #'               level=0.95, seed=220524,
@@ -188,7 +187,7 @@ autoplot_RMSTSens <- function(xxx=NULL,
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.min), size=point.size, colour="blue") +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.max), size=point.size, colour="blue") +
         geom_line(aes(x=Lambda, y=0), colour="black", linewidth=h.width, linetype = "dashed", alpha=0.5) +
-        xlab(expression(bold(Lambda))) + ylab("Difference in adjusted RMST")  +
+        xlab(expression(bold(Lambda))) + ylab("Difference in RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,
                            labels = sprintf("%.1f", xx$Lambda), expand = c(0.005,0.005)) +
@@ -225,7 +224,7 @@ autoplot_RMSTSens <- function(xxx=NULL,
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.min), size=point.size, colour="blue") +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.max), size=point.size, colour="blue") +
         geom_line(aes(x=Lambda, y=0), colour="black", linewidth=h.width, linetype = "dashed", alpha=0.5) +
-        xlab(expression(bold(Lambda))) + ylab("Difference in adjusted RMST")  +
+        xlab(expression(bold(Lambda))) + ylab("Difference in RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,
                            labels = sprintf("%.1f", xx$Lambda), expand = c(0.005,0.005)) +
@@ -262,7 +261,7 @@ autoplot_RMSTSens <- function(xxx=NULL,
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.min), size=point.size, colour="blue") +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.max), size=point.size, colour="blue") +
         geom_line(aes(x=Lambda, y=0), colour="black", linewidth=h.width, linetype = "dashed", alpha=0.5) +
-        xlab(expression(bold(Lambda))) + ylab("Difference in adjusted RMST")  +
+        xlab(expression(bold(Lambda))) + ylab("Difference in RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,
                            labels = sprintf("%.1f", xx$Lambda), expand = c(0.005,0.005)) +
@@ -291,7 +290,7 @@ autoplot_RMSTSens <- function(xxx=NULL,
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.min), size=point.size, colour="blue") +
         geom_point(data=xx, aes(x=Lambda, y=RMST.diff.max), size=point.size, colour="blue") +
         geom_line(aes(x=Lambda, y=0), colour="black", linewidth=h.width, linetype = "dashed", alpha=0.5) +
-        xlab(expression(bold(Lambda))) + ylab("Difference in adjusted RMST")  +
+        xlab(expression(bold(Lambda))) + ylab("Difference in RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,
                            labels = sprintf("%.1f", xx$Lambda), expand = c(0.005,0.005)) +

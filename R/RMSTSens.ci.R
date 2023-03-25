@@ -69,18 +69,20 @@
 #'                  data=dat, family=binomial(link="logit"))
 #' dat$Ps <- predict(denom.fit, type="response")
 #'
-#' ## Between-group difference in adjusted RMST based on shifted propensity score
-#' ## Adjusted RMST with not specified tau and with multiple lambda
+#' ## Performing the sensitivity analysis - sensitivity range
 #' # Using approximate optimization method
 #' results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
 #'                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
 #'
+#' # Additional sensitivity analysis when lambda=1.7
 #' results.approx3 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
 #'                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
 #'                             use.multicore=TRUE, n.core=2,
 #'                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
+#'
+#' # Percentile bootstrap CI for population sensitivity range
 #' re.ap.boot <- RMSTSens.ci(x=merge_object(x=list(results.approx2, results.approx3)),
 #'               B=50, # Set B=50 to reduce computation time for R checks
 #'               level=0.95, seed=220524,
@@ -102,12 +104,12 @@
 #'                     ifelse(dat$Ps.rf < quantile(dat$Ps.rf, trunc.prop),
 #'                            quantile(dat$Ps.rf, trunc.prop), dat$Ps.rf))
 #' sum(dat$Ps.rf== 0) + sum(dat$Ps.rf== 1) # no 0 or 1 value
-#' # Range of RMST
+#' # Sensitivity range for difference in adjusted RMST
 #' results.approx.rf <- RMSTSens(time="rfstime", status="status", exposure="hormon",
 #'                               level.exposed="1", ps="Ps.rf", data=dat, methods="Approx",
 #'                               use.multicore=TRUE, n.core=2,
 #'                               lambda=c(1,1.5,2), tau=365.25*5, ini.par=1, verbose=FALSE)
-#' # CI of RMST
+#' # Percentile bootstrap CI for population sensitivity range
 #' re.rf <- RMSTSens.ci(x=results.approx.rf,
 #'                      B=50, # Set B=50 to reduce computation time for R checks
 #'                      level=0.95, seed=220528,
@@ -124,12 +126,12 @@
 #'                  data=dat, distribution= "bernoulli", verbose= FALSE)
 #' dat$Ps.gbm <- as.numeric(predict(model.gbm, type= "response"))
 #' sum(dat$Ps.gbm== 0) + sum(dat$Ps.gbm== 1) # Check that there is 0 or 1 value
-#' # Range of RMST
+#' # Sensitivity range for difference in adjusted RMST
 #' results.approx.gbm <- RMSTSens(time="rfstime", status="status", exposure="hormon",
 #'                                level.exposed="1", ps="Ps.gbm", data=dat, methods="Approx",
 #'                                use.multicore=TRUE, n.core=2,
 #'                                lambda=c(1,1.5,2), tau=365.25*5, ini.par=1, verbose=FALSE)
-#' # CI of RMST
+#' # Percentile bootstrap CI for population sensitivity range
 #' re.gbm <- RMSTSens.ci(x=results.approx.gbm,
 #'                       B=50, # Set B=50 to reduce computation time for R checks
 #'                       level=0.95, seed=220528,

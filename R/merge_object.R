@@ -21,8 +21,7 @@
 #'                  data=dat, family=binomial(link="logit"))
 #' dat$Ps <- predict(denom.fit, type="response")
 #'
-#' ## Between-group difference in adjusted RMST based on shifted propensity score
-#' ## Adjusted RMST with not specified tau and with multiple lambda
+#' ## Performing the sensitivity analysis - sensitivity range
 #' # Using approximate optimization method
 #' results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
 #'                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
@@ -30,6 +29,7 @@
 #'                             lambda=c(1,1.5,2.0), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' merge_object(x=list(results.approx2))
 #'
+#' # Additional sensitivity analysis when lambda=1.7
 #' results.approx3 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
 #'                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
 #'                             use.multicore=TRUE, n.core=2,
