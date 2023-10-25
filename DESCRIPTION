@@ -1,6 +1,7 @@
 Package: RMSTSens
 Version: 1.0.0
-Title: Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time
+Title: Sensitivity analysis for unmeasured confounding in estimating
+        the difference in restricted mean survival time
 Description: RMSTSens is a package aimed at providing a novel sensitivity analysis method for the RMST difference when unmeasured confounding is suspected. Given a user-specified sensitivity parameter, the sensitivity range of the difference in adjusted RMST is calculated with the percentile bootstrap confidence interval for the population sensitivity range. 
 License: MIT + file LICENSE
 URL: https://github.com/seungjae2525/RMSTSens
@@ -23,7 +24,7 @@ Authors@R:
            family = "Lee",
            role = "aut",
            comment = c(ORCID = "0000-0001-7447-7045")))
-Packaged: 2023-03-23 04:52:25 UTC; seung
+Packaged: 2023-10-25 09:59:40 UTC; seung
 Author: Seungjae Lee [aut, cre] (<https://orcid.org/0000-0001-5508-8634>),
     Woojoo Lee [aut] (<https://orcid.org/0000-0001-7447-7045>)
 Maintainer: Seungjae Lee <seungjae2525@gmail.com>

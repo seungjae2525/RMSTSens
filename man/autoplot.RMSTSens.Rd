@@ -77,13 +77,9 @@ then it will return a plot with sensitivity range with confidence interval, othe
 }
 \examples{
 dat <- gbsg
-dat$size2 <- ifelse(dat$size <= 20, 0,
-                    ifelse(dat$size > 20 & dat$size <= 50, 1, 2))
-dat$age2 <- dat$age/100
-dat$er2 <- dat$er/1000
 
 ## Estimation of propensity score
-denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
+denom.fit <- glm(hormon~age+meno+size+factor(grade)+nodes+pgr+er,
                  data=dat, family=binomial(link="logit"))
 dat$Ps <- predict(denom.fit, type="response")
 
@@ -92,17 +88,17 @@ dat$Ps <- predict(denom.fit, type="response")
 results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
                             use.multicore=TRUE, n.core=2,
-                            lambda=c(1,1.5,2.0), tau=365.25*5, ini.par=1, verbose=FALSE)
+                            lambda=c(1,1.1,1.2), tau=365.25*5, ini.par=1, verbose=FALSE)
 autoplot(object=results.approx2, alpha.range=0.4, alpha.ci=0.9, smooth.par=100,
          ytickdiff=100, point.size=1.4, h.width=1,
          axis.title.size=15, axis.text.size=12,
          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
-# Additional sensitivity analysis when lambda=1.7
+# Additional sensitivity analysis when lambda=1.15
 results.approx3 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
                             use.multicore=TRUE, n.core=2,
-                            lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
+                            lambda=c(1.15), tau=365.25*5, ini.par=1, verbose=FALSE)
 # After merging two results, plot the analysis results.
 autoplot(object=RMSTSens.merge(list(results.approx2, results.approx3)), smooth.par=100,
          alpha.range=0.4, alpha.ci=0.9,
@@ -115,7 +111,7 @@ autoplot(object=RMSTSens.merge(list(results.approx2, results.approx3)), smooth.p
 re.ap.boot <- RMSTSens.ci(x=RMSTSens.merge(list(results.approx2, results.approx3)),
               B=50, # Set B=50 to reduce computation time for R checks
               level=0.95, seed=220524,
-              formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
+              formula=hormon~age+meno+size+factor(grade)+nodes+pgr+er,
               model="logistic", use.multicore=TRUE, n.core=2)
 autoplot(object=re.ap.boot, alpha.range=0.4, alpha.ci=0.9, smooth.par=100,
          ytickdiff=100, point.size=1.4, h.width=1,

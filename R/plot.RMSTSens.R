@@ -28,13 +28,9 @@
 #'
 #' @examples
 #' dat <- gbsg
-#' dat$size2 <- ifelse(dat$size <= 20, 0,
-#'                     ifelse(dat$size > 20 & dat$size <= 50, 1, 2))
-#' dat$age2 <- dat$age/100
-#' dat$er2 <- dat$er/1000
 #'
 #' ## Estimation of propensity score
-#' denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
+#' denom.fit <- glm(hormon~age+meno+size+factor(grade)+nodes+pgr+er,
 #'                  data=dat, family=binomial(link="logit"))
 #' dat$Ps <- predict(denom.fit, type="response")
 #'
@@ -43,17 +39,17 @@
 #' results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
 #'                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
 #'                             use.multicore=TRUE, n.core=2,
-#'                             lambda=c(1,1.5,2.0), tau=365.25*5, ini.par=1, verbose=FALSE)
+#'                             lambda=c(1,1.1,1.2), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' autoplot(object=results.approx2, alpha.range=0.4, alpha.ci=0.9, smooth.par=100,
 #'          ytickdiff=100, point.size=1.4, h.width=1,
 #'          axis.title.size=15, axis.text.size=12,
 #'          save.plot=FALSE, save.plot.name="Plot", save.plot.device="png",
 #'          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
-#' # Additional sensitivity analysis when lambda=1.7
+#' # Additional sensitivity analysis when lambda=1.15
 #' results.approx3 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
 #'                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
 #'                             use.multicore=TRUE, n.core=2,
-#'                             lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
+#'                             lambda=c(1.15), tau=365.25*5, ini.par=1, verbose=FALSE)
 #' # After merging two results, plot the analysis results.
 #' autoplot(object=RMSTSens.merge(list(results.approx2, results.approx3)), smooth.par=100,
 #'          alpha.range=0.4, alpha.ci=0.9,
@@ -66,7 +62,7 @@
 #' re.ap.boot <- RMSTSens.ci(x=RMSTSens.merge(list(results.approx2, results.approx3)),
 #'               B=50, # Set B=50 to reduce computation time for R checks
 #'               level=0.95, seed=220524,
-#'               formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
+#'               formula=hormon~age+meno+size+factor(grade)+nodes+pgr+er,
 #'               model="logistic", use.multicore=TRUE, n.core=2)
 #' autoplot(object=re.ap.boot, alpha.range=0.4, alpha.ci=0.9, smooth.par=100,
 #'          ytickdiff=100, point.size=1.4, h.width=1,
@@ -136,6 +132,23 @@ autoplot_RMSTSens <- function(xxx=NULL,
                               axis.title.size=NULL, axis.text.size=NULL,
                               save.plot=FALSE, save.plot.name=NULL, save.plot.device=NULL,
                               save.plot.width=NULL, save.plot.height=NULL, save.plot.dpi=NULL, ...) {
+  ## Function for counting the number of decimal places
+  decimalplaces <- function(x) {
+    rr <- c()
+    for(i in 1:length(x)){
+      if(i == 1){
+        rr[i] <- "1.0"
+      } else {
+        if (abs(x[i] - round(x[i])) > .Machine$double.eps^0.5) {
+          rrr <- nchar(strsplit(sub('0+$', '', as.character(x[i])), ".", fixed = TRUE)[[1]][[2]])
+        } else {
+          rrr <- 0
+        }
+        rr[i] <- sprintf(paste0("%.",rrr,"f"), x[i])
+      }
+    }
+    return(rr)
+  }
 
   ##
   xx <- xxx$result.df
@@ -190,7 +203,7 @@ autoplot_RMSTSens <- function(xxx=NULL,
         xlab(expression(bold(Lambda))) + ylab("Difference in RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,
-                           labels = sprintf("%.1f", xx$Lambda), expand = c(0.005,0.005)) +
+                           labels = decimalplaces(xx$Lambda), expand = c(0.005,0.005)) +
         scale_y_continuous(breaks = ylabel, labels = ylabel) +
         theme(axis.title.x=element_text(face="bold", size=axis.title.size),
               axis.title.y=element_text(face="bold", size=axis.title.size, angle=90),
@@ -227,7 +240,7 @@ autoplot_RMSTSens <- function(xxx=NULL,
         xlab(expression(bold(Lambda))) + ylab("Difference in RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,
-                           labels = sprintf("%.1f", xx$Lambda), expand = c(0.005,0.005)) +
+                           labels = decimalplaces(xx$Lambda), expand = c(0.005,0.005)) +
         scale_y_continuous(breaks = ylabel, labels = ylabel) +
         theme(axis.title.x=element_text(face="bold", size=axis.title.size),
               axis.title.y=element_text(face="bold", size=axis.title.size, angle=90),
@@ -264,7 +277,7 @@ autoplot_RMSTSens <- function(xxx=NULL,
         xlab(expression(bold(Lambda))) + ylab("Difference in RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,
-                           labels = sprintf("%.1f", xx$Lambda), expand = c(0.005,0.005)) +
+                           labels = decimalplaces(xx$Lambda), expand = c(0.005,0.005)) +
         scale_y_continuous(breaks = ylabel, labels = ylabel) +
         theme(axis.title.x=element_text(face="bold", size=axis.title.size),
               axis.title.y=element_text(face="bold", size=axis.title.size, angle=90),
@@ -293,7 +306,7 @@ autoplot_RMSTSens <- function(xxx=NULL,
         xlab(expression(bold(Lambda))) + ylab("Difference in RMST")  +
         theme_bw() +
         scale_x_continuous(breaks = xx$Lambda,
-                           labels = sprintf("%.1f", xx$Lambda), expand = c(0.005,0.005)) +
+                           labels = decimalplaces(xx$Lambda), expand = c(0.005,0.005)) +
         scale_y_continuous(breaks = ylabel, labels = ylabel) +
         theme(axis.title.x=element_text(face="bold", size=axis.title.size),
               axis.title.y=element_text(face="bold", size=axis.title.size, angle=90),

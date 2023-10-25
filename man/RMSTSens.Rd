@@ -100,13 +100,9 @@ See Lee et al. (2023) for details.
 }
 \examples{
 dat <- gbsg
-dat$size2 <- ifelse(dat$size <= 20, 0,
-                    ifelse(dat$size > 20 & dat$size <= 50, 1, 2))
-dat$age2 <- dat$age/100
-dat$er2 <- dat$er/1000
 
 ## Estimation of propensity score
-denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
+denom.fit <- glm(hormon~age+meno+size+factor(grade)+nodes+pgr+er,
                  data=dat, family=binomial(link="logit"))
 dat$Ps <- predict(denom.fit, type="response")
 
@@ -115,14 +111,14 @@ dat$Ps <- predict(denom.fit, type="response")
 results.optim <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                           level.exposed="1", ps="Ps", data=dat, methods="Optim",
                           use.multicore=TRUE, n.core=2,
-                          lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
+                          lambda=1.2, tau=365.25*5, ini.par=1, verbose=FALSE)
 results.optim
 
 # Using approximate optimization method
 results.approx <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                            level.exposed="1", ps="Ps", data=dat, methods="Approx",
                            use.multicore=TRUE, n.core=2,
-                           lambda=1.5, tau=365.25*5, ini.par=1, verbose=FALSE)
+                           lambda=1.2, tau=365.25*5, ini.par=1, verbose=FALSE)
 results.approx
 
 ## Performing the sensitivity analysis - sensitivity range with multiple lambda
@@ -130,7 +126,7 @@ results.approx
 results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
                             use.multicore=TRUE, n.core=2,
-                            lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
+                            lambda=c(1,1.2), tau=365.25*5, ini.par=1, verbose=FALSE)
 results.approx2
 
 }

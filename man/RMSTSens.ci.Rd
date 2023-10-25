@@ -91,13 +91,9 @@ then you should enter the seed number used at that time in "seed" argument.
 }
 \examples{
 dat <- gbsg
-dat$size2 <- ifelse(dat$size <= 20, 0,
-                    ifelse(dat$size > 20 & dat$size <= 50, 1, 2))
-dat$age2 <- dat$age/100
-dat$er2 <- dat$er/1000
 
 ## Estimation of propensity score
-denom.fit <- glm(hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
+denom.fit <- glm(hormon~age+meno+size+factor(grade)+nodes+pgr+er,
                  data=dat, family=binomial(link="logit"))
 dat$Ps <- predict(denom.fit, type="response")
 
@@ -106,70 +102,21 @@ dat$Ps <- predict(denom.fit, type="response")
 results.approx2 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
                             use.multicore=TRUE, n.core=2,
-                            lambda=c(1,1.5), tau=365.25*5, ini.par=1, verbose=FALSE)
+                            lambda=c(1,1.1), tau=365.25*5, ini.par=1, verbose=FALSE)
 
-# Additional sensitivity analysis when lambda=1.7
+# Additional sensitivity analysis when lambda=1.2
 results.approx3 <- RMSTSens(time="rfstime", status="status", exposure="hormon",
                             level.exposed="1", ps="Ps", data=dat, methods="Approx",
                             use.multicore=TRUE, n.core=2,
-                            lambda=c(1.7), tau=365.25*5, ini.par=1, verbose=FALSE)
+                            lambda=c(1.2), tau=365.25*5, ini.par=1, verbose=FALSE)
 
 # Percentile bootstrap CI for population sensitivity range
 re.ap.boot <- RMSTSens.ci(x=RMSTSens.merge(x=list(results.approx2, results.approx3)),
               B=50, # Set B=50 to reduce computation time for R checks
               level=0.95, seed=220524,
-              formula=hormon~(age2)^3+(age2)^3*log(age2)+meno+factor(size2)+sqrt(nodes)+er2,
+              formula=hormon~age+meno+size+factor(grade)+nodes+pgr+er,
               model="logistic", trunc.prop=0, use.multicore=TRUE, n.core=2)
 re.ap.boot
-
-## Estimate of propensity score using random forest
-library(randomForest)
-set.seed(220528)
-dat$size2 <- factor(dat$size2)
-model.rf <- randomForest(formula=factor(hormon)~age2+meno+size2+nodes+er2, data=dat,
-                         ntree=1501, mtry=5)
-dat$Ps.rf <- as.numeric(predict(model.rf, type= "prob")[,2])
-# Trimming the propensity score
-trunc.prop <- 0.1
-dat$Ps.rf <- ifelse(dat$Ps.rf > quantile(dat$Ps.rf, 1-trunc.prop),
-                    quantile(dat$Ps.rf, 1-trunc.prop),
-                    ifelse(dat$Ps.rf < quantile(dat$Ps.rf, trunc.prop),
-                           quantile(dat$Ps.rf, trunc.prop), dat$Ps.rf))
-sum(dat$Ps.rf== 0) + sum(dat$Ps.rf== 1) # no 0 or 1 value
-# Sensitivity range for difference in adjusted RMST
-results.approx.rf <- RMSTSens(time="rfstime", status="status", exposure="hormon",
-                              level.exposed="1", ps="Ps.rf", data=dat, methods="Approx",
-                              use.multicore=TRUE, n.core=2,
-                              lambda=c(1,1.5,2), tau=365.25*5, ini.par=1, verbose=FALSE)
-# Percentile bootstrap CI for population sensitivity range
-re.rf <- RMSTSens.ci(x=results.approx.rf,
-                     B=50, # Set B=50 to reduce computation time for R checks
-                     level=0.95, seed=220528,
-                     formula=factor(hormon)~age2+meno+size2+nodes+er2,
-                     model="rf", trunc.prop=trunc.prop, use.multicore=TRUE, n.core=2,
-                     ntree=1501, mtry=5)
-re.rf
-
-
-## Estimate of propensity score using generalized boosted regression modeling
-library(gbm)
-set.seed(220528)
-model.gbm <- gbm(formula=hormon~age2+meno+size2+nodes+er2,
-                 data=dat, distribution= "bernoulli", verbose= FALSE)
-dat$Ps.gbm <- as.numeric(predict(model.gbm, type= "response"))
-sum(dat$Ps.gbm== 0) + sum(dat$Ps.gbm== 1) # Check that there is 0 or 1 value
-# Sensitivity range for difference in adjusted RMST
-results.approx.gbm <- RMSTSens(time="rfstime", status="status", exposure="hormon",
-                               level.exposed="1", ps="Ps.gbm", data=dat, methods="Approx",
-                               use.multicore=TRUE, n.core=2,
-                               lambda=c(1,1.5,2), tau=365.25*5, ini.par=1, verbose=FALSE)
-# Percentile bootstrap CI for population sensitivity range
-re.gbm <- RMSTSens.ci(x=results.approx.gbm,
-                      B=50, # Set B=50 to reduce computation time for R checks
-                      level=0.95, seed=220528,
-                      formula=hormon~age2+meno+size2+nodes+er2,
-                      model="gbm", trunc.prop=0, use.multicore=TRUE, n.core=2)
-re.gbm
 
 }
 \references{
