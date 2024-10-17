@@ -24,7 +24,7 @@ Lee, S., Park, J. H., and Lee, W. Sensitivity analysis for unmeasured confoundin
 Installation using R package `remotes`:
 
 ```r
-install.packages("remotes") # if devtools not already installed
+if (!require("devtools")) { install.packages("devtools") } # if devtools not already installed
 remotes::install_github("seungjae2525/RMSTSens")
 library(RMSTSens)
 ```
