@@ -9,9 +9,18 @@ R package \bold{RMSTSens} is sensitivity analysis package for the difference in 
 to possible unmeasured confounding.
 }
 \references{
-Lee S, Park JH, Lee W (2023):
+Lee, S., Park, J. H., and Lee, W.
 Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time.
-\emph{xxx}. DOI: xxx.
+\emph{Statistical Methods in Medical Research}. 2024.
+\doi{10.1177/09622802241280782}
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/seungjae2525/RMSTSens}
+  \item Report bugs at \url{https://github.com/seungjae2525/RMSTSens/issues}
+}
+
 }
 \author{
 Seungjae Lee \email{seungjae2525@gmail.com} and Woojoo Lee \email{lwj221@gmail.com}

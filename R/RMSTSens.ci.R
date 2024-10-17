@@ -1,10 +1,10 @@
 #' @title Confidence interval for population sensitivity range
 #'
-#' @description \code{RMSTSens.ci()} is the main function of RMSTSens and
+#' @description \code{RMSTSens.ci()} is the main function of \code{RMSTSens} package and
 #' constructs the percentile bootstrap confidence interval(s) for population sensitivity range.
 #'
 #' @param x An object for class \code{RMSTSens}. If you want to input several \code{RMSTSens} objects,
-#' use the \code{RMSTSens.merge} function. See \code{RMSTSens.merge}.
+#' use the \code{RMSTSens.merge} function. See \code{\link[RMSTSens]{RMSTSens.merge}}.
 #' @param B The number of bootstrap replicates. Default: 1000.
 #' @param level The confidence level required (i.e., \eqn{1-\alpha}). Default: 0.95.
 #' @param seed The seed number. If the propensity score was estimated using methods in the \code{randomForest} or \code{gbm} package,
@@ -12,12 +12,12 @@
 #' @param formula The formula for estimating propensity score. See Examples.
 #' @param model The method for estimating propensity score. "logistic", "rf", or "gbm" can be available.
 #' If model is not "logistic", \code{randomForest} or \code{gbm} package is needed. Default: "logistic"
-#' @param trunc.prop Optional truncation percentile (0-0.5).
+#' @param trunc.prop Optional truncation percentile (Values between 0 and 0.5 are allowed).
 #' For example, when trunc.prop=0.01, the left tail is truncated to the 1st percentile,
 #' and the right tail is truncated to the 99th percentile. When specified, truncated propensity scores are returned. Default: 0.
 #' @param use.multicore Logical scalar indicating whether to parallelize our optimization problem. Default: TRUE.
 #' @param n.core The number of CPU cores to use. Default: parallel::detectCores()/2.
-#' @param \dots Additional arguments passed on to \code{randomForest} or \code{gbm} function in \code{randomForest} or \code{gbm} package.
+#' @param \dots Additional arguments passed on to \code{\link[randomForest]{randomForest}} or \code{\link[gbm]{gbm}} function in \code{randomForest} or \code{gbm} package.
 #'
 #' @return The object is a data.frame with class \code{RMSTSens}. The function returns following components:
 #' \item{N}{Total number of subjects}
@@ -43,16 +43,16 @@
 #' \item{max.unexposed.upper}{Upper (\eqn{\alpha/2})-quantile of adjusted RMST for unexposed group}
 #' \item{RMST.diff.min.lower}{Lower bound of (\eqn{1-\alpha})% percentile bootstrap confidence interval for the population sensitivity range}
 #' \item{RMST.diff.max.upper}{Upper bound of (\eqn{1-\alpha})% percentile bootstrap confidence interval for the population sensitivity range}
-#' The results for the \code{\link{RMSTSens.ci}} are printed with the \code{\link{print.RMSTSens}} functions.
-#' To generate the plot of results for the \code{RMSTSens.ci}, use the \code{\link{autoplot.RMSTSens}} functions.
+#' The results for the \code{\link{RMSTSens.ci}} are printed with the \code{\link{print.RMSTSens}} function.
+#' To generate the plot of results for the \code{\link{RMSTSens.ci}}, use the \code{\link{autoplot.RMSTSens}} function.
 #'
-#' @details To assess details of method for sensitivity analysis, see Lee et al. (2022).
-#' When estimating the sensitivity range of the difference in adjusted RMST using \code{RMSTSens} function,
+#' @details To assess details of method for sensitivity analysis, see Lee et al. (2024).
+#' When estimating the sensitivity range of the difference in adjusted RMST using \code{\link{RMSTSens}} function,
 #' there is no need for the argument of formula and model to estimate the propensity score.
 #' However, when estimating the confidence interval for the population sensitivity range, the argument of formula and model are absolutely necessary.
-#' Note that to use \code{RMSTSens.ci} function in this package, propensity score should be re-estimated by using
-#' 1) \code{glm} that has a binomial distribution with logit link function or
-#' 2) \code{randomForest} or \code{gbm} function in \code{randomForest} or \code{gbm} package.
+#' Note that to use \code{\link{RMSTSens.ci}} function in this package, propensity score should be re-estimated by using
+#' 1) \code{\link[stats]{glm}} that has a binomial distribution with logit link function or
+#' 2) \code{\link[randomForest]{randomForest}} or \code{\link[gbm]{gbm}} function in \code{randomForest} or \code{gbm} package.
 #'
 #' Also, if propensity score was re-estimated using method either \code{randomForest} or \code{gbm} package,
 #' then you should enter the seed number used at that time in "seed" argument.
@@ -89,10 +89,18 @@
 #' @seealso
 #'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{autoplot.RMSTSens}}
 #'
-#' @references
-#' Lee S, Park JH, Lee W (2023):
+#' @references{
+#' Lee, S., Park, J. H., and Lee, W.
 #' Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time.
-#' \emph{xxx}. DOI: xxx.
+#' \emph{Statistical Methods in Medical Research}. 2024.
+#' \doi{10.1177/09622802241280782}
+#'
+#' Zhao, Q., Small, D. S., and Bhattacharya, B. B.
+#' Sensitivity analysis for inverse probability weighting estimators via the percentile bootstrap.
+#' \emph{Journal of the Royal Statistical Society Series B: Statistical Methodology}. 2019.
+#' \doi{10.1111/rssb.12327}
+#' }
+#'
 #'
 #' @keywords methods
 #'

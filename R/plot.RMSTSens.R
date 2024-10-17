@@ -1,7 +1,7 @@
 #' @title Plot for sensitivity analysis results
 #'
 #' @param object An object for class \code{RMSTSens}. Either object \code{RMSTSens} or \code{RMSTSens.ci} is allowed.
-#' If you want to see the results of several \code{RMSTSens} objects together, use the \code{RMSTSens.merge} function. See \code{RMSTSens.merge}.
+#' If you want to see the results of several \code{RMSTSens} objects together, use the \code{RMSTSens.merge} function. See \code{\link[RMSTSens]{RMSTSens.merge}}.
 #' @param alpha.range A opacity of sensitivity range. Values of \code{alpha.range} range from 0 to 1, with lower values corresponding to more transparent colors.
 #' Default: 0.4.
 #' @param alpha.ci A opacity of confidence interval. Values of \code{alpha.ci} range from 0 to 1, with lower values corresponding to more transparent colors.
@@ -71,7 +71,7 @@
 #'          save.plot.width=10, save.plot.height=6, save.plot.dpi=300)
 #'
 #' @seealso
-#'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{RMSTSens.merge}}
+#'  \code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{RMSTSens.merge}}, \code{\link[ggplot2]{autoplot}}
 #'
 #' @import ggplot2
 #'

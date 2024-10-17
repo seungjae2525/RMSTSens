@@ -6,14 +6,13 @@
 #'
 #' @name RMSTSens-package
 #'
-#' @docType package
-#'
 #' @author Seungjae Lee \email{seungjae2525@@gmail.com} and Woojoo Lee \email{lwj221@@gmail.com}
 #'
 #' @references
-#' Lee S, Park JH, Lee W (2023):
+#' Lee, S., Park, J. H., and Lee, W.
 #' Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time.
-#' \emph{xxx}. DOI: xxx.
+#' \emph{Statistical Methods in Medical Research}. 2024.
+#' \doi{10.1177/09622802241280782}
 #'
 #' @keywords package
 #'
@@ -26,5 +25,4 @@
 #'
 #' @importFrom stats binomial glm optim predict qlogis quantile spline
 #' @importFrom splines ns
-NULL
-
+"_PACKAGE"

@@ -2,7 +2,7 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 
 #' @title Sensitivity range of the difference in adjusted RMST
 #'
-#' @description \code{RMSTSens()} is the main function of RMSTSens and
+#' @description \code{RMSTSens()} is the main function of \code{RMSTSens} package and
 #' performs the sensitivity analysis for estimating the sensitivity range(s) of the difference in adjusted RMST.
 #'
 #' @param time The name of variable for survival time (i.e., time to event).
@@ -11,7 +11,7 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #' @param level.exposed Level for exposed group in exposure variable. Default: "1".
 #' @param ps The name of variable or the vector for the estimated propensity score.
 #' @param data A data frame in which contains the follow-up time (time), the event (status), the exposure (exposure), and the propensity score (ps).
-#' @param methods A character with the methods how to calculate the adjusted RMST ("Optim", "Approx", "LP1", "LP2"). Default: "Approx". See Details.
+#' @param methods A character with the method how to estimate the sensitivity range of the difference in adjusted RMST (either of "Optim", "Approx", "LP1", or "LP2"). Default: "Approx". See Details.
 #' @param use.multicore Logical scalar indicating whether to parallelize our optimization problem. Default: TRUE.
 #' @param n.core The number of CPU cores to use. Default: parallel::detectCores()/2.
 #' @param lambda A scalar or vector for sensitivity parameter \eqn{\Lambda}. Default: 2.
@@ -37,8 +37,8 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #' \item{max.unexposed}{The maximum value of adjusted RMST for unexposed group}
 #' \item{RMST.diff.min}{Lower bound of the sensitivity range for the difference in adjusted RMST}
 #' \item{RMST.diff.max}{Upper bound of the sensitivity range for the difference in adjusted RMST}
-#' The results for the \code{RMSTSens} are printed with the \code{\link{print.RMSTSens}} functions.
-#' To generate the plot of results for the \code{RMSTSens}, use the \code{\link{autoplot.RMSTSens}} functions.
+#' The results for the \code{RMSTSens} are printed with the \code{\link{print.RMSTSens}} function.
+#' To generate the plot of results for the \code{RMSTSens}, use the \code{\link{autoplot.RMSTSens}} function.
 #'
 #' @details There are four possible methods for our sensitivity analysis.
 #'
@@ -58,7 +58,7 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #'   the optimization problems are also transformed to well-known linear programming problems,
 #'   and thus one can use the analytic solutions for computing the sensitivity range.
 #'
-#' See Lee et al. (2023) for details.
+#' See Lee et al. (2024) for details.
 #'
 #' @examples
 #' dat <- gbsg
@@ -95,9 +95,10 @@ RMSTSens <- function(...) UseMethod("RMSTSens")
 #'  \code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{autoplot.RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}
 #'
 #' @references
-#' Lee S, Park JH, Lee W (2023):
+#' Lee, S., Park, J. H., and Lee, W.
 #' Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time.
-#' \emph{xxx}. DOI: xxx.
+#' \emph{Statistical Methods in Medical Research}. 2024.
+#' \doi{10.1177/09622802241280782}
 #'
 #' @keywords methods
 #'

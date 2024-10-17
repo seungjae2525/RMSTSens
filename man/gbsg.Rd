@@ -27,7 +27,7 @@ A data frame with 686 rows and 11 variables:
 gbsg
 }
 \description{
-The \code{gbsg} data set contains patient records from a 1984-1989 trial conducted by the German Breast Cancer Study Group (GBSG) of 720 patients
+The \code{gbsg} data set contains patient records from a 1984\enc{–}{--}1989 trial conducted by the German Breast Cancer Study Group (GBSG) of 720 patients
 with node positive breast cancer; it retains the 686 patients with complete data for the prognostic variables.
 }
 \details{
@@ -35,7 +35,9 @@ These data sets are used in the paper by Royston and Altman (2013). The Rotterda
 and the GBSG data for validation of the model. The paper gives references for the data source.
 }
 \references{
-Royston P, Altman DG (2013): External validation of a Cox prognostic model: principles and methods.
-\emph{BMC Med Res Methodol}. DOI: 10.1186/1471-2288-13-33.
+Royston, P., and Altman, D. G.
+External validation of a Cox prognostic model: principles and methods.
+\emph{BMC Medical Research Methodology}. 2013.
+\doi{10.1186/1471-2288-13-33}
 }
 \keyword{datasets}

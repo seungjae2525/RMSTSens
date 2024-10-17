@@ -33,7 +33,7 @@ RMSTSens(
 
 \item{data}{A data frame in which contains the follow-up time (time), the event (status), the exposure (exposure), and the propensity score (ps).}
 
-\item{methods}{A character with the methods how to calculate the adjusted RMST ("Optim", "Approx", "LP1", "LP2"). Default: "Approx". See Details.}
+\item{methods}{A character with the method how to estimate the sensitivity range of the difference in adjusted RMST (either of "Optim", "Approx", "LP1", or "LP2"). Default: "Approx". See Details.}
 
 \item{use.multicore}{Logical scalar indicating whether to parallelize our optimization problem. Default: TRUE.}
 
@@ -66,11 +66,11 @@ An object of class \code{RMSTSens}. The object is a data.frame with the followin
 \item{max.unexposed}{The maximum value of adjusted RMST for unexposed group}
 \item{RMST.diff.min}{Lower bound of the sensitivity range for the difference in adjusted RMST}
 \item{RMST.diff.max}{Upper bound of the sensitivity range for the difference in adjusted RMST}
-The results for the \code{RMSTSens} are printed with the \code{\link{print.RMSTSens}} functions.
-To generate the plot of results for the \code{RMSTSens}, use the \code{\link{autoplot.RMSTSens}} functions.
+The results for the \code{RMSTSens} are printed with the \code{\link{print.RMSTSens}} function.
+To generate the plot of results for the \code{RMSTSens}, use the \code{\link{autoplot.RMSTSens}} function.
 }
 \description{
-\code{RMSTSens()} is the main function of RMSTSens and
+\code{RMSTSens()} is the main function of \code{RMSTSens} package and
 performs the sensitivity analysis for estimating the sensitivity range(s) of the difference in adjusted RMST.
 }
 \details{
@@ -96,7 +96,7 @@ the optimization problems are also transformed to well-known linear programming 
 and thus one can use the analytic solutions for computing the sensitivity range.
 }
 
-See Lee et al. (2023) for details.
+See Lee et al. (2024) for details.
 }
 \examples{
 dat <- gbsg
@@ -131,9 +131,10 @@ results.approx2
 
 }
 \references{
-Lee S, Park JH, Lee W (2023):
+Lee, S., Park, J. H., and Lee, W.
 Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time.
-\emph{xxx}. DOI: xxx.
+\emph{Statistical Methods in Medical Research}. 2024.
+\doi{10.1177/09622802241280782}
 }
 \seealso{
 \code{\link[RMSTSens]{print.RMSTSens}}, \code{\link[RMSTSens]{autoplot.RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}

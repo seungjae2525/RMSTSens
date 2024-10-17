@@ -28,7 +28,7 @@
 }
 \arguments{
 \item{object}{An object for class \code{RMSTSens}. Either object \code{RMSTSens} or \code{RMSTSens.ci} is allowed.
-If you want to see the results of several \code{RMSTSens} objects together, use the \code{RMSTSens.merge} function. See \code{RMSTSens.merge}.}
+If you want to see the results of several \code{RMSTSens} objects together, use the \code{RMSTSens.merge} function. See \code{\link[RMSTSens]{RMSTSens.merge}}.}
 
 \item{alpha.range}{A opacity of sensitivity range. Values of \code{alpha.range} range from 0 to 1, with lower values corresponding to more transparent colors.
 Default: 0.4.}
@@ -129,6 +129,6 @@ plot(results.approx2, alpha.range=0.4, alpha.ci=0.9, smooth.par=100,
 
 }
 \seealso{
-\code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{RMSTSens.merge}}
+\code{\link[RMSTSens]{RMSTSens}}, \code{\link[RMSTSens]{RMSTSens.ci}}, \code{\link[RMSTSens]{RMSTSens.merge}}, \code{\link[ggplot2]{autoplot}}
 }
 \keyword{plot}
