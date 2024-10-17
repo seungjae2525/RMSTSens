@@ -16,7 +16,7 @@ This is the source code for the `RMSTSens` package in R.
 Given a user-specified sensitivity parameter, the sensitivity range of the difference in adjusted RMST is calculated with the percentile bootstrap confidence interval for the population sensitivity range. See reference for details.
  
 ### Reference
-Not yet published (submitted to journal related to biostatistics).
+Lee, S., Park, J. H., and Lee, W. Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time. *Statistical Methods in Medical Research*. 2024. <https://doi.org/10.1177/09622802241280782>
 
 
 ## Installation
@@ -24,8 +24,8 @@ Not yet published (submitted to journal related to biostatistics).
 Installation using R package `remotes`:
 
 ```r
-install.packages("remotes") # if devtools not already installed
-remotes::install_github("seungjae2525/RMSTSens")
+if (!require("devtools")) { install.packages("devtools") } # if devtools not already installed
+devtools::install_github("seungjae2525/RMSTSens")
 library(RMSTSens)
 ```
 
