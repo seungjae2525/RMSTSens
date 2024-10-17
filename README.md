@@ -25,7 +25,7 @@ Installation using R package `remotes`:
 
 ```r
 if (!require("devtools")) { install.packages("devtools") } # if devtools not already installed
-remotes::install_github("seungjae2525/RMSTSens")
+devtools::install_github("seungjae2525/RMSTSens")
 library(RMSTSens)
 ```
 
