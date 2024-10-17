@@ -1,0 +1,13 @@
+citHeader("To cite package 'RMSTSens' in publications use:")
+
+bibentry("Article",
+  title   = "Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time",
+  author  = c("Seungjae Lee", "Ji Hoon Park", "Woojoo Lee"),
+  journal = "Statistical Methods in Medical Research",
+  year    = "2024",
+  textVersion = paste("Lee, S., Park, J. H., Lee, W.",
+                          "Sensitivity analysis for unmeasured confounding in estimating the difference in restricted mean survival time.",
+                          "Statistical Methods in Medical Research. 2024.")
+)
+
+citFooter("DOI: 10.1177/09622802241280782")
